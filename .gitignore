@@ -4,3 +4,7 @@
 /**/.vscode/
 /**/.gradle/
 
+!.env.example
+
+.env*
+
