@@ -20,6 +20,12 @@ dependencies {
     implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
 
+    // hikari dependency
+    implementation("com.zaxxer", "HikariCP", "3.4.5")
+
+    // dot-env dependency
+    implementation("io.github.cdimascio", "java-dotenv", "5.2.1")
+
     testImplementation("junit", "junit", "4.12")
 }
 
