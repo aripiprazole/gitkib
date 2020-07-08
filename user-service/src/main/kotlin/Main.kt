@@ -16,10 +16,10 @@ fun main(args: Array<String>) {
     val databaseService: DatabaseService = PostgresService()
     val database = databaseService.connect(environment)
 
+    server.start()
+
     // Setup application controllers/routes
     server.application.apply {
         userController(database)
     }
-
-    server.start()
 }
