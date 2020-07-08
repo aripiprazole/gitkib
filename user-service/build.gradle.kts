@@ -13,6 +13,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("io.ktor", "ktor-server-netty", "1.3.2")
+    implementation("io.ktor", "ktor-jackson", "1.3.2")
 
     // Exposed dependencies
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
