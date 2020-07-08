@@ -6,8 +6,8 @@ import org.jetbrains.exposed.dao.id.EntityID
 
 class User(id: EntityID<Long>) : LongEntity(id) {
 
-    val username: String by UserTable.username
-    val email: String by UserTable.email
-    val password: String by UserTable.password
+  val username: String by UserTable.username
+  val email: String by UserTable.email
+  val password: String by UserTable.password
 
 }
