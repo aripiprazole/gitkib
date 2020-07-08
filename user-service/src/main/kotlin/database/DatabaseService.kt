@@ -8,11 +8,11 @@ import org.jetbrains.exposed.sql.Database
  */
 interface DatabaseService {
 
-    /**
-     * This will connect database with env provided with [environment]
-     *
-     * @return [Database]
-     */
-    fun connect(environment: Dotenv): Database
+  /**
+   * This will connect database with env provided with [environment]
+   *
+   * @return [Database]
+   */
+  fun connect(environment: Dotenv): Database
 
 }
