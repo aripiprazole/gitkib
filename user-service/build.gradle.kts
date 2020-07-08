@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm")
-    kotlin("plugin.serialization") version "1.3.70"
 }
 
 group = "com.lorenzoog.gitkib"
@@ -13,7 +12,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("io.ktor","ktor-server-netty", "1.3.2")
+    implementation("io.ktor", "ktor-server-netty", "1.3.2")
 
     // Exposed dependencies
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
