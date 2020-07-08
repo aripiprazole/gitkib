@@ -15,6 +15,9 @@ dependencies {
   implementation("io.ktor", "ktor-server-netty", "1.3.2")
   implementation("io.ktor", "ktor-jackson", "1.3.2")
 
+  // Logging dependency
+  implementation("ch.qos.logback:logback-classic:1.2.3")
+
   // Exposed dependencies
   implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
   implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
