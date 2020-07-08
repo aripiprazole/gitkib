@@ -23,6 +23,9 @@ dependencies {
     // hikari dependency
     implementation("com.zaxxer", "HikariCP", "3.4.5")
 
+    // database
+    implementation("org.postgresql", "postgresql", "42.1.4")
+
     // dot-env dependency
     implementation("io.github.cdimascio", "java-dotenv", "5.2.1")
 
