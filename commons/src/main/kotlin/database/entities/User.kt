@@ -1,4 +1,4 @@
-package com.lorenzoog.gitkib.database.entities
+package com.lorenzoog.gitkib.commons.database.entities
 
 import com.lorenzoog.gitkib.commons.database.tables.UserTable
 import org.jetbrains.exposed.dao.LongEntity
