@@ -60,9 +60,11 @@ fun Route.userController(database: Database) {
     newSuspendedTransaction(db = database) {
       val user = User.findById(userId.toLong()) ?: throw NotFoundException()
 
-      body.username?.let { user.username = it }
-      body.email?.let { user.email = it }
-      body.password?.let { user.password = it }
+      user.apply {
+        body.username?.let { username = it }
+        body.email?.let { email = it }
+        body.password?.let { password = it }
+      }
 
       user.refresh()
 
