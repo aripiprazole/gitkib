@@ -6,26 +6,24 @@ import org.jetbrains.exposed.sql.*
 
 const val PAGINATION_OFFSET = 15
 
-fun Application.userController(database: Database) {
-  routing {
-    get("users") {
-      // TODO
-    }
+fun Route.userController(database: Database) {
+  get("users") {
+    // TODO
+  }
 
-    get("users/{id}") {
-      // TODO
-    }
+  get("users/{id}") {
+    // TODO
+  }
 
-    post("users") {
-      // TODO
-    }
+  post("users") {
+    // TODO
+  }
 
-    put("users/{id}") {
-      // TODO
-    }
+  put("users/{id}") {
+    // TODO
+  }
 
-    delete("users/{id}") {
-      // TODO
-    }
+  delete("users/{id}") {
+    // TODO
   }
 }
