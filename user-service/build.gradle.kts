@@ -32,7 +32,7 @@ dependencies {
   // dot-env dependency
   implementation("io.github.cdimascio", "java-dotenv", "5.2.1")
 
-  // local dpeendencies
+  // local dependencies
   implementation(project(":commons"))
 
   testImplementation("junit", "junit", "4.12")
