@@ -4,7 +4,7 @@ import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.utils.paginate
 import com.lorenzoog.gitkib.commons.utils.whenNotNull
 import com.lorenzoog.gitkib.userservice.validators.UserUpdateValidator
-import com.lorenzoog.gitkib.userservice.validators.UserValidator
+import com.lorenzoog.gitkib.userservice.validators.UserCreateValidator
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
 import io.ktor.http.HttpStatusCode.Companion.Created
@@ -41,13 +41,13 @@ fun Route.userController(database: Database) {
   }
 
   post("users") {
-    val userValidator = call.receive<UserValidator>().also(UserValidator::validate)
+    val body = call.receive<UserCreateValidator>().also(UserCreateValidator::validate)
 
     newSuspendedTransaction(db = database) {
       val user = User.new {
-        username = userValidator.username
-        email = userValidator.email
-        password = userValidator.password
+        username = body.username
+        email = body.email
+        password = body.password
       }
 
       call.respond(Created, user)
