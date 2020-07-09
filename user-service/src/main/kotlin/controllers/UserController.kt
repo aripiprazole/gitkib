@@ -55,7 +55,7 @@ fun Route.userController(database: Database) {
 
   put("users/{id}") {
     val userId = call.parameters["id"]!!
-    val body = call.receive<UserUpdateValidator>()
+    val body = call.receive<UserUpdateValidator>().also(UserUpdateValidator::validate)
 
     newSuspendedTransaction(db = database) {
       val user = User.findById(userId.toLong()) ?: throw NotFoundException()
