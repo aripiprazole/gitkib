@@ -2,10 +2,13 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.utils.paginate
+import com.lorenzoog.gitkib.commons.utils.whenNotNull
+import com.lorenzoog.gitkib.userservice.validators.UserUpdateValidator
 import com.lorenzoog.gitkib.userservice.validators.UserValidator
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
 import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.NoContent
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
@@ -52,7 +55,20 @@ fun Route.userController(database: Database) {
   }
 
   put("users/{id}") {
-    // TODO
+    val userId = call.parameters["id"]!!
+    val body = call.receive<UserUpdateValidator>()
+
+    newSuspendedTransaction(db = database) {
+      val user = User.findById(userId.toLong()) ?: throw NotFoundException()
+
+      body.username.whenNotNull { user.username = it }
+      body.email.whenNotNull { user.email = it }
+      body.password.whenNotNull { user.password = it }
+
+      user.refresh()
+
+      call.respond(NoContent)
+    }
   }
 
   delete("users/{id}") {
