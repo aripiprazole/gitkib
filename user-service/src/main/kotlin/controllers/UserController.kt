@@ -2,8 +2,12 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.utils.paginate
+import com.lorenzoog.gitkib.userservice.validators.UserValidator
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.*
 import io.ktor.util.KtorExperimentalAPI
@@ -35,7 +39,17 @@ fun Route.userController(database: Database) {
   }
 
   post("users") {
-    // TODO
+    val userValidator = call.receive<UserValidator>().also(UserValidator::validate)
+
+    newSuspendedTransaction(db = database) {
+      val user = User.new {
+        username = userValidator.username
+        email = userValidator.email
+        password = userValidator.password
+      }
+
+      call.respond(Created, user)
+    }
   }
 
   put("users/{id}") {
