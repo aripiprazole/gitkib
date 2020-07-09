@@ -8,6 +8,7 @@ import io.github.cdimascio.dotenv.dotenv
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.jackson.jackson
+import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -40,6 +41,8 @@ fun main(args: Array<String>) {
       }
     }
 
-    userController(database)
+    routing {
+      userController(database)
+    }
   }
 }
