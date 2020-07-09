@@ -9,11 +9,14 @@ import javax.sql.DataSource
 
 class PostgresService : DatabaseService {
 
+  private fun errorNonexistentEnvVariable(variable: String): Nothing =
+    throw IllegalStateException("The database $variable can not be null")
+
   override fun connect(environment: Dotenv): Database {
     val config = HikariConfig().apply {
-      jdbcUrl = environment["DB_URL"] ?: throw IllegalStateException("The database jdbc url can not be null")
-      username = environment["DB_USERNAME"] ?: throw IllegalStateException("The database username can not be null")
-      password = environment["DB_PASSWORD"] ?: throw IllegalStateException("The database password can not be null")
+      jdbcUrl = environment["DB_URL"] ?: errorNonexistentEnvVariable("jdbc url")
+      username = environment["DB_USERNAME"] ?: errorNonexistentEnvVariable("username")
+      password = environment["DB_PASSWORD"] ?: errorNonexistentEnvVariable("password")
     }
 
     val dataSource: DataSource = HikariDataSource(config)
