@@ -1,25 +1,31 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
-import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.tables.UserTable
 import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
-import io.ktor.routing.get
-import io.ktor.routing.routing
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.Op
-import org.jetbrains.exposed.sql.select
+import io.ktor.routing.*
+import org.jetbrains.exposed.sql.*
 
 const val PAGINATION_OFFSET = 15
 
 fun Application.userController(database: Database) {
   routing {
     get("users") {
-      val users = User.all().limit(PAGINATION_OFFSET)
+      // TODO
+    }
 
-      call.respond(HttpStatusCode.OK, users)
+    get("users/{id}") {
+      // TODO
+    }
+
+    post("users") {
+      // TODO
+    }
+
+    put("users/{id}") {
+      // TODO
+    }
+
+    delete("users/{id}") {
+      // TODO
     }
   }
 }
