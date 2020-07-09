@@ -1,7 +1,10 @@
 package com.lorenzoog.gitkib.userservice
 
 import com.lorenzoog.gitkib.commons.database.DatabaseService
+import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.impls.PostgresService
+import com.lorenzoog.gitkib.commons.database.repositories.Repository
+import com.lorenzoog.gitkib.commons.database.repositories.UserRepository
 import com.lorenzoog.gitkib.userservice.controllers.userController
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.application.install
@@ -23,6 +26,8 @@ fun main(args: Array<String>) {
   val databaseService: DatabaseService = PostgresService()
   val database = databaseService.connect(environment)
 
+  val userRepository: Repository<Long, User> = UserRepository(database)
+
   server.start()
 
   // Setup application controllers/routes and other services
@@ -34,7 +39,7 @@ fun main(args: Array<String>) {
     }
 
     routing {
-      userController(database)
+      userController(database, userRepository)
     }
   }
 }
