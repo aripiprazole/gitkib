@@ -18,12 +18,14 @@ const val PAGINATION_OFFSET = 15
 
 @KtorExperimentalAPI
 fun Route.userController(database: Database, userRepository: Repository<Long, User>) {
+  // UserController@index
   get("users") {
     val page = call.request.queryParameters["page"] ?: "0"
 
     call.respond(userRepository.paginate(page.toInt(), PAGINATION_OFFSET))
   }
 
+  // UserController@show
   get("users/{id}") {
     val userId = call.parameters["id"]!!
     val user = userRepository.findById(userId.toLong())
@@ -31,6 +33,7 @@ fun Route.userController(database: Database, userRepository: Repository<Long, Us
     call.respond(user)
   }
 
+  // UserController@store
   post("users") {
     val body = call.receive<UserCreateValidator>().also(UserCreateValidator::validate)
 
@@ -43,6 +46,7 @@ fun Route.userController(database: Database, userRepository: Repository<Long, Us
     call.respond(Created, user)
   }
 
+  // UserController@update
   put("users/{id}") {
     val userId = call.parameters["id"]!!
     val body = call.receive<UserUpdateValidator>().also(UserUpdateValidator::validate)
@@ -62,6 +66,7 @@ fun Route.userController(database: Database, userRepository: Repository<Long, Us
     call.respond(NoContent)
   }
 
+  // UserController@destroy
   delete("users/{id}") {
     val userId = call.parameters["id"]!!
 
