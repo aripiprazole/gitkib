@@ -1,11 +1,10 @@
-package com.lorenzoog.gitkib.userservice.database.impls
+package com.lorenzoog.gitkib.commons.database.impls
 
-import com.lorenzoog.gitkib.userservice.database.DatabaseService
+import com.lorenzoog.gitkib.commons.database.DatabaseService
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.github.cdimascio.dotenv.Dotenv
 import org.jetbrains.exposed.sql.Database
-import java.io.PrintWriter
 import javax.sql.DataSource
 
 class PostgresService : DatabaseService {

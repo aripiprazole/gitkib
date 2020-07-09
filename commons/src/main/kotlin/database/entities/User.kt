@@ -1,6 +1,6 @@
-package com.lorenzoog.gitkib.userservice.entities
+package com.lorenzoog.gitkib.database.entities
 
-import com.lorenzoog.gitkib.userservice.tables.UserTable
+import com.lorenzoog.gitkib.commons.database.tables.UserTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

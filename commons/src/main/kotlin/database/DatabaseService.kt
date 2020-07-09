@@ -1,4 +1,4 @@
-package com.lorenzoog.gitkib.userservice.database
+package com.lorenzoog.gitkib.commons.database
 
 import io.github.cdimascio.dotenv.Dotenv
 import org.jetbrains.exposed.sql.Database
