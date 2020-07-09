@@ -1,9 +1,9 @@
 package com.lorenzoog.gitkib.userservice
 
+import com.lorenzoog.gitkib.commons.database.DatabaseService
+import com.lorenzoog.gitkib.commons.database.impls.PostgresService
+import com.lorenzoog.gitkib.commons.database.tables.UserTable
 import com.lorenzoog.gitkib.userservice.controllers.userController
-import com.lorenzoog.gitkib.userservice.database.DatabaseService
-import com.lorenzoog.gitkib.userservice.database.impls.PostgresService
-import com.lorenzoog.gitkib.userservice.tables.UserTable
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
   val databaseService: DatabaseService = PostgresService()
   val database = databaseService.connect(environment)
 
-  // Create entities' tables
+  // Create database.entities' database.tables
   transaction(database) {
     SchemaUtils.create(
       UserTable
