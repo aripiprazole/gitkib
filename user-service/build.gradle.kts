@@ -38,6 +38,10 @@ dependencies {
   // validator dependency
   implementation("org.hibernate.validator", "hibernate-validator", "6.1.1.Final")
 
+  testImplementation("com.github.javafaker", "javafaker", "1.0.2")
+  testImplementation("com.h2database", "h2", "1.0.60")
+  testImplementation("org.mockito", "mockito-core", "2.1.0")
+  testImplementation("io.ktor", "ktor-server-test-host", "1.3.2")
   testImplementation("junit", "junit", "4.12")
 }
 
