@@ -4,7 +4,7 @@ import com.lorenzoog.gitkib.commons.utils.Validator
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 
-data class UserValidator (
+data class UserCreateValidator (
   @field:Min(4)
   @field:Max(32)
   val username: String,
