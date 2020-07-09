@@ -3,6 +3,7 @@ package com.lorenzoog.gitkib.userservice.controllers
 import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.utils.paginate
 import io.ktor.application.call
+import io.ktor.features.NotFoundException
 import io.ktor.response.respond
 import io.ktor.routing.*
 import io.ktor.util.KtorExperimentalAPI
@@ -24,7 +25,13 @@ fun Route.userController(database: Database) {
   }
 
   get("users/{id}") {
-    // TODO
+    val userId = call.parameters["id"]!!
+
+    newSuspendedTransaction(db = database) {
+      val user = User.findById(userId.toLong()) ?: throw NotFoundException()
+
+      call.respond(user)
+    }
   }
 
   post("users") {
