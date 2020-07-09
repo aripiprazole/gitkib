@@ -12,6 +12,10 @@ repositories {
 
 dependencies {
   implementation(kotlin("stdlib-jdk8"))
+  implementation("io.ktor", "ktor-server-netty", "1.3.2")
+
+  // json dependency
+  implementation("com.fasterxml.jackson.core", "jackson-databind", "2.0.1")
 
   // exposed dependencies
   implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
@@ -26,6 +30,9 @@ dependencies {
 
   // dot-env dependency
   implementation("io.github.cdimascio", "java-dotenv", "5.2.1")
+
+  // validator dependency
+  implementation("org.hibernate.validator", "hibernate-validator", "6.1.1.Final")
 
   testImplementation("junit", "junit", "4.12")
 }
