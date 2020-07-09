@@ -73,6 +73,14 @@ fun Route.userController(database: Database) {
   }
 
   delete("users/{id}") {
-    // TODO
+    val userId = call.parameters["id"]!!
+
+    newSuspendedTransaction(db = database) {
+      val user = User.findById(userId.toLong()) ?: throw NotFoundException()
+
+      user.delete()
+
+      call.respond(NoContent)
+    }
   }
 }
