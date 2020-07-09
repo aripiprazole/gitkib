@@ -35,6 +35,9 @@ dependencies {
   // local dependencies
   implementation(project(":commons"))
 
+  // validator dependency
+  implementation("org.hibernate.validator", "hibernate-validator", "6.1.1.Final")
+
   testImplementation("junit", "junit", "4.12")
 }
 
