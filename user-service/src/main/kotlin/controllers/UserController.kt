@@ -22,7 +22,7 @@ fun Route.userController(database: Database, userRepository: Repository<Long, Us
   get("users") {
     val page = call.request.queryParameters["page"] ?: "0"
 
-    call.respond(userRepository.paginate(page.toInt(), PAGINATION_OFFSET))
+    call.respond(userRepository.paginate(page.toInt(), PAGINATION_OFFSET).toList())
   }
 
   // UserController@show
