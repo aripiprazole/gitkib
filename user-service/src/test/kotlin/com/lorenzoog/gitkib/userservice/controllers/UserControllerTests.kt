@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.javafaker.Faker
 import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.repositories.Repository
+import com.lorenzoog.gitkib.commons.database.tables.UserTable
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -15,6 +16,7 @@ import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
 import io.ktor.util.KtorExperimentalAPI
 import junit.framework.TestCase
+import org.jetbrains.exposed.dao.DaoEntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SizedCollection
 import org.mockito.ArgumentMatchers.*
@@ -46,7 +48,7 @@ class UserControllerTests : TestCase() {
   fun `test should show paginated users when get 'users' route`() {
     val usersMock = listOf(
       (0 until faker.number().numberBetween(10, 30)).map {
-        User.new {
+        User(DaoEntityID(it.toLong(), UserTable)).apply {
           username = faker.lorem().characters(32)
           email = faker.lorem().characters(32)
           password = faker.lorem().characters(32)
