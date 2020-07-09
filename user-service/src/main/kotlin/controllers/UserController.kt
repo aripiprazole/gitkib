@@ -2,7 +2,6 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.utils.paginate
-import com.lorenzoog.gitkib.commons.utils.whenNotNull
 import com.lorenzoog.gitkib.userservice.validators.UserUpdateValidator
 import com.lorenzoog.gitkib.userservice.validators.UserCreateValidator
 import io.ktor.application.call
@@ -61,9 +60,9 @@ fun Route.userController(database: Database) {
     newSuspendedTransaction(db = database) {
       val user = User.findById(userId.toLong()) ?: throw NotFoundException()
 
-      body.username.whenNotNull { user.username = it }
-      body.email.whenNotNull { user.email = it }
-      body.password.whenNotNull { user.password = it }
+      body.username?.let { user.username = it }
+      body.email?.let { user.email = it }
+      body.password?.let { user.password = it }
 
       user.refresh()
 
