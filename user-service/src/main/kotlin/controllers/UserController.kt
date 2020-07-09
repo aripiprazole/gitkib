@@ -5,7 +5,6 @@ import com.lorenzoog.gitkib.commons.database.utils.paginate
 import com.lorenzoog.gitkib.userservice.validators.UserValidator
 import io.ktor.application.call
 import io.ktor.features.NotFoundException
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.request.receive
 import io.ktor.response.respond
