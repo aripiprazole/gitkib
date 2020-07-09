@@ -11,8 +11,10 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.util.KtorExperimentalAPI
 import java.text.DateFormat
 
+@KtorExperimentalAPI
 fun main(args: Array<String>) {
   val server = embeddedServer(Netty, commandLineEnvironment(args))
   val environment = dotenv()
