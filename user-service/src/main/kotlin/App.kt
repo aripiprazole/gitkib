@@ -1,7 +1,5 @@
 package com.lorenzoog.gitkib.userservice
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.lorenzoog.gitkib.commons.database.DatabaseService
 import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.impls.PostgresService
@@ -12,17 +10,15 @@ import io.github.cdimascio.dotenv.dotenv
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
-import io.ktor.gson.gson
 import io.ktor.routing.routing
+import io.ktor.serialization.json
 import io.ktor.util.KtorExperimentalAPI
 
 val env = dotenv()
 
 fun Application.setup() {
   install(ContentNegotiation) {
-    gson {
-      // nothing to do now
-    }
+    json()
   }
 }
 
