@@ -21,7 +21,9 @@ class UserRepository(private val database: Database) : Repository<Long, User> {
   }
 
   override fun paginate(page: Int, offset: Int) = transaction(database) {
-    User.all().paginate(page, offset)
+    mutableListOf<User>().also { list ->
+      User.all().paginate(page, offset).map(list::add)
+    }
   }
 
   override fun create(builder: User.() -> Unit) = transaction(database) {
