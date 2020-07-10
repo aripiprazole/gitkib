@@ -13,7 +13,7 @@ repositories {
 dependencies {
   implementation(kotlin("stdlib-jdk8"))
   implementation("io.ktor", "ktor-server-netty", "1.3.2")
-  implementation("io.ktor", "ktor-gson", "1.3.2")
+  implementation("io.ktor", "ktor-serialization", "1.3.2")
 
   // Logging dependency
   implementation("ch.qos.logback:logback-classic:1.2.3")
