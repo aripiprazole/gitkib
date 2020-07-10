@@ -5,10 +5,8 @@ import com.google.gson.GsonBuilder
 import com.lorenzoog.gitkib.commons.database.entities.User
 import com.lorenzoog.gitkib.commons.database.repositories.Repository
 import com.lorenzoog.gitkib.commons.database.tables.UserTable
+import com.lorenzoog.gitkib.userservice.setup
 import io.ktor.application.Application
-import io.ktor.application.install
-import io.ktor.features.ContentNegotiation
-import io.ktor.gson.gson
 import io.ktor.http.HttpMethod.Companion.Get
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.routing.routing
@@ -41,9 +39,7 @@ class UserControllerTests : TestCase() {
   private val objectMapper = GsonBuilder().create()
   private val faker = Faker(ENGLISH)
   private val applicationMock: Application.() -> Unit = {
-    install(ContentNegotiation) {
-      gson()
-    }
+    setup()
 
     routing {
       @Suppress("UNCHECKED_CAST")
