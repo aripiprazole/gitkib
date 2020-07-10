@@ -12,6 +12,6 @@ interface Repository<ID, T> {
 
   fun create(builder: T.() -> Unit): T
 
-  fun paginate(page: Int, offset: Int): SizedIterable<T>
+  fun paginate(page: Int, offset: Int): List<T>
 
 }

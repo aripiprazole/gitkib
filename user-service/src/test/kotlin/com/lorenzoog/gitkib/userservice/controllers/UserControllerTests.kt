@@ -67,7 +67,7 @@ class UserControllerTests : TestCase() {
         page = 0,
         offset = PAGINATION_OFFSET
       )
-    ).thenReturn(SizedCollection(usersMock))
+    ).thenReturn(usersMock)
 
     withTestApplication(applicationMock) {
       with(handleRequest(Get, "users")) {
