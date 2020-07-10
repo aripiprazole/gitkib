@@ -9,13 +9,12 @@ import com.lorenzoog.gitkib.userservice.controllers.userController
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
-import io.ktor.jackson.jackson
+import io.ktor.gson.gson
 import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.util.KtorExperimentalAPI
-import java.text.DateFormat
 
 @KtorExperimentalAPI
 fun main(args: Array<String>) {
@@ -33,9 +32,7 @@ fun main(args: Array<String>) {
   // Setup application controllers/routes and other services
   server.application.apply {
     install(ContentNegotiation) {
-      jackson {
-        dateFormat = DateFormat.getDateInstance()
-      }
+      gson()
     }
 
     routing {
