@@ -18,20 +18,29 @@ import io.ktor.util.KtorExperimentalAPI
 import junit.framework.TestCase
 import org.jetbrains.exposed.dao.DaoEntityID
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SizedCollection
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.*
 import java.text.DateFormat
+import java.util.Locale.ENGLISH
 
 import org.mockito.Mockito.`when` as whenExecute
 
 @KtorExperimentalAPI
 class UserControllerTests : TestCase() {
 
-  private val database = Database.connect("jdbc:h2:mem:test", "org.h2.Driver", "root", "")
+  private val database =
+    Database.connect(
+      url = "jdbc:h2:mem:local;MODE=MySQL;DATABASE_TO_UPPER=false;",
+      driver = "org.h2.Driver",
+      user = "root",
+      password = "root"
+    )
   private val userRepositoryMock = mock(Repository::class.java)
   private val objectMapper = ObjectMapper()
-  private val faker = Faker()
+  private val faker = Faker(ENGLISH)
   private val applicationMock: Application.() -> Unit = {
     install(ContentNegotiation) {
       jackson {
@@ -46,15 +55,19 @@ class UserControllerTests : TestCase() {
   }
 
   fun `test should show paginated users when get 'users' route`() {
-    val usersMock = listOf(
-      (0 until faker.number().numberBetween(10, 30)).map {
-        User(DaoEntityID(it.toLong(), UserTable)).apply {
-          username = faker.lorem().characters(32)
-          email = faker.lorem().characters(32)
-          password = faker.lorem().characters(32)
+    val usersMock = transaction(database) {
+      SchemaUtils.create(UserTable)
+
+      listOf(
+        (0..faker.number().numberBetween(10, 30)).map {
+          User.new {
+            username = faker.lorem().characters(32)
+            email = faker.lorem().characters(32)
+            password = faker.lorem().characters(32)
+          }
         }
-      }
-    )
+      )
+    }
 
     whenExecute(
       userRepositoryMock.paginate(
@@ -69,6 +82,8 @@ class UserControllerTests : TestCase() {
         assertEquals(OK, response.status())
         assertEquals(objectMapper.writeValueAsString(usersMock), response.content)
       }
+
+      stop(0, 0)
     }
   }
 
