@@ -1,59 +1,45 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-  kotlin("jvm")
+	id("org.springframework.boot") version "2.3.1.RELEASE"
+	id("io.spring.dependency-management") version "1.0.9.RELEASE"
+	kotlin("jvm") version "1.3.72"
+	kotlin("plugin.spring") version "1.3.72"
+	kotlin("plugin.jpa") version "1.3.72"
 }
 
 group = "com.lorenzoog.gitkib"
-version = "1.0-SNAPSHOT"
+version = "0.0.1-SNAPSHOT"
+
+java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
-  mavenCentral()
-  jcenter()
+	mavenCentral()
 }
 
 dependencies {
-  implementation(kotlin("stdlib-jdk8"))
-  implementation("io.ktor", "ktor-server-netty", "1.3.2")
-  implementation("io.ktor", "ktor-serialization", "1.3.2")
+	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-  // Logging dependency
-  implementation("ch.qos.logback:logback-classic:1.2.3")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-  // Exposed dependencies
-  implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
-  implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
-  implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
+	runtimeOnly("com.h2database:h2")
+	runtimeOnly("org.postgresql:postgresql")
 
-  // hikari dependency
-  implementation("com.zaxxer", "HikariCP", "3.4.5")
-
-  // database
-  implementation("org.postgresql", "postgresql", "42.1.4")
-
-  // dot-env dependency
-  implementation("io.github.cdimascio", "java-dotenv", "5.2.1")
-
-  // local dependencies
-  implementation(project(":commons"))
-
-  // validator dependency
-  implementation("org.hibernate.validator", "hibernate-validator", "6.1.1.Final")
-
-  testImplementation("com.github.javafaker", "javafaker", "1.0.2")
-  testImplementation("com.h2database", "h2", "1.4.200")
-  testImplementation("org.mockito", "mockito-core", "2.1.0")
-  testImplementation("io.ktor", "ktor-server-test-host", "1.3.2")
-  testImplementation("junit", "junit", "4.12")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+	}
 }
 
-configure<JavaPluginConvention> {
-  sourceCompatibility = JavaVersion.VERSION_1_8
+tasks.withType<Test> {
+	useJUnitPlatform()
 }
 
-tasks {
-  compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-  }
-  compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-  }
+tasks.withType<KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs = listOf("-Xjsr305=strict")
+		jvmTarget = "1.8"
+	}
 }
