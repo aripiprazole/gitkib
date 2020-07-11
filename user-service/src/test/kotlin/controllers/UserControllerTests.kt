@@ -5,8 +5,9 @@ import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import io.mockk.every
 import io.mockk.verify
-import junit.framework.TestCase
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Page
@@ -27,10 +28,14 @@ private const val UPDATE_URL = "/users/%s"
 private const val DESTROY_URL = "/users/%s"
 
 @SpringBootTest
-class UserControllerTests(private val mockMvc: MockMvc) : TestCase() {
+@AutoConfigureMockMvc
+class UserControllerTests {
 
   @MockBean
-  lateinit var userRepository: UserRepository
+  private lateinit var userRepository: UserRepository
+
+  @Autowired
+  private lateinit var mockMvc: MockMvc
 
   @Test
   fun `test should show users paginated when GET UserController@index`() {
