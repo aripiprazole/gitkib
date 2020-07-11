@@ -1,6 +1,7 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import org.junit.jupiter.api.Test
@@ -78,6 +79,33 @@ class UserControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
     verify(userRepository, times(1)).findById(id)
+  }
+
+  @Test
+  fun `test should store user in database and return that in the http response`() {
+    val user = User(
+      id = 0L,
+      username = "fake username",
+      email = "fake email",
+      password = "fake password"
+    )
+
+    val body = UserCreateBody(
+      username = user.username,
+      email = user.email,
+      password = user.password
+    )
+
+    every(userRepository.save(any(User::class.java))).thenReturn(user)
+
+    mockMvc.perform(post(STORE_URL)
+      .contentType(APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(body)))
+
+      .andExpect(status().isOk)
+      .andExpect(content().json(objectMapper.writeValueAsString(user)))
+
+    verify(userRepository, times(1)).save(any(User::class.java))
   }
 
 }
