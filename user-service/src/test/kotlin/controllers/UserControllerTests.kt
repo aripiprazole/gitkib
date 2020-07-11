@@ -3,9 +3,6 @@ package com.lorenzoog.gitkib.userservice.controllers
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
-import com.ninjasquad.springmockk.MockkBean
-import io.mockk.every
-import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -20,6 +17,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
+import org.mockito.Mockito.*
+
+import org.mockito.Mockito.`when` as every
+
 private val objectMapper = ObjectMapper()
 
 private const val INDEX_URL = "/users"
@@ -32,7 +33,7 @@ private const val DESTROY_URL = "/users/%s"
 @AutoConfigureMockMvc
 class UserControllerTests {
 
-  @MockkBean
+  @MockBean
   private lateinit var userRepository: UserRepository
 
   @Autowired
@@ -48,13 +49,13 @@ class UserControllerTests {
       users.size.toLong()
     )
 
-    every { userRepository.findAll(any<Pageable>()) } returns page
+    every(userRepository.findAll(any(Pageable::class.java))).thenReturn(page)
 
     mockMvc.perform(get(INDEX_URL).contentType(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
-    verify(atLeast = 1, atMost = 1) { userRepository.findAll(any<Pageable>()) }
+    verify(userRepository, times(1)).findAll(any(Pageable::class.java))
   }
 
 }

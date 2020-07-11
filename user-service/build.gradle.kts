@@ -15,6 +15,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
   mavenCentral()
+  jcenter()
 }
 
 dependencies {
@@ -30,16 +31,15 @@ dependencies {
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-  runtimeOnly("com.h2database:h2")
   runtimeOnly("org.postgresql:postgresql")
 
-  testImplementation("com.ninja-squad:springmockk:2.0.2")
-  testImplementation("io.mockk:mockk:1.10.0")
+  testRuntimeOnly("com.h2database:h2")
+
+  testImplementation("org.mockito:mockito-core:2.+")
   testImplementation("junit:junit")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-    exclude(module = "mockito-core")
   }
 }
 
