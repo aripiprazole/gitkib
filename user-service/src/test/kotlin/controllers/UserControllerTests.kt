@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 import org.mockito.Mockito.*
+import java.util.*
 
 import org.mockito.Mockito.`when` as every
 
@@ -31,6 +32,7 @@ private const val DESTROY_URL = "/users/%s"
 
 @SpringBootTest
 @AutoConfigureMockMvc
+// TODO: use a faker library
 class UserControllerTests {
 
   @MockBean
@@ -56,6 +58,26 @@ class UserControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
     verify(userRepository, times(1)).findAll(any(Pageable::class.java))
+  }
+
+  @Test
+  fun `test should show user that have id 1 when GET UserController@show with id path variable 1`() {
+    val user = User(
+      id = 0L,
+      username = "fake username",
+      email = "fake email",
+      password = "fake password"
+    )
+
+    val (id) = user
+
+    every(userRepository.findById(id)).thenReturn(Optional.of(user))
+
+    mockMvc.perform(get(SHOW_URL.format(id)).contentType(APPLICATION_JSON))
+      .andExpect(status().isOk)
+      .andExpect(content().json(objectMapper.writeValueAsString(user)))
+
+    verify(userRepository, times(1)).findById(id)
   }
 
 }
