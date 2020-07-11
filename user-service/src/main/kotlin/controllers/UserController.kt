@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 const val USER_PAGINATION_OFFSET = 15
 
@@ -47,7 +48,7 @@ class UserController(val userRepository: UserRepository) {
    * @return the user created.
    */
   @PostMapping("/users")
-  fun store(@RequestBody body: UserCreateBody): User {
+  fun store(@Valid @RequestBody body: UserCreateBody): User {
     return userRepository.save(User(
       id = 0L,
       email = body.email,
@@ -62,7 +63,7 @@ class UserController(val userRepository: UserRepository) {
    * @return the user updated.
    */
   @PutMapping("/users/{id}")
-  fun update(@PathVariable id: Long, @RequestBody body: UserUpdateBody): User {
+  fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
     val user = userRepository
       .findById(id)
       .orElseThrow(::ResourceNotFoundException)
