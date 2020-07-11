@@ -13,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
-import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -138,6 +137,27 @@ class UserControllerTests {
 
     verify(userRepository, times(1)).findById(id)
     verify(userRepository, times(1)).save(any(User::class.java))
+  }
+
+  @Test
+  fun `test should delete user that have the id 1 and return no content http response when DELETE UserController@destroy with id path variable 1`() {
+    val user = User(
+      id = 0L,
+      username = "fake username",
+      email = "fake email",
+      password = "fake password"
+    )
+
+    val (id) = user
+
+    every(userRepository.deleteById(id)).then {
+      // do nothing.
+    }
+
+    mockMvc.perform(delete(DESTROY_URL.format(id)).contentType(APPLICATION_JSON))
+      .andExpect(status().isNoContent)
+
+    verify(userRepository, times(1)).deleteById(id)
   }
 
 }
