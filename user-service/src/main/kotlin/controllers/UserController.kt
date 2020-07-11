@@ -1,5 +1,6 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
+import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
@@ -39,6 +40,21 @@ class UserController(val userRepository: UserRepository) {
   @GetMapping("{id}")
   fun show(@PathVariable id: Long): User {
     return userRepository.findById(id).orElseThrow(::ResourceNotFoundException)
+  }
+
+  /**
+   * Creates a new user with data provided in [body].
+   *
+   * @return the user created.
+   */
+  @PostMapping
+  fun store(@RequestBody body: UserCreateBody): User {
+    return userRepository.save(User(
+      id = 0L,
+      email = body.email,
+      username = body.username,
+      password = body.password
+    ))
   }
 
   /**
