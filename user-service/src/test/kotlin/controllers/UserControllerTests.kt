@@ -2,6 +2,7 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
+import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import org.junit.jupiter.api.Test
@@ -105,6 +106,37 @@ class UserControllerTests {
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
+    verify(userRepository, times(1)).save(any(User::class.java))
+  }
+
+  @Test
+  fun `test should update user in database that have the id 1 and return that in the http response when PUT UserController@update with id path variable 1`() {
+    val user = User(
+      id = 0L,
+      username = "fake username",
+      email = "fake email",
+      password = "fake password"
+    )
+
+    val (id) = user
+
+    val body = UserUpdateBody(
+      username = user.username,
+      email = user.email,
+      password = user.password
+    )
+
+    every(userRepository.findById(id)).thenReturn(Optional.of(user))
+    every(userRepository.save(any(User::class.java))).thenReturn(user)
+
+    mockMvc.perform(put(UPDATE_URL.format(id))
+      .contentType(APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(body)))
+
+      .andExpect(status().isOk)
+      .andExpect(content().json(objectMapper.writeValueAsString(user)))
+
+    verify(userRepository, times(1)).findById(id)
     verify(userRepository, times(1)).save(any(User::class.java))
   }
 
