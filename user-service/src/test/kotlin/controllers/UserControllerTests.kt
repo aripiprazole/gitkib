@@ -27,13 +27,13 @@ private const val UPDATE_URL = "/users/%s"
 private const val DESTROY_URL = "/users/%s"
 
 @SpringBootTest
-class UserController(private val mockMvc: MockMvc) : TestCase() {
+class UserControllerTests(private val mockMvc: MockMvc) : TestCase() {
 
   @MockBean
   lateinit var userRepository: UserRepository
 
   @Test
-  fun `should show users paginated when GET UserController@index`() {
+  fun `test should show users paginated when GET UserController@index`() {
     val users = listOf<User>()
 
     val page: Page<User> = PageImpl(
