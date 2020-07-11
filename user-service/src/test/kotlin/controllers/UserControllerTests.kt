@@ -3,6 +3,7 @@ package com.lorenzoog.gitkib.userservice.controllers
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Test
@@ -31,7 +32,7 @@ private const val DESTROY_URL = "/users/%s"
 @AutoConfigureMockMvc
 class UserControllerTests {
 
-  @MockBean
+  @MockkBean
   private lateinit var userRepository: UserRepository
 
   @Autowired
