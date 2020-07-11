@@ -18,7 +18,6 @@ const val USER_PAGINATION_OFFSET = 15
  * @param userRepository repository that provides users.
  */
 @RestController
-@RequestMapping("users")
 @Suppress("unused")
 class UserController(val userRepository: UserRepository) {
 
@@ -27,7 +26,7 @@ class UserController(val userRepository: UserRepository) {
    *
    * @return the page that contains the users.
    */
-  @GetMapping
+  @GetMapping("/users")
   fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
     return userRepository.findAll(PageRequest.of(page, USER_PAGINATION_OFFSET))
   }
@@ -37,7 +36,7 @@ class UserController(val userRepository: UserRepository) {
    *
    * @return the user.
    */
-  @GetMapping("{id}")
+  @GetMapping("/users/{id}")
   fun show(@PathVariable id: Long): User {
     return userRepository.findById(id).orElseThrow(::ResourceNotFoundException)
   }
@@ -47,7 +46,7 @@ class UserController(val userRepository: UserRepository) {
    *
    * @return the user created.
    */
-  @PostMapping
+  @PostMapping("/users")
   fun store(@RequestBody body: UserCreateBody): User {
     return userRepository.save(User(
       id = 0L,
@@ -62,7 +61,7 @@ class UserController(val userRepository: UserRepository) {
    *
    * @return the user updated.
    */
-  @PutMapping("{id}")
+  @PutMapping("/users/{id}")
   fun update(@PathVariable id: Long, @RequestBody body: UserUpdateBody): User {
     val user = userRepository
       .findById(id)
@@ -83,7 +82,7 @@ class UserController(val userRepository: UserRepository) {
    *
    * @return a no content response.
    */
-  @DeleteMapping("{id}")
+  @DeleteMapping("/users/{id}")
   fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
     userRepository.deleteById(id)
 
