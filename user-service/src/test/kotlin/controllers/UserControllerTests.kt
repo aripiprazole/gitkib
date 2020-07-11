@@ -82,7 +82,7 @@ class UserControllerTests {
   }
 
   @Test
-  fun `test should store user in database and return that in the http response`() {
+  fun `test should store user in database and return that in the http response when POST UserController@store`() {
     val user = User(
       id = 0L,
       username = "fake username",
