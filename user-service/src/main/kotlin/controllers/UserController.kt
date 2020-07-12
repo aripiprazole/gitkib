@@ -69,7 +69,8 @@ class UserController(
       id = 0L,
       email = body.email,
       username = body.username,
-      password = passwordEncoder.encode(body.password)
+      password = passwordEncoder.encode(body.password),
+      roles = mutableListOf()
     ))
   }
 
