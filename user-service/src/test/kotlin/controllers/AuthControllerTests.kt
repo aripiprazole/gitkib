@@ -2,6 +2,7 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.lorenzoog.gitkib.userservice.bodies.UserAuthenticateBody
+import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.AUTHENTICATE_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import org.hamcrest.Matchers.any
@@ -20,8 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.mockito.Mockito.`when` as every
 
 private val objectMapper = ObjectMapper()
-
-private const val LOGIN_URL = "/login"
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -55,7 +54,7 @@ class AuthControllerTests {
       password = password
     )
 
-    mockMvc.perform(post(LOGIN_URL)
+    mockMvc.perform(post(AUTHENTICATE_ENDPOINT)
       .contentType(APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(body)))
 
