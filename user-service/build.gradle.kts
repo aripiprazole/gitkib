@@ -25,6 +25,11 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+  implementation("org.hibernate:hibernate-core:5.4.18.Final")
+  implementation("org.hibernate:hibernate-entitymanager:5.4.18.Final")
+
+  implementation("javassist:javassist:3.12.1.GA")
+
   implementation("org.hibernate:hibernate-validator:5.1.0.Final")
 
   implementation("com.zaxxer:HikariCP:3.4.5")
