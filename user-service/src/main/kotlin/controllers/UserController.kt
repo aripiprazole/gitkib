@@ -7,8 +7,13 @@ import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
+import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.lang.Exception
+import javax.persistence.EntityNotFoundException
 import javax.validation.Valid
 
 const val USER_PAGINATION_OFFSET = 15
@@ -90,6 +95,33 @@ class UserController(val userRepository: UserRepository) {
     return ResponseEntity
       .noContent()
       .build<Any>()
+  }
+
+
+  /**
+   * Handles the [ResourceNotFoundException], that is thrown when couldn't find user with that id.
+   *
+   * @return [Unit] nothing.
+   */
+  @ResponseStatus(value = NOT_FOUND, reason = "Could'nt find the user with that id.")
+  @ExceptionHandler(EntityNotFoundException::class)
+  fun onResourceNotFoundException() {
+    // Automatic handling.
+  }
+
+  /**
+   * Handles a generic exception.
+   *
+   * @return [ResponseEntity] response with 500 status.
+   */
+  @ExceptionHandler(Exception::class)
+  fun onGenericException(exception: Exception): ResponseEntity<*> {
+    return ResponseEntity
+      .status(INTERNAL_SERVER_ERROR)
+      .body(mapOf(
+        "message" to exception.message,
+        "stack" to exception.stackTrace.toList()
+      ))
   }
 
 }
