@@ -19,5 +19,17 @@ data class User(
 
   @Column(length = 20)
   @JsonProperty(access = READ_ONLY)
-  var password: String
+  var password: String,
+
+  @ManyToMany
+  @JoinTable(
+    name = "user_role",
+    joinColumns = [
+      JoinColumn(name = "user_id", referencedColumnName = "id")
+    ],
+    inverseJoinColumns = [
+      JoinColumn(name = "role_id", referencedColumnName = "id")
+    ]
+  )
+  val roles: MutableCollection<Role>
 )
