@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 @EnableWebSecurity
@@ -46,7 +47,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
   }
 
   @Bean
-  fun passwordEncoder() = BCryptPasswordEncoder(passwordEncoderStrength)
+  fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder(passwordEncoderStrength)
 
   @Bean
   fun jwtAlgorithm(): Algorithm = Algorithm.HMAC512(jwtSecret)
