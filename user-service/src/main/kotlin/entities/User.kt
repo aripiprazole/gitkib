@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
 import javax.persistence.*
 
 @Entity
+@Table(name = "users")
 data class User(
   @Id
   @GeneratedValue(strategy = GenerationType.TABLE)
