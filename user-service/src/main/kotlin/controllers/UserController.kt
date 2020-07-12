@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -20,7 +21,10 @@ const val USER_PAGINATION_OFFSET = 15
  */
 @RestController
 @Suppress("unused")
-class UserController(val userRepository: UserRepository) {
+class UserController(
+  val userRepository: UserRepository,
+  val passwordEncoder: PasswordEncoder
+) {
 
   /**
    * Provides all users that page [page] contains.
@@ -53,7 +57,7 @@ class UserController(val userRepository: UserRepository) {
       id = 0L,
       email = body.email,
       username = body.username,
-      password = body.password
+      password = passwordEncoder.encode(body.password)
     ))
   }
 
@@ -69,7 +73,7 @@ class UserController(val userRepository: UserRepository) {
       .orElseThrow(::ResourceNotFoundException)
       .apply {
         body.email?.let { email = it }
-        body.password?.let { password = it }
+        body.password?.let { password = passwordEncoder.encode(it) }
         body.username?.let { username = it }
       }
 
