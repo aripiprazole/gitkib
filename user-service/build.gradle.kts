@@ -25,6 +25,8 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+  implementation("com.orbitz.consul:consul-client:1.4.0")
+
   implementation("org.hibernate:hibernate-core:5.4.18.Final")
   implementation("org.hibernate:hibernate-entitymanager:5.4.18.Final")
 
