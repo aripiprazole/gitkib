@@ -1,6 +1,26 @@
 CREATE TABLE IF NOT EXISTS users(
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY NOT NULL,
     username VARCHAR(32) UNIQUE NOT NULL,
     email VARCHAR(32) UNIQUE NOT NULL,
     password VARCHAR(24) NOT NULL
-)
+);
+
+CREATE TABLE IF NOT EXISTS privileges(
+    id INT PRIMARY KEY NOT NULL,
+    name VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS roles(
+    id INT PRIMARY KEY NOT NULL,
+    name VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_role(
+    user_id INT NOT NULL,
+    role_id INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS role_privilege(
+    role_id INT NOT NULL,
+    privilege_id INT NOT NULL
+);
