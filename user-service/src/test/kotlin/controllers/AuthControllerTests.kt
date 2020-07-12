@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.mockito.Mockito.*
 import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.security.crypto.password.PasswordEncoder
 
 import org.mockito.Mockito.`when` as every
 
@@ -33,20 +34,25 @@ class AuthControllerTests {
   @Autowired
   private lateinit var mockMvc: MockMvc
 
+  @Autowired
+  private lateinit var passwordEncoder: PasswordEncoder
+
   @Test
   fun `test should login correctly and send the jwt token in the http response`() {
+    val password = "fake password"
+
     val user = User(
       id = 0L,
       username = "fake username",
       email = "fake email",
-      password = "fake password"
+      password = passwordEncoder.encode(password)
     )
 
     every(userRepository.findByUsername(user.username)).thenReturn(user)
 
     val body = UserAuthenticateBody(
       username = user.username,
-      password = user.password
+      password = password
     )
 
     mockMvc.perform(post(LOGIN_URL)
