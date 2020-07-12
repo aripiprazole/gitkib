@@ -33,6 +33,10 @@ class AuthController(
   private val jwtAlgorithm: Algorithm
 ) {
 
+  companion object {
+    const val AUTHENTICATE_ENDPOINT = "/login"
+  }
+
   @Value("\${jwt.issuer}")
   private lateinit var jwtIssuer: String
 
@@ -41,7 +45,7 @@ class AuthController(
    *
    * @return a response with the token
    */
-  @PostMapping("/login")
+  @PostMapping(AUTHENTICATE_ENDPOINT)
   fun authenticate(@Valid @RequestBody body: UserAuthenticateBody): ResponseEntity<Map<String, String>> {
     val username = body.username
 

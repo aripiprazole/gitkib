@@ -1,6 +1,7 @@
 package com.lorenzoog.gitkib.userservice.security
 
 import com.auth0.jwt.algorithms.Algorithm
+import com.lorenzoog.gitkib.userservice.controllers.AuthController
 import com.lorenzoog.gitkib.userservice.security.auth.JwtAuthenticationFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -37,7 +38,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
       .authorizeRequests()
 
-      .antMatchers(POST, "/login").permitAll()
+      .antMatchers(POST, AuthController.AUTHENTICATE_ENDPOINT).permitAll()
 
       .anyRequest().authenticated()
 
