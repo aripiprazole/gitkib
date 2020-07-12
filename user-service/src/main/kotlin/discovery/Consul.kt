@@ -6,8 +6,6 @@ import com.orbitz.consul.model.agent.ImmutableRegistration
 import com.orbitz.consul.model.agent.Registration
 import com.orbitz.consul.model.agent.Registration.RegCheck
 import org.springframework.scheduling.annotation.Async
-import org.springframework.scheduling.annotation.EnableAsync
-import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
@@ -18,8 +16,6 @@ const val SERVICE_CHECK_TTL = 5L
 private lateinit var client: Consul
 private lateinit var agentClient: AgentClient
 
-@EnableAsync
-@EnableScheduling
 @Component
 @Suppress("unused")
 class ConsulDiscovery {
