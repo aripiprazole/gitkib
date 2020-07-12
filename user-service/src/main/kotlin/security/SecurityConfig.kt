@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -21,8 +22,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
   @Value("\${jwt.secret}")
   private lateinit var jwtSecret: String
 
-  @delegate:Value("\${password.encoder.strength}")
-  private var passwordEncoderStrength by Delegates.notNull<Int>()
+  @Value("\${password.encoder.strength}")
+  private var passwordEncoderStrength = 0
 
   @Autowired
   fun configureGlobal(auth: AuthenticationManagerBuilder, usernameUserDetailsService: UserDetailsService) {
@@ -47,5 +48,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
   @Bean
   fun jwtAlgorithm(): Algorithm = Algorithm.HMAC512(jwtSecret)
+
+  @Bean("authenticationManager")
+  override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
 
 }
