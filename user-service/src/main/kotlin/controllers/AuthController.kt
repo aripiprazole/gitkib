@@ -57,10 +57,4 @@ class AuthController(
     ))
   }
 
-  @ResponseStatus(value = BAD_REQUEST, reason = "Invalid credentials.")
-  @ExceptionHandler(AuthenticationException::class)
-  fun onAuthenticationException() {
-    // Automatic handling.
-  }
-
 }
