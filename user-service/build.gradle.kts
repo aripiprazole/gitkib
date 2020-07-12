@@ -29,10 +29,11 @@ dependencies {
 
   implementation("org.hibernate:hibernate-core:5.4.18.Final")
   implementation("org.hibernate:hibernate-entitymanager:5.4.18.Final")
+  implementation("org.hibernate:hibernate-validator:5.1.0.Final")
 
   implementation("javassist:javassist:3.12.1.GA")
 
-  implementation("org.hibernate:hibernate-validator:5.1.0.Final")
+  implementation("com.auth0:java-jwt:3.4.0")
 
   implementation("com.zaxxer:HikariCP:3.4.5")
 
