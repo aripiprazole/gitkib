@@ -19,7 +19,14 @@ const val JWT_EXPIRES_AT: Long =
     24 * // day
     7 // week
 
+/**
+ * Class that provides rest api routes for auth.
+ *
+ * @param authenticationManager current authentication manager
+ * @param jwtAlgorithm application jwt algorithm
+ */
 @RestController
+@Suppress("unused")
 class AuthController(
   private val authenticationManager: AuthenticationManager,
 
@@ -29,6 +36,11 @@ class AuthController(
   @Value("\${jwt.issuer}")
   private lateinit var jwtIssuer: String
 
+  /**
+   * Handles authentication, same as login.
+   *
+   * @return a response with the token
+   */
   @PostMapping("/login")
   fun authenticate(@Valid @RequestBody body: UserAuthenticateBody): ResponseEntity<Map<String, String>> {
     val username = body.username
