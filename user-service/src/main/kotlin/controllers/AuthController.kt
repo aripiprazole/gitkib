@@ -3,15 +3,10 @@ package com.lorenzoog.gitkib.userservice.controllers
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.lorenzoog.gitkib.userservice.bodies.UserAuthenticateBody
-import com.lorenzoog.gitkib.userservice.security.auth.UsernameUserDetailsService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 import java.util.*
