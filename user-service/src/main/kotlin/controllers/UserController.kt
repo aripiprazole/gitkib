@@ -30,12 +30,20 @@ class UserController(
   val passwordEncoder: PasswordEncoder
 ) {
 
+  companion object {
+    const val INDEX_ENDPOINT = "/users"
+    const val STORE_ENDPOINT = "/users"
+    const val SHOW_ENDPOINT = "/users/{id}"
+    const val UPDATE_ENDPOINT = "/users/{id}"
+    const val DESTROY_ENDPOINT = "/users/{id}"
+  }
+
   /**
    * Provides all users that page [page] contains.
    *
    * @return the page that contains the users.
    */
-  @GetMapping("/users")
+  @GetMapping(INDEX_ENDPOINT)
   fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
     return userRepository.findAll(PageRequest.of(page, USER_PAGINATION_OFFSET))
   }
@@ -45,7 +53,7 @@ class UserController(
    *
    * @return the user.
    */
-  @GetMapping("/users/{id}")
+  @GetMapping(SHOW_ENDPOINT)
   fun show(@PathVariable id: Long): User {
     return userRepository.findById(id).orElseThrow(::ResourceNotFoundException)
   }
@@ -55,7 +63,7 @@ class UserController(
    *
    * @return the user created.
    */
-  @PostMapping("/users")
+  @PostMapping(STORE_ENDPOINT)
   fun store(@Valid @RequestBody body: UserCreateBody): User {
     return userRepository.save(User(
       id = 0L,
@@ -70,7 +78,7 @@ class UserController(
    *
    * @return the user updated.
    */
-  @PutMapping("/users/{id}")
+  @PutMapping(UPDATE_ENDPOINT)
   fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
     val user = userRepository
       .findById(id)
@@ -91,7 +99,7 @@ class UserController(
    *
    * @return a no content response.
    */
-  @DeleteMapping("/users/{id}")
+  @DeleteMapping(DESTROY_ENDPOINT)
   fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
     userRepository.deleteById(id)
 
