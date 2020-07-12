@@ -72,7 +72,8 @@ class UserControllerTests {
       id = 0L,
       username = "fake username",
       email = "fake email",
-      password = "fake password"
+      password = "fake password",
+      roles = mutableListOf()
     )
 
     val (id) = user
@@ -93,7 +94,8 @@ class UserControllerTests {
       id = 0L,
       username = "fake username",
       email = "fake email",
-      password = "fake password"
+      password = "fake password",
+      roles = mutableListOf()
     )
 
     val body = UserCreateBody(
@@ -121,7 +123,8 @@ class UserControllerTests {
       id = 0L,
       username = "fake username",
       email = "fake email",
-      password = "fake password"
+      password = "fake password",
+      roles = mutableListOf()
     )
 
     val (id) = user
@@ -153,7 +156,8 @@ class UserControllerTests {
       id = 0L,
       username = "fake username",
       email = "fake email",
-      password = "fake password"
+      password = "fake password",
+      roles = mutableListOf()
     )
 
     val (id) = user
