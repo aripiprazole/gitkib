@@ -1,6 +1,7 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.lorenzoog.gitkib.userservice.bodies.UserAuthenticateBody
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import org.hamcrest.Matchers.any
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.mockito.Mockito.*
+import org.springframework.http.MediaType.APPLICATION_JSON
 
 import org.mockito.Mockito.`when` as every
 
@@ -42,12 +44,15 @@ class AuthControllerTests {
 
     every(userRepository.findByUsername(user.username)).thenReturn(user)
 
-    val body = mapOf(
-      "username" to user.username,
-      "password" to user.password
+    val body = UserAuthenticateBody(
+      username = user.username,
+      password = user.password
     )
 
-    mockMvc.perform(post(LOGIN_URL).content(objectMapper.writeValueAsString(body)))
+    mockMvc.perform(post(LOGIN_URL)
+      .contentType(APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(body)))
+
       .andExpect(jsonPath("token", any(String::class.java)))
   }
 
