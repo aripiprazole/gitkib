@@ -11,13 +11,13 @@ data class User(
   @GeneratedValue(strategy = GenerationType.TABLE)
   val id: Long,
 
-  @Column(length = 32, unique = true)
+  @Column(length = 32, unique = true, columnDefinition = "text")
   var username: String,
 
-  @Column(length = 32, unique = true)
+  @Column(length = 32, unique = true, columnDefinition = "text")
   var email: String,
 
-  @Column(length = 24)
+  @Column(length = 24, columnDefinition = "text")
   @JsonProperty(access = READ_ONLY)
   var password: String,
 

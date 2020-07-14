@@ -10,7 +10,7 @@ data class Role(
   @GeneratedValue(strategy = TABLE)
   val id: Long,
 
-  @Column(length = 32, unique = true)
+  @Column(length = 32, unique = true, columnDefinition = "text")
   val name: String,
 
   @ManyToMany(mappedBy = "roles")

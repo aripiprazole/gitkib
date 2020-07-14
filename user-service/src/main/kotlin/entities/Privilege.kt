@@ -10,7 +10,7 @@ data class Privilege(
   @GeneratedValue(strategy = TABLE)
   val id: Long,
 
-  @Column(length = 32, unique = true)
+  @Column(length = 32, unique = true, columnDefinition = "text")
   var name: String,
 
   @ManyToMany(mappedBy = "privileges")
