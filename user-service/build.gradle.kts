@@ -31,6 +31,9 @@ dependencies {
   implementation("org.hibernate:hibernate-core:5.4.18.Final")
   implementation("org.hibernate:hibernate-entitymanager:5.4.18.Final")
   implementation("org.hibernate:hibernate-validator:6.1.5.Final")
+  implementation("org.hibernate:hibernate-validator-annotation-processor:6.1.5.Final")
+
+  implementation("javax.validation:validation-api:2.0.1.Final")
 
   implementation("javassist:javassist:3.12.1.GA")
 
