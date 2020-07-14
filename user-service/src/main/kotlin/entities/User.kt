@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
 import javax.persistence.*
+import javax.persistence.FetchType.EAGER
 
 @Entity
 @Table(name = "users")
@@ -23,7 +24,7 @@ data class User(
   @JsonIgnore
   var password: String,
 
-  @ManyToMany
+  @ManyToMany(fetch = EAGER)
   @JoinTable(
     name = "user_role",
     joinColumns = [JoinColumn(name = "user_id")],
@@ -31,7 +32,7 @@ data class User(
   )
   val roles: MutableSet<Role>,
 
-  @OneToOne
+  @OneToOne(fetch = EAGER)
   @JoinTable(
     name = "profiles",
     joinColumns = [
