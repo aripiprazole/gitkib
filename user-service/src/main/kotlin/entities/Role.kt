@@ -13,9 +13,6 @@ data class Role(
   @Column(length = 32, unique = true, columnDefinition = "text")
   val name: String,
 
-  @ManyToMany(mappedBy = "roles")
-  val users: MutableSet<User>,
-
   @ManyToMany
   @JoinTable(
     name = "role_privilege",
