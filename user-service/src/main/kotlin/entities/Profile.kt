@@ -5,6 +5,7 @@ import javax.persistence.CascadeType.REMOVE
 import javax.persistence.GenerationType.AUTO
 
 @Entity
+@Table(name = "profiles")
 data class Profile(
   @Id
   @GeneratedValue(strategy = AUTO)
