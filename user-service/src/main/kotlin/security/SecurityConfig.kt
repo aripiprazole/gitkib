@@ -2,7 +2,7 @@ package com.lorenzoog.gitkib.userservice.security
 
 import com.auth0.jwt.algorithms.Algorithm
 import com.lorenzoog.gitkib.userservice.controllers.AuthController
-import com.lorenzoog.gitkib.userservice.controllers.ProfileController
+import com.lorenzoog.gitkib.userservice.controllers.AppProfileController
 import com.lorenzoog.gitkib.userservice.security.auth.JwtAuthenticationFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -40,7 +40,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
       .authorizeRequests()
 
-      .antMatchers(GET, ProfileController.INDEX_ENDPOINT, ProfileController.SHOW_ENDPOINT).permitAll()
+      .antMatchers(GET, AppProfileController.INDEX_ENDPOINT, AppProfileController.SHOW_ENDPOINT).permitAll()
 
       .antMatchers(POST, AuthController.AUTHENTICATE_ENDPOINT, AuthController.REGISTER_ENDPOINT).permitAll()
 
