@@ -1,13 +1,13 @@
 package com.lorenzoog.gitkib.userservice.entities
 
 import javax.persistence.*
-import javax.persistence.GenerationType.TABLE
+import javax.persistence.GenerationType.AUTO
 
 @Entity
 @Table(name = "roles")
 data class Role(
   @Id
-  @GeneratedValue(strategy = TABLE)
+  @GeneratedValue(strategy = AUTO)
   val id: Long,
 
   @Column(length = 32, unique = true, columnDefinition = "text")
