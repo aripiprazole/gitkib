@@ -17,7 +17,7 @@ data class User(
   @Column(length = 32, unique = true)
   var email: String,
 
-  @Column(length = 20)
+  @Column(length = 24)
   @JsonProperty(access = READ_ONLY)
   var password: String,
 
