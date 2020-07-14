@@ -128,19 +128,4 @@ class UserController(
     // Automatic handling.
   }
 
-  /**
-   * Handles a generic exception.
-   *
-   * @return [ResponseEntity] response with 500 status.
-   */
-  @ExceptionHandler(Exception::class)
-  fun onGenericException(exception: Exception): ResponseEntity<*> {
-    return ResponseEntity
-      .status(INTERNAL_SERVER_ERROR)
-      .body(mapOf(
-        "message" to exception.message,
-        "stack" to exception.stackTrace.toList()
-      ))
-  }
-
 }
