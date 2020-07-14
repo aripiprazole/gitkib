@@ -2,11 +2,14 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.lorenzoog.gitkib.userservice.bodies.UserAuthenticateBody
+import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.AUTHENTICATE_ENDPOINT
+import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REGISTER_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import org.hamcrest.Matchers.any
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -60,6 +63,34 @@ class AuthControllerTests {
       .content(objectMapper.writeValueAsString(body)))
 
       .andExpect(jsonPath("token", any(String::class.java)))
+  }
+
+  @Test
+  fun `test should store user in database and return that in the http response when POST UserController@store with REGISTER_ENDPOINT`() {
+    val user = User(
+      id = 0L,
+      username = "fake username",
+      email = "fake email",
+      password = "fake password",
+      roles = mutableSetOf()
+    )
+
+    val body = UserCreateBody(
+      username = user.username,
+      email = user.email,
+      password = user.password
+    )
+
+    every(userRepository.save(Mockito.any(User::class.java))).thenReturn(user)
+
+    mockMvc.perform(post(REGISTER_ENDPOINT)
+      .contentType(APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(body)))
+
+      .andExpect(status().isOk)
+      .andExpect(content().json(objectMapper.writeValueAsString(user)))
+
+    verify(userRepository, times(1)).save(Mockito.any(User::class.java))
   }
 
 }

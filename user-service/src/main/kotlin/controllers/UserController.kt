@@ -2,6 +2,7 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
+import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REGISTER_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
@@ -68,8 +69,7 @@ class UserController(
    *
    * @return the user created.
    */
-  @PostMapping(STORE_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.CREATE_USER}')")
+  @PostMapping(STORE_ENDPOINT, REGISTER_ENDPOINT)
   fun store(@Valid @RequestBody body: UserCreateBody): User {
     return userRepository.save(User(
       id = 0L,

@@ -38,7 +38,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
       .authorizeRequests()
 
-      .antMatchers(POST, AuthController.AUTHENTICATE_ENDPOINT).permitAll()
+      .antMatchers(POST, AuthController.AUTHENTICATE_ENDPOINT, AuthController.REGISTER_ENDPOINT).permitAll()
 
       .anyRequest().authenticated()
 
