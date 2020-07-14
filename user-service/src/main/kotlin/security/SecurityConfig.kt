@@ -4,6 +4,8 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.lorenzoog.gitkib.userservice.controllers.AuthController
 import com.lorenzoog.gitkib.userservice.controllers.AppProfileController
 import com.lorenzoog.gitkib.userservice.security.auth.JwtAuthenticationFilter
+import com.lorenzoog.gitkib.userservice.security.auth.UsernameUserDetailsService
+import com.lorenzoog.gitkib.userservice.services.UserProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -30,18 +32,18 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
   @Value("\${password.encoder.strength}")
   private var passwordEncoderStrength = 0
 
-  private lateinit var usernameUserDetailsService: UserDetailsService
+  private lateinit var userDetailsService: UserDetailsService
 
   @Autowired
-  fun setupUserDetailsService(usernameUserDetailsService: UserDetailsService) {
-    this.usernameUserDetailsService = usernameUserDetailsService
+  fun setupUserProvider(userProvider: UserProvider) {
+    this.userDetailsService = UsernameUserDetailsService(userProvider)
   }
 
   override fun configure(http: HttpSecurity) {
     http.cors()
       .and().csrf().disable()
 
-      .userDetailsService(usernameUserDetailsService)
+      .userDetailsService(userDetailsService)
 
       .authorizeRequests()
 
@@ -51,7 +53,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
       .anyRequest().authenticated()
 
-      .and().addFilter(JwtAuthenticationFilter(jwtAlgorithm(), usernameUserDetailsService, authenticationManager()))
+      .and().addFilter(JwtAuthenticationFilter(jwtAlgorithm(), userDetailsService, authenticationManager()))
 
       .sessionManagement().sessionCreationPolicy(STATELESS)
   }
@@ -64,7 +66,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
   @Bean("userDetailService")
   @Primary
-  override fun userDetailsServiceBean() = usernameUserDetailsService
+  override fun userDetailsServiceBean(): UserDetailsService = userDetailsService
 
   @Bean("authenticationManager")
   override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
