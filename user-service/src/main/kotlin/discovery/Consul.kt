@@ -22,6 +22,8 @@ class ConsulDiscovery {
   @Async("healthChecker")
   @Scheduled(fixedRate = SERVICE_CHECK_TTL)
   fun handleHealthCheck() {
+    if (!::agentClient.isInitialized) return
+
     agentClient.pass(SERVICE_ID)
   }
 }

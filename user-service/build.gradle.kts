@@ -47,6 +47,8 @@ dependencies {
   testImplementation("org.mockito:mockito-core:2.+")
   testImplementation("junit:junit")
 
+  testImplementation("org.springframework.security:spring-security-test")
+
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }
