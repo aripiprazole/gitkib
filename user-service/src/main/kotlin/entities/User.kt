@@ -2,7 +2,6 @@ package com.lorenzoog.gitkib.userservice.entities
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
-import org.springframework.beans.factory.annotation.Autowired
 import javax.persistence.*
 
 @Entity
