@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse
 const val AUTHENTICATION_HEADER = "Authorization"
 const val TOKEN_PREFIX = "Bearer "
 
-@Component
 class JwtAuthenticationFilter(
   private val jwtAlgorithm: Algorithm,
   private val usernameUserDetailsService: UserDetailsService,
