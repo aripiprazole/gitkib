@@ -35,6 +35,7 @@ class AuthController(
 
   companion object {
     const val AUTHENTICATE_ENDPOINT = "/login"
+    const val REGISTER_ENDPOINT = "/register"
   }
 
   @Value("\${jwt.issuer}")
