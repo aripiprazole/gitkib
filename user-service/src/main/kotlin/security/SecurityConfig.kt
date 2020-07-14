@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpMethod.GET
 import org.springframework.http.HttpMethod.POST
 import org.springframework.security.authentication.AuthenticationManager
@@ -60,6 +61,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
   @Bean
   fun jwtAlgorithm(): Algorithm = Algorithm.HMAC512(jwtSecret)
+
+  @Bean("userDetailService")
+  @Primary
+  override fun userDetailsServiceBean() = usernameUserDetailsService
 
   @Bean("authenticationManager")
   override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
