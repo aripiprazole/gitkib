@@ -1,5 +1,6 @@
 package com.lorenzoog.gitkib.userservice.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
 import javax.persistence.*
@@ -19,6 +20,7 @@ data class User(
 
   @Column(length = 24, columnDefinition = "text")
   @JsonProperty(access = READ_ONLY)
+  @JsonIgnore
   var password: String,
 
   @ManyToMany
