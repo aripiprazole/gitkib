@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.stereotype.Component
 import javax.servlet.FilterChain
@@ -19,6 +20,7 @@ const val TOKEN_PREFIX = "Bearer "
 @Component
 class JwtAuthenticationFilter(
   private val jwtAlgorithm: Algorithm,
+  private val usernameUserDetailsService: UserDetailsService,
 
   authenticationManager: AuthenticationManager
 ) : BasicAuthenticationFilter(authenticationManager) {
@@ -41,7 +43,9 @@ class JwtAuthenticationFilter(
       .build()
       .verify(token)
 
-    return UsernamePasswordAuthenticationToken(decodedJWT.subject, null, listOf())
+    val userDetails = usernameUserDetailsService.loadUserByUsername(decodedJWT.subject)
+
+    return UsernamePasswordAuthenticationToken(userDetails.username, userDetails.password, userDetails.authorities)
   }
 
 }
