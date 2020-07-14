@@ -6,12 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
 import javax.persistence.*
 import javax.persistence.FetchType.EAGER
 import javax.persistence.FetchType.LAZY
+import javax.persistence.GenerationType.AUTO
 
 @Entity
 @Table(name = "users")
 data class User(
   @Id
-  @GeneratedValue(strategy = GenerationType.TABLE)
+  @GeneratedValue(strategy = AUTO)
   val id: Long,
 
   @Column(length = 32, unique = true, columnDefinition = "text")
