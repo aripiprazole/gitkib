@@ -1,17 +1,25 @@
 package com.lorenzoog.gitkib.userservice.bodies
 
-import com.lorenzoog.gitkib.userservice.validators.UniqueColumn
+import javax.persistence.Column
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 import javax.validation.constraints.Email
 import javax.validation.constraints.Size
 
+@Table(
+  name = "users",
+  uniqueConstraints = [
+    UniqueConstraint(columnNames = ["username", "email"])
+  ]
+)
 data class UserCreateBody(
   @Size(min = 4, max = 32)
-  @UniqueColumn(column = "email", message = "There is already exists an user with this username.")
+  @Column(unique = true)
   val username: String,
 
   @Size(min = 4, max = 32)
   @Email
-  @UniqueColumn(column = "email", message = "There is already exists an user with this email.")
+  @Column(unique = true)
   val email: String,
 
   @Size(min = 8, max = 24)
