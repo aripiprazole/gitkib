@@ -22,14 +22,14 @@ const val PROFILE_PAGINATION_OFFSET = 15
  */
 @RestController
 @Suppress("unused")
-class ProfileController(
+class AppProfileController(
   private val profileRepository: ProfileRepository
 ) {
 
   companion object {
     const val INDEX_ENDPOINT = "/profiles"
-    const val SHOW_ENDPOINT = "/profiles/{userId}"
-    const val UPDATE_ENDPOINT = "/profiles/{userId}"
+    const val SHOW_ENDPOINT = "/profiles/{id}"
+    const val UPDATE_ENDPOINT = "/profiles/{id}"
   }
 
   /**
@@ -43,25 +43,25 @@ class ProfileController(
   }
 
   /**
-   * Provides the profile of user with id [userId].
+   * Provides the profile of user with id [id].
    *
    * @return the profile.
    */
   @GetMapping(SHOW_ENDPOINT)
-  fun show(@PathVariable userId: Long): Profile {
-    return profileRepository.findByUserId(userId) ?: throw ResourceNotFoundException()
+  fun show(@PathVariable id: Long): Profile {
+    return profileRepository.findByUserId(id) ?: throw ResourceNotFoundException()
   }
 
   /**
-   * Updates the profile of user with id [userId].
+   * Updates the profile of user with id [id].
    *
    * @return the profile updated.
    */
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_PROFILE}')")
-  fun update(@PathVariable userId: Long, @Valid @RequestBody body: ProfileUpdateBody): Profile {
+  fun update(@PathVariable id: Long, @Valid @RequestBody body: ProfileUpdateBody): Profile {
     val profile =
-      (profileRepository.findByUserId(userId) ?: throw ResourceNotFoundException())
+      (profileRepository.findByUserId(id) ?: throw ResourceNotFoundException())
         .apply {
           body.name?.let { company = it }
           body.websiteUrl?.let { websiteUrl = it }
