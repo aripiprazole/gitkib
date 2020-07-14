@@ -29,14 +29,18 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
   @Value("\${password.encoder.strength}")
   private var passwordEncoderStrength = 0
 
+  private lateinit var usernameUserDetailsService: UserDetailsService
+
   @Autowired
-  fun configureGlobal(auth: AuthenticationManagerBuilder, usernameUserDetailsService: UserDetailsService) {
-    auth.userDetailsService(usernameUserDetailsService)
+  fun setupUserDetailsService(usernameUserDetailsService: UserDetailsService) {
+    this.usernameUserDetailsService = usernameUserDetailsService
   }
 
   override fun configure(http: HttpSecurity) {
     http.cors()
       .and().csrf().disable()
+
+      .userDetailsService(usernameUserDetailsService)
 
       .authorizeRequests()
 
@@ -46,7 +50,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
       .anyRequest().authenticated()
 
-      .and().addFilter(JwtAuthenticationFilter(jwtAlgorithm(), authenticationManager()))
+      .and().addFilter(JwtAuthenticationFilter(jwtAlgorithm(), usernameUserDetailsService, authenticationManager()))
 
       .sessionManagement().sessionCreationPolicy(STATELESS)
   }
