@@ -2,6 +2,7 @@ package com.lorenzoog.gitkib.userservice.entities
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
+import org.springframework.beans.factory.annotation.Autowired
 import javax.persistence.*
 
 @Entity
@@ -27,5 +28,9 @@ data class User(
     joinColumns = [JoinColumn(name = "user_id")],
     inverseJoinColumns = [JoinColumn(name = "role_id")]
   )
-  val roles: MutableSet<Role>
+  val roles: MutableSet<Role>,
+
+  @OneToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  var profile: Profile? = null
 )
