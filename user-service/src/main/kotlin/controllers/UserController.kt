@@ -5,20 +5,14 @@ import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
 import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REGISTER_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import com.lorenzoog.gitkib.userservice.services.EntityProvider
-import com.lorenzoog.gitkib.userservice.services.UserProvider
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
-import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
-import java.lang.Exception
 import javax.persistence.EntityNotFoundException
 import javax.validation.Valid
 
