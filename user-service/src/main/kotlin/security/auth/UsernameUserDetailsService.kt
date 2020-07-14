@@ -2,22 +2,13 @@ package com.lorenzoog.gitkib.userservice.security.auth
 
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.services.UserProvider
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
-@Service
-@Component
-class UsernameUserDetailsService(
-  @Autowired
-  private val userProvider: UserProvider
-) : UserDetailsService {
+open class UsernameUserDetailsService(private val userProvider: UserProvider) : UserDetailsService {
 
   @Transactional
   override fun loadUserByUsername(username: String): UserDetails {
