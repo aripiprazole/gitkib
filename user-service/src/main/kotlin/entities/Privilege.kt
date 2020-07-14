@@ -11,10 +11,7 @@ data class Privilege(
   val id: Long,
 
   @Column(length = 32, unique = true, columnDefinition = "text")
-  var name: String,
-
-  @ManyToMany(mappedBy = "privileges")
-  var roles: MutableSet<Role>
+  var name: String
 ) {
 
   /**
