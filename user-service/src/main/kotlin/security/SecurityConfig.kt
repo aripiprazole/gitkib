@@ -65,7 +65,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
   fun jwtAlgorithm(): Algorithm = Algorithm.HMAC512(jwtSecret)
 
   @Bean("userDetailService")
-  @Primary
   override fun userDetailsServiceBean(): UserDetailsService = userDetailsService
 
   @Bean("authenticationManager")
