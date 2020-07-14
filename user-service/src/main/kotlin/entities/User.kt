@@ -32,6 +32,11 @@ data class User(
   val roles: MutableSet<Role>,
 
   @OneToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  @JoinTable(
+    name = "profiles",
+    joinColumns = [
+      JoinColumn(name = "user_id", referencedColumnName = "id")
+    ]
+  )
   var profile: Profile? = null
 )
