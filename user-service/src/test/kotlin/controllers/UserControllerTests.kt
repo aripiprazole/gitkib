@@ -3,6 +3,7 @@ package com.lorenzoog.gitkib.userservice.controllers
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
+import com.lorenzoog.gitkib.userservice.config.DefaultUsers
 import com.lorenzoog.gitkib.userservice.config.SecurityTestConfig
 import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.DESTROY_ENDPOINT
 import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.INDEX_ENDPOINT
@@ -46,7 +47,7 @@ class UserControllerTests {
   private lateinit var mockMvc: MockMvc
 
   @Test
-  @WithUserDetails("just-logged")
+  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should show users paginated when GET UserController@index`() {
     val users = listOf<User>()
 
@@ -66,7 +67,7 @@ class UserControllerTests {
   }
 
   @Test
-  @WithUserDetails("just-logged")
+  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should show user that have id 1 when GET UserController@show with id path variable 1`() {
     val user = User(
       id = 0L,
@@ -88,7 +89,7 @@ class UserControllerTests {
   }
 
   @Test
-  @WithUserDetails("just-logged")
+  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should store user in database and return that in the http response when POST UserController@store`() {
     val user = User(
       id = 0L,
@@ -117,7 +118,7 @@ class UserControllerTests {
   }
 
   @Test
-  @WithUserDetails("just-logged")
+  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should update user in database that have the id 1 and return that in the http response when PUT UserController@update with id path variable 1`() {
     val user = User(
       id = 0L,
@@ -150,7 +151,7 @@ class UserControllerTests {
   }
 
   @Test
-  @WithUserDetails("just-logged")
+  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should delete user that have the id 1 and return no content http response when DELETE UserController@destroy with id path variable 1`() {
     val user = User(
       id = 0L,
