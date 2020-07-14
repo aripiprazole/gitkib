@@ -2,6 +2,7 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
+import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import org.springframework.data.domain.Page
@@ -10,6 +11,7 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import java.lang.Exception
@@ -44,6 +46,7 @@ class UserController(
    * @return the page that contains the users.
    */
   @GetMapping(INDEX_ENDPOINT)
+  @Secured(Privilege.VIEW_USER)
   fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
     return userRepository.findAll(PageRequest.of(page, USER_PAGINATION_OFFSET))
   }
@@ -54,6 +57,7 @@ class UserController(
    * @return the user.
    */
   @GetMapping(SHOW_ENDPOINT)
+  @Secured(Privilege.VIEW_USER)
   fun show(@PathVariable id: Long): User {
     return userRepository.findById(id).orElseThrow(::ResourceNotFoundException)
   }
@@ -64,6 +68,7 @@ class UserController(
    * @return the user created.
    */
   @PostMapping(STORE_ENDPOINT)
+  @Secured(Privilege.CREATE_USER)
   fun store(@Valid @RequestBody body: UserCreateBody): User {
     return userRepository.save(User(
       id = 0L,
@@ -80,6 +85,7 @@ class UserController(
    * @return the user updated.
    */
   @PutMapping(UPDATE_ENDPOINT)
+  @Secured(Privilege.UPDATE_USER)
   fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
     val user = userRepository
       .findById(id)
@@ -101,6 +107,7 @@ class UserController(
    * @return a no content response.
    */
   @DeleteMapping(DESTROY_ENDPOINT)
+  @Secured(Privilege.DELETE_USER)
   fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
     userRepository.deleteById(id)
 

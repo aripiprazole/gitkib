@@ -11,6 +11,7 @@ import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 
 @SpringBootApplication
 @Configuration
@@ -18,6 +19,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 @EntityScan("com.lorenzoog.gitkib.userservice.entities")
 @EnableAsync
 @EnableScheduling
+@EnableGlobalMethodSecurity(securedEnabled = true)
 class UserServiceApplication {
 
   @Bean("healthChecker")
