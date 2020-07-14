@@ -6,6 +6,8 @@ import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REG
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
+import com.lorenzoog.gitkib.userservice.services.EntityProvider
+import com.lorenzoog.gitkib.userservice.services.UserProvider
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
@@ -25,12 +27,12 @@ const val USER_PAGINATION_OFFSET = 15
 /**
  * Class that provides the rest api routes.
  *
- * @param userRepository repository that provides users.
+ * @param userProvider class that provide the users.
  */
 @RestController
 @Suppress("unused")
 class UserController(
-  val userRepository: UserRepository,
+  val userProvider: EntityProvider<User>,
   val passwordEncoder: PasswordEncoder
 ) {
 
@@ -50,7 +52,7 @@ class UserController(
   @GetMapping(INDEX_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
   fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
-    return userRepository.findAll(PageRequest.of(page, USER_PAGINATION_OFFSET))
+    return userProvider.findAll(page, USER_PAGINATION_OFFSET)
   }
 
   /**
@@ -61,7 +63,7 @@ class UserController(
   @GetMapping(SHOW_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
   fun show(@PathVariable id: Long): User {
-    return userRepository.findById(id).orElseThrow(::ResourceNotFoundException)
+    return userProvider.findById(id)
   }
 
   /**
@@ -71,7 +73,7 @@ class UserController(
    */
   @PostMapping(STORE_ENDPOINT, REGISTER_ENDPOINT)
   fun store(@Valid @RequestBody body: UserCreateBody): User {
-    return userRepository.save(User(
+    return userProvider.save(User(
       id = 0L,
       email = body.email,
       username = body.username,
@@ -88,16 +90,13 @@ class UserController(
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_USER}')")
   fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
-    val user = userRepository
-      .findById(id)
-      .orElseThrow(::ResourceNotFoundException)
-      .apply {
-        body.email?.let { email = it }
-        body.password?.let { password = passwordEncoder.encode(it) }
-        body.username?.let { username = it }
-      }
+    val user = userProvider.findById(id).apply {
+      body.email?.let { email = it }
+      body.password?.let { password = passwordEncoder.encode(it) }
+      body.username?.let { username = it }
+    }
 
-    userRepository.save(user)
+    userProvider.save(user)
 
     return user
   }
@@ -110,7 +109,7 @@ class UserController(
   @DeleteMapping(DESTROY_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.DELETE_USER}')")
   fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
-    userRepository.deleteById(id)
+    userProvider.deleteById(id)
 
     return ResponseEntity
       .noContent()
