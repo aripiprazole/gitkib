@@ -1,11 +1,21 @@
 package com.lorenzoog.gitkib.userservice.services
 
+import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+
+fun User.update(passwordEncoder: PasswordEncoder, body: UserUpdateBody): User {
+  body.email?.let { email = it }
+  body.password?.let { password = passwordEncoder.encode(it) }
+  body.username?.let { username = it }
+
+  return this
+}
 
 @Service
 class UserProvider(private val userRepository: UserRepository) : EntityProvider<User> {

@@ -6,6 +6,7 @@ import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REG
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.EntityProvider
+import com.lorenzoog.gitkib.userservice.services.update
 import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus.NOT_FOUND
@@ -84,11 +85,9 @@ class UserController(
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_USER}')")
   fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
-    val user = userProvider.findById(id).apply {
-      body.email?.let { email = it }
-      body.password?.let { password = passwordEncoder.encode(it) }
-      body.username?.let { username = it }
-    }
+    val user = userProvider
+      .findById(id)
+      .update(passwordEncoder, body)
 
     userProvider.save(user)
 
