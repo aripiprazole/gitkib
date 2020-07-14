@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 @Service
 @Component
@@ -18,6 +19,7 @@ class UsernameUserDetailsService(
   private val userRepository: UserRepository
 ) : UserDetailsService {
 
+  @Transactional
   override fun loadUserByUsername(username: String): UserDetails {
     val user = userRepository.findByUsername(username) ?: throw ResourceNotFoundException()
     val userPrivileges = mutableSetOf<Privilege>()

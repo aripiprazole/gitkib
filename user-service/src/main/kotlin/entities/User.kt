@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
 import javax.persistence.*
 import javax.persistence.FetchType.EAGER
+import javax.persistence.FetchType.LAZY
 
 @Entity
 @Table(name = "users")
@@ -24,7 +25,7 @@ data class User(
   @JsonIgnore
   var password: String,
 
-  @ManyToMany(fetch = EAGER)
+  @ManyToMany(fetch = LAZY)
   @JoinTable(
     name = "user_role",
     joinColumns = [JoinColumn(name = "user_id")],
