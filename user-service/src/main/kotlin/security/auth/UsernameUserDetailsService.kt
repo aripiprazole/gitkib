@@ -1,7 +1,7 @@
 package com.lorenzoog.gitkib.userservice.security.auth
 
 import com.lorenzoog.gitkib.userservice.entities.Privilege
-import com.lorenzoog.gitkib.userservice.repositories.UserRepository
+import com.lorenzoog.gitkib.userservice.services.UserProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -16,12 +16,12 @@ import javax.transaction.Transactional
 @Component
 class UsernameUserDetailsService(
   @Autowired
-  private val userRepository: UserRepository
+  private val userProvider: UserProvider
 ) : UserDetailsService {
 
   @Transactional
   override fun loadUserByUsername(username: String): UserDetails {
-    val user = userRepository.findByUsername(username) ?: throw ResourceNotFoundException()
+    val user = userProvider.findByUsername(username)
     val userPrivileges = mutableSetOf<Privilege>()
 
     user.roles.forEach { role ->
