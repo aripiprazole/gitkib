@@ -70,7 +70,7 @@ class UserController(
       email = body.email,
       username = body.username,
       password = passwordEncoder.encode(body.password),
-      roles = mutableListOf()
+      roles = mutableSetOf()
     ))
   }
 

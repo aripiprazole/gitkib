@@ -13,6 +13,6 @@ data class Privilege(
   @Column(length = 32, unique = true)
   var name: String,
 
-  @ManyToMany(mappedBy = "role", targetEntity = Role::class)
-  val roles: MutableCollection<Role>
+  @ManyToMany(mappedBy = "privileges")
+  var roles: MutableSet<Role>
 )

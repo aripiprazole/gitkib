@@ -13,9 +13,14 @@ data class Role(
   @Column(length = 32, unique = true)
   val name: String,
 
-  @ManyToMany(mappedBy = "role")
-  val users: MutableCollection<User>,
+  @ManyToMany(mappedBy = "roles")
+  val users: MutableSet<User>,
 
-  @ManyToMany(mappedBy = "privilege", targetEntity = Privilege::class)
-  val privileges: MutableCollection<Privilege>
+  @ManyToMany
+  @JoinTable(
+    name = "role_privilege",
+    joinColumns = [JoinColumn(name = "role_id")],
+    inverseJoinColumns = [JoinColumn(name = "privilege_id")]
+  )
+  val privileges: MutableSet<Privilege>
 )

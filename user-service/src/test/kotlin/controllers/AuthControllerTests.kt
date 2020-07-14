@@ -45,7 +45,7 @@ class AuthControllerTests {
       username = "fake username",
       email = "fake email",
       password = passwordEncoder.encode(password),
-      roles = mutableListOf()
+      roles = mutableSetOf()
     )
 
     every(userRepository.findByUsername(user.username)).thenReturn(user)
