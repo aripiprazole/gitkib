@@ -22,9 +22,16 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-data-rest")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  implementation("org.jetbrains.kotlin:kotlinx-coroutines-core:1.2.1")
+  implementation("org.jetbrains.kotlin:kotlinx-coroutines-core:1.2.1")
+
+  implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
+  implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
+  implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
 
   implementation("com.orbitz.consul:consul-client:1.4.0")
 
