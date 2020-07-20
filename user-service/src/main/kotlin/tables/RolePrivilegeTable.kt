@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.Table
 
 object RolePrivilegeTable : Table(name = "user_profile") {
 
-  val role = long("role_id").entityId().references(ref = RoleTable.id, onDelete = CASCADE)
-  val privilege = long("privilege_id").entityId().references(ref = PrivilegeTable.id, onDelete = CASCADE)
+  val role = reference(name = "role", foreign = RoleTable, onDelete = CASCADE)
+  val privilege = reference(name = "privilege", foreign = PrivilegeTable, onDelete = CASCADE)
 
 }
