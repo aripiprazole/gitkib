@@ -4,6 +4,7 @@ import com.lorenzoog.gitkib.userservice.bodies.ProfileUpdateBody
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.Profile
 import com.lorenzoog.gitkib.userservice.services.ProfileProvider
+import com.lorenzoog.gitkib.userservice.services.update
 import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus
@@ -55,7 +56,7 @@ class AppProfileController(
    */
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_PROFILE}')")
-  fun update(@PathVariable id: Long, @Valid @RequestBody body: ProfileUpdateBody) {
+  fun update(@PathVariable id: Long, @Valid @RequestBody body: ProfileUpdateBody): Profile {
     return profileProvider
       .findByUserId(id)
       .update(body)
