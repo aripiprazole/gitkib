@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 
 object UserRoleTable : LongIdTable(name = "user_role") {
 
-  val user = long("user_id").entityId().references(ref = UserTable.id, onDelete = CASCADE)
-  val role = long("role_id").entityId().references(ref = RoleTable.id, onDelete = CASCADE)
+  val user = reference(name = "user", foreign = UserTable, onDelete = CASCADE)
+  val role = reference(name = "role", foreign = RoleTable, onDelete = CASCADE)
 
 }
