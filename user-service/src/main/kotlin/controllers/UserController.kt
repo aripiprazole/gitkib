@@ -7,6 +7,7 @@ import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.services.update
+import org.jetbrains.exposed.sql.SizedCollection
 import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus.NOT_FOUND
@@ -72,6 +73,7 @@ class UserController(
       email = body.email
       username = body.username
       password = passwordEncoder.encode(body.password)
+      roles = SizedCollection()
     }
   }
 
