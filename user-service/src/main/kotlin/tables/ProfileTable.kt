@@ -12,6 +12,6 @@ object ProfileTable : LongIdTable(name = "profiles") {
   val twitterUsername = varchar(name = "twitter_username", length = 32).nullable()
   val discordUsername = varchar(name = "discord_username", length = 32).nullable()
   val location = varchar(name = "location", length = 32).nullable()
-  val userId = long(name = "user_id").entityId().references(ref = UserTable.id, onDelete = CASCADE)
+  val userId = long(name = "user_id").entityId().references(ref = UserTable.id, onDelete = CASCADE).nullable()
 
 }
