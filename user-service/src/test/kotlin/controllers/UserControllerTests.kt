@@ -11,7 +11,7 @@ import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.SHO
 import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.STORE_ENDPOINT
 import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.UPDATE_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.repositories.UserRepository
+import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.utils.mock
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +28,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 import org.mockito.Mockito.*
 import org.springframework.security.test.context.support.WithUserDetails
-import java.util.*
 
 import org.mockito.Mockito.`when` as every
 
@@ -42,7 +41,7 @@ private val objectMapper = ObjectMapper()
 class UserControllerTests {
 
   @MockBean
-  private lateinit var userRepository: UserRepository
+  private lateinit var userProvider: UserProvider
 
   @Autowired
   private lateinit var mockMvc: MockMvc
@@ -50,7 +49,7 @@ class UserControllerTests {
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should show users paginated when GET UserController@index`() {
-    val users = listOf<User>(
+    val users = listOf(
       User.mock(),
       User.mock(),
       User.mock()
@@ -62,28 +61,28 @@ class UserControllerTests {
       users.size.toLong()
     )
 
-    every(userRepository.findAll(any(Pageable::class.java))).thenReturn(page)
+    every(userProvider.findAll(page = 0, offset = USER_PAGINATION_OFFSET)).thenReturn(page)
 
     mockMvc.perform(get(INDEX_ENDPOINT).contentType(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
-    verify(userRepository, times(1)).findAll(any(Pageable::class.java))
+    verify(userProvider, times(1)).findAll(page = 0, offset = USER_PAGINATION_OFFSET)
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should show user that have id 1 when GET UserController@show with id path variable 1`() {
     val user = User.mock()
-    val id = user.id
+    val id = user.id.value
 
-    every(userRepository.findById(id)).thenReturn(Optional.of(user))
+    every(userProvider.findById(id)).thenReturn(user)
 
     mockMvc.perform(get(SHOW_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
-    verify(userRepository, times(1)).findById(id)
+    verify(userProvider, times(1)).findById(id)
   }
 
   @Test
@@ -97,7 +96,7 @@ class UserControllerTests {
       password = user.password
     )
 
-    every(userRepository.save(any(User::class.java))).thenReturn(user)
+    every(userProvider.save(any())).thenReturn(user)
 
     mockMvc.perform(post(STORE_ENDPOINT)
       .contentType(APPLICATION_JSON)
@@ -106,14 +105,14 @@ class UserControllerTests {
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
-    verify(userRepository, times(1)).save(any(User::class.java))
+    verify(userProvider, times(1)).save(any())
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should update user in database that have the id 1 and return that in the http response when PUT UserController@update with id path variable 1`() {
     val user = User.mock()
-    val id = user.id
+    val id = user.id.value
 
     val body = UserUpdateBody(
       username = user.username,
@@ -121,8 +120,8 @@ class UserControllerTests {
       password = user.password
     )
 
-    every(userRepository.findById(id)).thenReturn(Optional.of(user))
-    every(userRepository.save(any(User::class.java))).thenReturn(user)
+    every(userProvider.findById(id)).thenReturn(user)
+    every(userProvider.save(any())).thenReturn(user)
 
     mockMvc.perform(put(UPDATE_ENDPOINT.replace("{id}", id.toString()))
       .contentType(APPLICATION_JSON)
@@ -131,24 +130,24 @@ class UserControllerTests {
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
-    verify(userRepository, times(1)).findById(id)
-    verify(userRepository, times(1)).save(any(User::class.java))
+    verify(userProvider, times(1)).findById(id)
+    verify(userProvider, times(1)).save(any())
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should delete user that have the id 1 and return no content http response when DELETE UserController@destroy with id path variable 1`() {
     val user = User.mock()
-    val id = user.id
+    val id = user.id.value
 
-    every(userRepository.deleteById(id)).then {
+    every(userProvider.deleteById(id)).then {
       // do nothing.
     }
 
     mockMvc.perform(delete(DESTROY_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON))
       .andExpect(status().isNoContent)
 
-    verify(userRepository, times(1)).deleteById(id)
+    verify(userProvider, times(1)).deleteById(id)
   }
 
 }

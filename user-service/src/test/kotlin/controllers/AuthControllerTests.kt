@@ -10,12 +10,12 @@ import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REG
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.Role
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import com.lorenzoog.gitkib.userservice.security.auth.AUTHENTICATION_HEADER
+import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.utils.mock
 import org.hamcrest.Matchers.any
+import org.jetbrains.exposed.sql.SizedCollection
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -49,7 +49,7 @@ class AuthControllerTests {
   private lateinit var jwtSecret: String
 
   @MockBean
-  private lateinit var userRepository: UserRepository
+  private lateinit var userProvider: UserProvider
 
   @Autowired
   private lateinit var mockMvc: MockMvc
@@ -65,7 +65,7 @@ class AuthControllerTests {
       this.password = password
     }
 
-    every(userRepository.findByUsername(user.username)).thenReturn(user)
+    every(userProvider.findByUsername(user.username)).thenReturn(user)
 
     val body = UserAuthenticateBody(
       username = user.username,
@@ -89,7 +89,7 @@ class AuthControllerTests {
       password = user.password
     )
 
-    every(userRepository.save(Mockito.any(User::class.java))).thenReturn(user)
+    every(userProvider.save(any())).thenReturn(user)
 
     mockMvc.perform(post(REGISTER_ENDPOINT)
       .contentType(APPLICATION_JSON)
@@ -98,14 +98,14 @@ class AuthControllerTests {
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
-    verify(userRepository, times(1)).save(Mockito.any(User::class.java))
+    verify(userProvider, times(1)).save(any())
   }
 
   @Test
   fun `test should view users of database and return that in the http response when GET UserController@index and the requester is authenticated`() {
     val user = User.mock {
-      roles.add(Role.mock {
-        privileges.add(Privilege.mock {
+      roles = SizedCollection(Role.mock {
+        privileges = SizedCollection(Privilege.mock {
           name = Privilege.VIEW_USER
         })
       })
@@ -122,7 +122,7 @@ class AuthControllerTests {
         .withExpiresAt(Date.from(now.plusMillis(JWT_EXPIRES_AT)))
         .sign(jwtAlgorithm)
 
-    every(userRepository.findByUsername(user.username)).thenReturn(user)
+    every(userProvider.findByUsername(user.username)).thenReturn(user)
 
     val users = listOf(
       User.mock(),
@@ -136,7 +136,7 @@ class AuthControllerTests {
       users.size.toLong()
     )
 
-    every(userRepository.findAll(Mockito.any(Pageable::class.java))).thenReturn(page)
+    every(userProvider.findAll(page = 0, offset = USER_PAGINATION_OFFSET)).thenReturn(page)
 
     mockMvc.perform(get(UserController.INDEX_ENDPOINT)
       .contentType(APPLICATION_JSON)
@@ -145,7 +145,7 @@ class AuthControllerTests {
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
-    verify(userRepository, times(1)).findAll(Mockito.any(Pageable::class.java))
+    verify(userProvider, times(1)).findAll(page = 0, offset = USER_PAGINATION_OFFSET)
   }
 
 }
