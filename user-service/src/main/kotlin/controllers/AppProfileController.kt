@@ -9,7 +9,6 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import javax.persistence.EntityNotFoundException
 import javax.validation.Valid
 
 const val PROFILE_PAGINATION_OFFSET = 15
@@ -69,7 +68,7 @@ class AppProfileController(
    * @return [Unit] nothing.
    */
   @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Could'nt find the profile with that id.")
-  @ExceptionHandler(EntityNotFoundException::class)
+  @ExceptionHandler(ResourceNotFoundException::class)
   fun onResourceNotFoundException() {
     // Automatic handling.
   }

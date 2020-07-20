@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
-import javax.persistence.EntityNotFoundException
 import javax.validation.Valid
 
 const val USER_PAGINATION_OFFSET = 15
@@ -112,7 +111,7 @@ class UserController(
    * @return [Unit] nothing.
    */
   @ResponseStatus(value = NOT_FOUND, reason = "Could'nt find the user with that id.")
-  @ExceptionHandler(EntityNotFoundException::class)
+  @ExceptionHandler(ResourceNotFoundException::class)
   fun onResourceNotFoundException() {
     // Automatic handling.
   }
