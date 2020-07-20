@@ -22,7 +22,7 @@ class User(id: EntityID<Long>) : LongEntity(id) {
 
   var roles: SizedIterable<Role> by Role via UserRoleTable
 
-  var profile: Profile by Profile referencedOn ProfileTable.userId
+  var profile: Profile? by Profile optionalReferencedOn ProfileTable.userId
 
   companion object : LongEntityClass<User>(UserTable)
 }

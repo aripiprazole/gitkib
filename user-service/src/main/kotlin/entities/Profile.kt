@@ -21,7 +21,7 @@ class Profile(id: EntityID<Long>): LongEntity(id) {
 
   var location: String? by ProfileTable.location
 
-  var user: User by User referencedOn ProfileTable.userId
+  var user: User? by User optionalReferencedOn ProfileTable.userId
 
   companion object : LongEntityClass<Profile>(UserTable)
 }

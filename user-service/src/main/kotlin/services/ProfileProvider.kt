@@ -32,7 +32,7 @@ class ProfileProvider(private val userProvider: UserProvider) : EntityProvider<P
    * @throws ResourceNotFoundException if couldn't find the entity with id [id].
    */
   fun findByUserId(id: Long) = transaction {
-    userProvider.findById(id).profile
+    userProvider.findById(id).profile!!
   }
 
   override fun findAll(page: Int, offset: Int) = transaction {
