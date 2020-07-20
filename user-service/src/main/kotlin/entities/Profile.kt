@@ -1,37 +1,27 @@
 package com.lorenzoog.gitkib.userservice.entities
 
-import javax.persistence.*
-import javax.persistence.CascadeType.REMOVE
-import javax.persistence.GenerationType.AUTO
+import com.lorenzoog.gitkib.userservice.tables.ProfileTable
+import com.lorenzoog.gitkib.userservice.tables.UserTable
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
 
-@Entity
-@Table(name = "profiles")
-data class Profile(
-  @Id
-  @GeneratedValue(strategy = AUTO)
-  val id: Long,
+class Profile(id: EntityID<Long>): LongEntity(id) {
+  var name: String by ProfileTable.name
 
-  @Column(length = 32, columnDefinition = "text")
-  var name: String,
+  var publicEmail: String? by ProfileTable.publicEmail
 
-  @Column(name = "public_email", nullable = true, length = 32, columnDefinition = "text")
-  var publicEmail: String? = null,
+  var company: String? by ProfileTable.company
 
-  @Column(nullable = true, length = 32, columnDefinition = "text")
-  var company: String? = null,
+  var websiteUrl: String? by ProfileTable.websiteUrl
 
-  @Column(name = "website_url", nullable = true, length = 32, columnDefinition = "text")
-  var websiteUrl: String? = null,
+  var twitterUsername: String? by ProfileTable.twitterUsername
 
-  @Column(name = "twitter_username", nullable = true, length = 32, columnDefinition = "text")
-  var twitterUsername: String? = null,
+  var discordUsername: String? by ProfileTable.discordUsername
 
-  @Column(name = "discord_username", nullable = true, length = 32, columnDefinition = "text")
-  var discordUsername: String? = null,
+  var location: String? by ProfileTable.location
 
-  @Column(nullable = true, length = 32, columnDefinition = "text")
-  var location: String? = null,
+  var user: User by User referencedOn ProfileTable.userId
 
-  @OneToOne(mappedBy = "profile", cascade = [REMOVE])
-  val user: User
-)
+  companion object : LongEntityClass<Profile>(UserTable)
+}
