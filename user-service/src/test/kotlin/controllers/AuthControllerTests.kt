@@ -12,6 +12,7 @@ import com.lorenzoog.gitkib.userservice.entities.Role
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
 import com.lorenzoog.gitkib.userservice.security.auth.AUTHENTICATION_HEADER
+import com.lorenzoog.gitkib.userservice.utils.mock
 import org.hamcrest.Matchers.any
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -60,13 +61,9 @@ class AuthControllerTests {
   fun `test should login correctly and send the jwt token in the http response`() {
     val password = "fake password"
 
-    val user = User(
-      id = 0L,
-      username = "fake username",
-      email = "fake email",
-      password = passwordEncoder.encode(password),
-      roles = mutableSetOf()
-    )
+    val user = User.mock().apply {
+      this.password = password
+    }
 
     every(userRepository.findByUsername(user.username)).thenReturn(user)
 
@@ -84,13 +81,7 @@ class AuthControllerTests {
 
   @Test
   fun `test should store user in database and return that in the http response when POST UserController@store with REGISTER_ENDPOINT`() {
-    val user = User(
-      id = 0L,
-      username = "fake username",
-      email = "fake email",
-      password = "fake password",
-      roles = mutableSetOf()
-    )
+    val user = User.mock()
 
     val body = UserCreateBody(
       username = user.username,
@@ -112,17 +103,12 @@ class AuthControllerTests {
 
   @Test
   fun `test should view users of database and return that in the http response when GET UserController@index and the requester is authenticated`() {
-    val user = newUser().apply {
-      roles.add(Role(
-        id = 0L,
-        name = "Some role",
-        privileges = mutableSetOf(
-          Privilege(
-            id = 0L,
-            name = Privilege.VIEW_USER
-          )
-        )
-      ))
+    val user = User.mock().apply {
+      roles.add(Role.mock().apply {
+        privileges.add(Privilege.mock().apply {
+          name = Privilege.VIEW_USER
+        })
+      })
     }
 
     val now = Instant.now()
@@ -139,9 +125,8 @@ class AuthControllerTests {
     every(userRepository.findByUsername(user.username)).thenReturn(user)
 
     val users = listOf(
-      newUser(),
-      newUser(),
-      newUser(),
+      User.mock(),
+      User.mock(),
       user
     )
 

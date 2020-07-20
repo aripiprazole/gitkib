@@ -71,7 +71,7 @@ class AppProfileControllerTests {
   fun `test should show user that have id 1 when GET ProfileController@show with id path variable 1`() {
     val profile = Profile.mock(User.mock())
 
-    val (id) = profile.user
+    val id = profile.user.id
 
     every(profileRepository.findByUserId(id)).thenReturn(profile)
 
@@ -87,7 +87,7 @@ class AppProfileControllerTests {
   fun `test should update profile in database that have the user id 1 and return that in the http response when PUT ProfileController@update with id path variable 1`() {
     val profile = Profile.mock(User.mock())
 
-    val (id) = profile.user
+    val id = profile.user.id
 
     val body = ProfileUpdateBody(
       name = "fake name",
