@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 open class UsernameUserDetailsService(private val userProvider: UserProvider) : UserDetailsService {
 
