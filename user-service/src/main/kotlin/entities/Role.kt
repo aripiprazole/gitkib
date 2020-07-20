@@ -1,23 +1,17 @@
 package com.lorenzoog.gitkib.userservice.entities
 
-import javax.persistence.*
-import javax.persistence.GenerationType.AUTO
+import com.lorenzoog.gitkib.userservice.tables.RoleTable
+import com.lorenzoog.gitkib.userservice.tables.RolePrivilegeTable
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.SizedIterable
 
-@Entity
-@Table(name = "roles")
-data class Role(
-  @Id
-  @GeneratedValue(strategy = AUTO)
-  val id: Long,
+class Role(id: EntityID<Long>) : LongEntity(id) {
 
-  @Column(length = 32, unique = true, columnDefinition = "text")
-  val name: String,
+  var name: String by RoleTable.name
 
-  @ManyToMany
-  @JoinTable(
-    name = "role_privilege",
-    joinColumns = [JoinColumn(name = "role_id")],
-    inverseJoinColumns = [JoinColumn(name = "privilege_id")]
-  )
-  val privileges: MutableSet<Privilege>
-)
+  var privileges: SizedIterable<Privilege> by Privilege via RolePrivilegeTable
+
+  companion object : LongEntityClass<Role>(RoleTable)
+}

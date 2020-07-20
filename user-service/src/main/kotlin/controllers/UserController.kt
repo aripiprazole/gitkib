@@ -5,7 +5,7 @@ import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
 import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REGISTER_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.services.EntityProvider
+import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.services.update
 import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
@@ -27,7 +27,7 @@ const val USER_PAGINATION_OFFSET = 15
 @RestController
 @Suppress("unused")
 class UserController(
-  val userProvider: EntityProvider<User>,
+  val userProvider: UserProvider,
   val passwordEncoder: PasswordEncoder
 ) {
 
@@ -68,13 +68,11 @@ class UserController(
    */
   @PostMapping(STORE_ENDPOINT, REGISTER_ENDPOINT)
   fun store(@Valid @RequestBody body: UserCreateBody): User {
-    return userProvider.save(User(
-      id = 0L,
-      email = body.email,
-      username = body.username,
-      password = passwordEncoder.encode(body.password),
-      roles = mutableSetOf()
-    ))
+    return userProvider.save {
+      email = body.email
+      username = body.username
+      password = passwordEncoder.encode(body.password)
+    }
   }
 
   /**
@@ -85,13 +83,9 @@ class UserController(
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_USER}')")
   fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
-    val user = userProvider
+    return userProvider
       .findById(id)
       .update(passwordEncoder, body)
-
-    userProvider.save(user)
-
-    return user
   }
 
   /**

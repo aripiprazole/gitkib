@@ -25,11 +25,11 @@ interface EntityProvider<T> {
   fun findById(id: Long): T
 
   /**
-   * Persist the entity [entity] in database(and probably cache then)
+   * Persist the entity [entityBuilder] in database(and probably cache then)
    *
    * @return the persisted entity
    */
-  fun save(entity: T): T
+  fun save(entityBuilder: T.() -> Unit): T
 
   /**
    * Deletes a persisted entity(and probably from the cache also)
