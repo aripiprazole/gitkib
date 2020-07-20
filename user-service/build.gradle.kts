@@ -20,14 +20,15 @@ repositories {
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
-  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-data-rest")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  implementation("org.jetbrains.kotlin:kotlinx-coroutines-core:1.2.1")
-  implementation("org.jetbrains.kotlin:kotlinx-coroutines-core:1.2.1")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+
+  implementation("org.jetbrains.exposed:exposed-spring-boot-starter:0.26.1")
 
   implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
   implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
@@ -35,8 +36,6 @@ dependencies {
 
   implementation("com.orbitz.consul:consul-client:1.4.0")
 
-  implementation("org.hibernate:hibernate-core:5.4.18.Final")
-  implementation("org.hibernate:hibernate-entitymanager:5.4.18.Final")
   implementation("org.hibernate:hibernate-validator:6.1.5.Final")
   implementation("org.hibernate:hibernate-validator-annotation-processor:6.1.5.Final")
 
