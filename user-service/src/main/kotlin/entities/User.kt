@@ -3,6 +3,7 @@ package com.lorenzoog.gitkib.userservice.entities
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
+import com.lorenzoog.gitkib.userservice.tables.ProfileTable
 import com.lorenzoog.gitkib.userservice.tables.UserTable
 import com.lorenzoog.gitkib.userservice.tables.UserRoleTable
 import org.jetbrains.exposed.dao.LongEntity
@@ -20,6 +21,8 @@ class User(id: EntityID<Long>) : LongEntity(id) {
   var password: String by UserTable.password
 
   var roles: SizedIterable<Role> by Role via UserRoleTable
+
+  var profile: Profile by Profile referencedOn ProfileTable.userId
 
   companion object : LongEntityClass<User>(UserTable)
 }
