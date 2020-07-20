@@ -103,9 +103,9 @@ class AuthControllerTests {
 
   @Test
   fun `test should view users of database and return that in the http response when GET UserController@index and the requester is authenticated`() {
-    val user = User.mock().apply {
-      roles.add(Role.mock().apply {
-        privileges.add(Privilege.mock().apply {
+    val user = User.mock {
+      roles.add(Role.mock {
+        privileges.add(Privilege.mock {
           name = Privilege.VIEW_USER
         })
       })

@@ -6,27 +6,27 @@ import com.lorenzoog.gitkib.userservice.entities.Role
 import com.lorenzoog.gitkib.userservice.entities.User
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun User.Companion.mock() = transaction {
+fun User.Companion.mock(block: User.() -> Unit = {}) = transaction {
   User.new {
     username = "Jubiscreudi"
     password = "nou32h79"
     email = "email@org.com"
-  }
+  }.apply(block)
 }
 
-fun Role.Companion.mock() = transaction {
+fun Role.Companion.mock(block: Role.() -> Unit = {}) = transaction {
   Role.new {
     name = "Cargo fuck :sunglasses:"
-  }
+  }.apply(block)
 }
 
-fun Privilege.Companion.mock() = transaction {
+fun Privilege.Companion.mock(block: Privilege.() -> Unit = {}) = transaction {
   Privilege.new {
     name = "pode.dar.o.cu"
-  }
+  }.apply(block)
 }
 
-fun Profile.Companion.mock(user: User) = transaction {
+fun Profile.Companion.mock(user: User, block: Profile.() -> Unit = {}) = transaction {
   Profile.new {
     name = "Jubiscreudi da Silva"
     publicEmail = "contact@jusbiscreudi.silva"
@@ -35,5 +35,5 @@ fun Profile.Companion.mock(user: User) = transaction {
     twitterUsername = "Jubiscreudi_"
     websiteUrl = "jubiscreudi.com"
     company = "Jubiscreudi Inc."
-  }
+  }.apply(block)
 }
