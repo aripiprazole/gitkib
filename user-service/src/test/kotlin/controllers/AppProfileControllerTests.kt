@@ -9,7 +9,7 @@ import com.lorenzoog.gitkib.userservice.controllers.AppProfileController.Compani
 import com.lorenzoog.gitkib.userservice.controllers.AppProfileController.Companion.UPDATE_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.Profile
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.repositories.ProfileRepository
+import com.lorenzoog.gitkib.userservice.services.ProfileProvider
 import com.lorenzoog.gitkib.userservice.utils.mock
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +39,7 @@ private val objectMapper = ObjectMapper()
 class AppProfileControllerTests {
 
   @MockBean
-  private lateinit var profileRepository: ProfileRepository
+  private lateinit var profileProvider: ProfileProvider
 
   @Autowired
   private lateinit var mockMvc: MockMvc
@@ -58,36 +58,34 @@ class AppProfileControllerTests {
       profiles.size.toLong()
     )
 
-    every(profileRepository.findAll(any(Pageable::class.java))).thenReturn(page)
+    every(profileProvider.findAll(page = 0, offset = PROFILE_PAGINATION_OFFSET)).thenReturn(page)
 
     mockMvc.perform(get(INDEX_ENDPOINT).contentType(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
-    verify(profileRepository, times(1)).findAll(any(Pageable::class.java))
+    verify(profileProvider, times(1)).findAll(page = 0, offset = PROFILE_PAGINATION_OFFSET)
   }
 
   @Test
   fun `test should show user that have id 1 when GET ProfileController@show with id path variable 1`() {
     val profile = Profile.mock(User.mock())
+    val id = profile.user.id.value
 
-    val id = profile.user.id
-
-    every(profileRepository.findByUserId(id)).thenReturn(profile)
+    every(profileProvider.findByUserId(id)).thenReturn(profile)
 
     mockMvc.perform(get(SHOW_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(profile)))
 
-    verify(profileRepository, times(1)).findByUserId(id)
+    verify(profileProvider, times(1)).findByUserId(id)
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should update profile in database that have the user id 1 and return that in the http response when PUT ProfileController@update with id path variable 1`() {
     val profile = Profile.mock(User.mock())
-
-    val id = profile.user.id
+    val id = profile.user.id.value
 
     val body = ProfileUpdateBody(
       name = "fake name",
@@ -99,8 +97,8 @@ class AppProfileControllerTests {
       publicEmail = "fake email"
     )
 
-    every(profileRepository.findByUserId(id)).thenReturn(profile)
-    every(profileRepository.save(any(Profile::class.java))).thenReturn(profile)
+    every(profileProvider.findByUserId(id)).thenReturn(profile)
+    every(profileProvider.save(any())).thenReturn(profile)
 
     mockMvc.perform(put(UPDATE_ENDPOINT.replace("{id}", id.toString()))
       .contentType(APPLICATION_JSON)
@@ -109,8 +107,8 @@ class AppProfileControllerTests {
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(profile)))
 
-    verify(profileRepository, times(1)).findByUserId(id)
-    verify(profileRepository, times(1)).save(any(Profile::class.java))
+    verify(profileProvider, times(1)).findByUserId(id)
+    verify(profileProvider, times(1)).save(any())
   }
 
 }
