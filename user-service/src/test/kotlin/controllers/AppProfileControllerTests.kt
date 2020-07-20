@@ -10,6 +10,7 @@ import com.lorenzoog.gitkib.userservice.controllers.AppProfileController.Compani
 import com.lorenzoog.gitkib.userservice.entities.Profile
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.ProfileRepository
+import com.lorenzoog.gitkib.userservice.utils.mock
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -30,32 +31,6 @@ import org.mockito.Mockito.`when` as every
 
 private val objectMapper = ObjectMapper()
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun newUser(): User {
-  return User(
-    id = 0L,
-    username = "fake username",
-    email = "fake email",
-    password = "fake password",
-    roles = mutableSetOf()
-  )
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun newProfile(user: User): Profile {
-  return Profile(
-    id = 0L,
-    name = "fake name",
-    company = "fake company",
-    discordUsername = "fake discord usarname",
-    twitterUsername = "fake twitter username",
-    location = "fake location",
-    websiteUrl = "fake website",
-    publicEmail = "fake email",
-    user = user
-  )
-}
-
 @SpringBootTest(
   classes = [SecurityTestConfig::class]
 )
@@ -72,9 +47,9 @@ class AppProfileControllerTests {
   @Test
   fun `test should show profiles paginated when GET ProfileController@index`() {
     val profiles = listOf(
-      newProfile(newUser()),
-      newProfile(newUser()),
-      newProfile(newUser())
+      Profile.mock(User.mock()),
+      Profile.mock(User.mock()),
+      Profile.mock(User.mock())
     )
 
     val page: Page<Profile> = PageImpl(
@@ -94,7 +69,7 @@ class AppProfileControllerTests {
 
   @Test
   fun `test should show user that have id 1 when GET ProfileController@show with id path variable 1`() {
-    val profile = newProfile(newUser())
+    val profile = Profile.mock(User.mock())
 
     val (id) = profile.user
 
@@ -110,7 +85,7 @@ class AppProfileControllerTests {
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should update profile in database that have the user id 1 and return that in the http response when PUT ProfileController@update with id path variable 1`() {
-    val profile = newProfile(newUser())
+    val profile = Profile.mock(User.mock())
 
     val (id) = profile.user
 
