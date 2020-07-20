@@ -12,6 +12,7 @@ import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.STO
 import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.UPDATE_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.repositories.UserRepository
+import com.lorenzoog.gitkib.userservice.utils.mock
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -49,7 +50,11 @@ class UserControllerTests {
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should show users paginated when GET UserController@index`() {
-    val users = listOf<User>()
+    val users = listOf<User>(
+      User.mock(),
+      User.mock(),
+      User.mock()
+    )
 
     val page: Page<User> = PageImpl(
       users,
@@ -69,15 +74,8 @@ class UserControllerTests {
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should show user that have id 1 when GET UserController@show with id path variable 1`() {
-    val user = User(
-      id = 0L,
-      username = "fake username",
-      email = "fake email",
-      password = "fake password",
-      roles = mutableSetOf()
-    )
-
-    val (id) = user
+    val user = User.mock()
+    val id = user.id
 
     every(userRepository.findById(id)).thenReturn(Optional.of(user))
 
@@ -91,13 +89,7 @@ class UserControllerTests {
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should store user in database and return that in the http response when POST UserController@store`() {
-    val user = User(
-      id = 0L,
-      username = "fake username",
-      email = "fake email",
-      password = "fake password",
-      roles = mutableSetOf()
-    )
+    val user = User.mock()
 
     val body = UserCreateBody(
       username = user.username,
@@ -120,15 +112,8 @@ class UserControllerTests {
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should update user in database that have the id 1 and return that in the http response when PUT UserController@update with id path variable 1`() {
-    val user = User(
-      id = 0L,
-      username = "fake username",
-      email = "fake email",
-      password = "fake password",
-      roles = mutableSetOf()
-    )
-
-    val (id) = user
+    val user = User.mock()
+    val id = user.id
 
     val body = UserUpdateBody(
       username = user.username,
@@ -153,15 +138,8 @@ class UserControllerTests {
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
   fun `test should delete user that have the id 1 and return no content http response when DELETE UserController@destroy with id path variable 1`() {
-    val user = User(
-      id = 0L,
-      username = "fake username",
-      email = "fake email",
-      password = "fake password",
-      roles = mutableSetOf()
-    )
-
-    val (id) = user
+    val user = User.mock()
+    val id = user.id
 
     every(userRepository.deleteById(id)).then {
       // do nothing.
