@@ -53,8 +53,10 @@ dependencies {
 
   testRuntimeOnly("com.h2database:h2")
 
-  testImplementation("org.mockito:mockito-core:2.+")
   testImplementation("junit:junit")
+
+  testImplementation("io.mockk:mockk:1.10.0")
+  testImplementation("com.ninja-squad:springmockk:2.0.2")
 
   testImplementation("org.springframework.security:spring-security-test")
 
