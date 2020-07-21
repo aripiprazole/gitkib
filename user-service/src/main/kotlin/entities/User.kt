@@ -3,6 +3,8 @@ package com.lorenzoog.gitkib.userservice.entities
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.lorenzoog.gitkib.userservice.serializers.UserSerializer
 import com.lorenzoog.gitkib.userservice.tables.ProfileTable
 import com.lorenzoog.gitkib.userservice.tables.UserTable
 import com.lorenzoog.gitkib.userservice.tables.UserRoleTable
@@ -11,6 +13,7 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SizedIterable
 
+@JsonSerialize(using = UserSerializer::class)
 class User(id: EntityID<Long>) : LongEntity(id) {
   var username: String by UserTable.username
 
