@@ -12,6 +12,7 @@ import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.STO
 import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.UPDATE_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserProvider
+import com.lorenzoog.gitkib.userservice.services.update
 import com.lorenzoog.gitkib.userservice.utils.mock
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -121,7 +122,7 @@ class UserControllerTests {
     )
 
     every(userProvider.findById(id)).thenReturn(user)
-    every(userProvider.save(any())).thenReturn(user)
+    every(user.update(any(), any())).thenReturn(user)
 
     mockMvc.perform(put(UPDATE_ENDPOINT.replace("{id}", id.toString()))
       .contentType(APPLICATION_JSON)
@@ -131,7 +132,7 @@ class UserControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
     verify(userProvider, times(1)).findById(id)
-    verify(userProvider, times(1)).save(any())
+    verify(user, times(1)).update(any(), any())
   }
 
   @Test
