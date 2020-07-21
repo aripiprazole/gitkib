@@ -12,12 +12,14 @@ import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.STO
 import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.UPDATE_ENDPOINT
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserProvider
+import com.lorenzoog.gitkib.userservice.services.update
 import com.lorenzoog.gitkib.userservice.utils.mock
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -26,10 +28,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
-import org.mockito.Mockito.*
 import org.springframework.security.test.context.support.WithUserDetails
-
-import org.mockito.Mockito.`when` as every
 
 private val objectMapper = ObjectMapper()
 
@@ -39,8 +38,7 @@ private val objectMapper = ObjectMapper()
 @AutoConfigureMockMvc
 // TODO: use a faker library
 class UserControllerTests {
-
-  @MockBean
+  @MockkBean
   private lateinit var userProvider: UserProvider
 
   @Autowired
@@ -61,13 +59,15 @@ class UserControllerTests {
       users.size.toLong()
     )
 
-    every(userProvider.findAll(page = 0, offset = USER_PAGINATION_OFFSET)).thenReturn(page)
+    every { userProvider.findAll(page = 0, offset = USER_PAGINATION_OFFSET) } returns page
 
     mockMvc.perform(get(INDEX_ENDPOINT).contentType(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
-    verify(userProvider, times(1)).findAll(page = 0, offset = USER_PAGINATION_OFFSET)
+    verify(atMost = 1, atLeast = 1) {
+      userProvider.findAll(page = 0, offset = USER_PAGINATION_OFFSET)
+    }
   }
 
   @Test
@@ -76,13 +76,15 @@ class UserControllerTests {
     val user = User.mock()
     val id = user.id.value
 
-    every(userProvider.findById(id)).thenReturn(user)
+    every { userProvider.findById(id) } returns user
 
     mockMvc.perform(get(SHOW_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
-    verify(userProvider, times(1)).findById(id)
+    verify(atMost = 1, atLeast = 1) {
+      userProvider.findById(id)
+    }
   }
 
   @Test
@@ -96,7 +98,7 @@ class UserControllerTests {
       password = user.password
     )
 
-    every(userProvider.save(any())).thenReturn(user)
+    every { userProvider.save(allAny()) } returns user
 
     mockMvc.perform(post(STORE_ENDPOINT)
       .contentType(APPLICATION_JSON)
@@ -105,7 +107,9 @@ class UserControllerTests {
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
-    verify(userProvider, times(1)).save(any())
+    verify(atMost = 1, atLeast = 1) {
+      userProvider.save(allAny())
+    }
   }
 
   @Test
@@ -120,8 +124,8 @@ class UserControllerTests {
       password = user.password
     )
 
-    every(userProvider.findById(id)).thenReturn(user)
-    every(userProvider.save(any())).thenReturn(user)
+    every { userProvider.findById(id) } returns user
+    every { user.update(any(), any()) } returns user
 
     mockMvc.perform(put(UPDATE_ENDPOINT.replace("{id}", id.toString()))
       .contentType(APPLICATION_JSON)
@@ -130,8 +134,13 @@ class UserControllerTests {
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
-    verify(userProvider, times(1)).findById(id)
-    verify(userProvider, times(1)).save(any())
+    verify(atMost = 1, atLeast = 1) {
+      userProvider.findById(1)
+    }
+
+    verify(atMost = 1, atLeast = 1) {
+      user.update(any(), any())
+    }
   }
 
   @Test
@@ -140,14 +149,16 @@ class UserControllerTests {
     val user = User.mock()
     val id = user.id.value
 
-    every(userProvider.deleteById(id)).then {
-      // do nothing.
+    every { userProvider.deleteById(id) } answers {
+      // nothing.
     }
 
     mockMvc.perform(delete(DESTROY_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON))
       .andExpect(status().isNoContent)
 
-    verify(userProvider, times(1)).deleteById(id)
+    verify(atMost = 1, atLeast = 1) {
+      userProvider.deleteById(id)
+    }
   }
 
 }
