@@ -12,7 +12,7 @@ class UserSerializer : StdSerializer<User>(User::class.java) {
     gen.writeNumberField("id", user.id.value)
     gen.writeStringField("username", user.username)
     gen.writeStringField("email", user.email)
-    gen.writeObjectField("profile", user.profile)
+    gen.writeObjectField("profile", runCatching { user.profile }.getOrNull())
 
     gen.writeEndObject()
   }
