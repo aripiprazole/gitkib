@@ -1,11 +1,14 @@
 package com.lorenzoog.gitkib.userservice.entities
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.lorenzoog.gitkib.userservice.serializers.ProfileSerializer
 import com.lorenzoog.gitkib.userservice.tables.ProfileTable
 import com.lorenzoog.gitkib.userservice.tables.UserTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
+@JsonSerialize(using = ProfileSerializer::class)
 class Profile(id: EntityID<Long>): LongEntity(id) {
   var name: String by ProfileTable.name
 
