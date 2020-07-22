@@ -11,8 +11,8 @@ import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 import org.springframework.security.core.userdetails.UserDetailsService
 
-val job = Job()
-val coroutineScope = CoroutineScope(job + Dispatchers.Default)
+private val job = Job()
+private val coroutineScope = CoroutineScope(job + Dispatchers.Default)
 
 val defaultBeans = beans {
   bean<UserProvider>()
