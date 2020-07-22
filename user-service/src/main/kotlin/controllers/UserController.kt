@@ -7,6 +7,9 @@ import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.services.update
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import org.jetbrains.exposed.sql.SizedCollection
 import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
@@ -27,8 +30,9 @@ const val USER_PAGINATION_OFFSET = 15
 @RestController
 @Suppress("unused")
 class UserController(
-  val userProvider: UserProvider,
-  val passwordEncoder: PasswordEncoder
+  private val userProvider: UserProvider,
+  private val passwordEncoder: PasswordEncoder,
+  private val coroutineScope: CoroutineScope
 ) {
 
   companion object {
@@ -46,9 +50,10 @@ class UserController(
    */
   @GetMapping(INDEX_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
-  suspend fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
-    return userProvider.findAll(page, USER_PAGINATION_OFFSET)
-  }
+  fun indexAsync(@RequestParam(defaultValue = "0") page: Int): Deferred<Page<User>> =
+    coroutineScope.async {
+      userProvider.findAll(page, USER_PAGINATION_OFFSET)
+    }
 
   /**
    * Provides the user with id [id].
@@ -57,9 +62,10 @@ class UserController(
    */
   @GetMapping(SHOW_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
-  suspend fun show(@PathVariable id: Long): User {
-    return userProvider.findById(id)
-  }
+  fun showAsync(@PathVariable id: Long): Deferred<User> =
+    coroutineScope.async {
+      userProvider.findById(id)
+    }
 
   /**
    * Creates a new user with data provided in [body].
@@ -67,14 +73,15 @@ class UserController(
    * @return the user created.
    */
   @PostMapping(STORE_ENDPOINT, REGISTER_ENDPOINT)
-  suspend fun store(@Valid @RequestBody body: UserCreateBody): User {
-    return userProvider.save {
-      email = body.email
-      username = body.username
-      password = passwordEncoder.encode(body.password)
-      roles = SizedCollection()
+  fun storeAsync(@Valid @RequestBody body: UserCreateBody): Deferred<User> =
+    coroutineScope.async {
+      userProvider.save {
+        email = body.email
+        username = body.username
+        password = passwordEncoder.encode(body.password)
+        roles = SizedCollection()
+      }
     }
-  }
 
   /**
    * Updates the user with id [id].
@@ -83,11 +90,12 @@ class UserController(
    */
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_USER}')")
-  suspend fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
-    return userProvider
-      .findById(id)
-      .update(passwordEncoder, body)
-  }
+  fun updateAsync(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): Deferred<User> =
+    coroutineScope.async {
+      userProvider
+        .findById(id)
+        .update(passwordEncoder, body)
+    }
 
   /**
    * Deletes from database the user with id [id]
@@ -96,13 +104,14 @@ class UserController(
    */
   @DeleteMapping(DESTROY_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.DELETE_USER}')")
-  suspend fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
-    userProvider.deleteById(id)
+  fun destroyAsync(@PathVariable id: Long): Deferred<ResponseEntity<Any>> =
+    coroutineScope.async {
+      userProvider.deleteById(id)
 
-    return ResponseEntity
-      .noContent()
-      .build<Any>()
-  }
+      ResponseEntity
+        .noContent()
+        .build<Any>()
+    }
 
 
   /**
