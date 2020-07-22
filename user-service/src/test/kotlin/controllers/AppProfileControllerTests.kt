@@ -11,6 +11,7 @@ import com.lorenzoog.gitkib.userservice.entities.Profile
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.ProfileProvider
 import com.lorenzoog.gitkib.userservice.utils.mock
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -45,7 +46,7 @@ class AppProfileControllerTests {
   private lateinit var mockMvc: MockMvc
 
   @Test
-  fun `test should show profiles paginated when GET ProfileController@index`() {
+  fun `test should show profiles paginated when GET ProfileController@index`() = runBlocking {
     val profiles = listOf(
       Profile.mock(User.mock()),
       Profile.mock(User.mock()),
@@ -65,10 +66,12 @@ class AppProfileControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
     verify(profileProvider, times(1)).findAll(page = 0, offset = PROFILE_PAGINATION_OFFSET)
+
+    Unit
   }
 
   @Test
-  fun `test should show user that have id 1 when GET ProfileController@show with id path variable 1`() {
+  fun `test should show user that have id 1 when GET ProfileController@show with id path variable 1`() = runBlocking {
     val profile = Profile.mock(User.mock())
     val id = profile.user!!.id.value
 
@@ -79,11 +82,13 @@ class AppProfileControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(profile)))
 
     verify(profileProvider, times(1)).findByUserId(id)
+
+    Unit
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should update profile in database that have the user id 1 and return that in the http response when PUT ProfileController@update with id path variable 1`() {
+  fun `test should update profile in database that have the user id 1 and return that in the http response when PUT ProfileController@update with id path variable 1`() = runBlocking {
     val profile = Profile.mock(User.mock())
     val id = profile.user!!.id.value
 
@@ -109,6 +114,8 @@ class AppProfileControllerTests {
 
     verify(profileProvider, times(1)).findByUserId(id)
     verify(profileProvider, times(1)).save(any())
+
+    Unit
   }
 
 }

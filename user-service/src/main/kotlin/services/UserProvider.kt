@@ -4,14 +4,14 @@ import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.tables.UserTable
 import com.lorenzoog.gitkib.userservice.utils.findAll
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
-fun User.update(passwordEncoder: PasswordEncoder, body: UserUpdateBody): User {
-  transaction {
+suspend fun User.update(passwordEncoder: PasswordEncoder, body: UserUpdateBody): User {
+  newSuspendedTransaction {
     body.email?.let { email = it }
     body.password?.let { password = passwordEncoder.encode(it) }
     body.username?.let { username = it }
@@ -29,25 +29,25 @@ class UserProvider : EntityProvider<User> {
    * @return user with username [username].
    * @throws ResourceNotFoundException if couldn't find the entity with username [username].
    */
-  fun findByUsername(username: String) = transaction {
+  suspend fun findByUsername(username: String) = newSuspendedTransaction {
     User.find { UserTable.username eq username }
       .limit(n = 1)
       .firstOrNull() ?: throw ResourceNotFoundException()
   }
 
-  override fun findAll(page: Int, offset: Int) = transaction {
+  override suspend fun findAll(page: Int, offset: Int) = newSuspendedTransaction {
     User.findAll(PageRequest.of(page, offset))
   }
 
-  override fun findById(id: Long) = transaction {
+  override suspend fun findById(id: Long) = newSuspendedTransaction {
     User.findById(id) ?: throw ResourceNotFoundException()
   }
 
-  override fun save(entityBuilder: User.() -> Unit) = transaction {
+  override suspend fun save(entityBuilder: User.() -> Unit) = newSuspendedTransaction {
     User.new(entityBuilder)
   }
 
-  override fun deleteById(id: Long) = transaction {
+  override suspend fun deleteById(id: Long) = newSuspendedTransaction {
     findById(id).delete()
   }
 }

@@ -47,7 +47,7 @@ class AuthController(
    * @return a response with the token
    */
   @PostMapping(AUTHENTICATE_ENDPOINT)
-  fun authenticate(@Valid @RequestBody body: UserAuthenticateBody): ResponseEntity<Map<String, String>> {
+  suspend fun authenticate(@Valid @RequestBody body: UserAuthenticateBody): ResponseEntity<Map<String, String>> {
     val username = body.username
 
     val token = UsernamePasswordAuthenticationToken(username, body.password, emptyList())

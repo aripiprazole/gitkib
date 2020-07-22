@@ -35,7 +35,7 @@ class AppProfileController(
    * @return the page that contains the profiles.
    */
   @GetMapping(INDEX_ENDPOINT)
-  fun index(@RequestParam(defaultValue = "0") page: Int): Page<Profile> {
+  suspend fun index(@RequestParam(defaultValue = "0") page: Int): Page<Profile> {
     return profileProvider.findAll(page, PROFILE_PAGINATION_OFFSET)
   }
 
@@ -45,7 +45,7 @@ class AppProfileController(
    * @return the profile.
    */
   @GetMapping(SHOW_ENDPOINT)
-  fun show(@PathVariable id: Long): Profile {
+  suspend fun show(@PathVariable id: Long): Profile {
     return profileProvider.findByUserId(id)
   }
 
@@ -56,7 +56,7 @@ class AppProfileController(
    */
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_PROFILE}')")
-  fun update(@PathVariable id: Long, @Valid @RequestBody body: ProfileUpdateBody): Profile {
+  suspend fun update(@PathVariable id: Long, @Valid @RequestBody body: ProfileUpdateBody): Profile {
     return profileProvider
       .findByUserId(id)
       .update(body)
