@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod.GET
-import org.springframework.http.HttpMethod.POST
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
+import org.springframework.security.config.web.servlet.invoke
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -38,22 +37,26 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
   }
 
   override fun configure(http: HttpSecurity) {
-    http.cors()
-      .and().csrf().disable()
+    http {
+      cors { }
+      httpBasic { }
+      csrf {
+        disable()
+      }
 
-      .userDetailsService(userDetailsService)
+      authorizeRequests {
+        authorize(AppProfileController.INDEX_ENDPOINT, permitAll)
+        authorize(AppProfileController.SHOW_ENDPOINT, permitAll)
 
-      .authorizeRequests()
+        authorize("**", authenticated)
+      }
 
-      .antMatchers(GET, AppProfileController.INDEX_ENDPOINT, AppProfileController.SHOW_ENDPOINT).permitAll()
+      sessionManagement {
+        sessionCreationPolicy = STATELESS
+      }
 
-      .antMatchers(POST, AuthController.AUTHENTICATE_ENDPOINT, AuthController.REGISTER_ENDPOINT).permitAll()
-
-      .anyRequest().authenticated()
-
-      .and().addFilter(JwtAuthenticationFilter(jwtAlgorithm(), userDetailsService, authenticationManager()))
-
-      .sessionManagement().sessionCreationPolicy(STATELESS)
+      http.addFilter(JwtAuthenticationFilter(jwtAlgorithm(), userDetailsService, authenticationManager()))
+    }
   }
 
   @Bean
