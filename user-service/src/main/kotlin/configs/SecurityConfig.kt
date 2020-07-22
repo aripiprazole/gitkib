@@ -28,12 +28,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
   @Value("\${password.encoder.strength}")
   private var passwordEncoderStrength = 0
 
-  private lateinit var userDetailsService: UserDetailsService
-
   @Autowired
-  fun setupUserProvider(userProvider: UserProvider) {
-    this.userDetailsService = UsernameUserDetailsService(userProvider)
-  }
+  private lateinit var userDetailsService: UserDetailsService
 
   override fun configure(http: HttpSecurity) {
     http {
@@ -63,9 +59,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
   @Bean
   fun jwtAlgorithm(): Algorithm = Algorithm.HMAC512(jwtSecret)
-
-  @Bean("userDetailService")
-  override fun userDetailsServiceBean(): UserDetailsService = userDetailsService
 
   @Bean("authenticationManager")
   override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
