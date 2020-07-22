@@ -13,6 +13,7 @@ import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.security.auth.AUTHENTICATION_HEADER
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.utils.mock
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.any
 import org.jetbrains.exposed.sql.SizedCollection
 import org.junit.jupiter.api.Test
@@ -54,11 +55,8 @@ class AuthControllerTests {
   @Autowired
   private lateinit var mockMvc: MockMvc
 
-  @Autowired
-  private lateinit var passwordEncoder: PasswordEncoder
-
   @Test
-  fun `test should login correctly and send the jwt token in the http response`() {
+  fun `test should login correctly and send the jwt token in the http response`() = runBlocking {
     val password = "fake password"
 
     val user = User.mock().apply {
@@ -77,10 +75,12 @@ class AuthControllerTests {
       .content(objectMapper.writeValueAsString(body)))
 
       .andExpect(jsonPath("token", any(String::class.java)))
+
+    Unit
   }
 
   @Test
-  fun `test should store user in database and return that in the http response when POST UserController@store with REGISTER_ENDPOINT`() {
+  fun `test should store user in database and return that in the http response when POST UserController@store with REGISTER_ENDPOINT`() = runBlocking {
     val user = User.mock()
 
     val body = UserCreateBody(
@@ -99,10 +99,12 @@ class AuthControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
     verify(userProvider, times(1)).save(any())
+
+    Unit
   }
 
   @Test
-  fun `test should view users of database and return that in the http response when GET UserController@index and the requester is authenticated`() {
+  fun `test should view users of database and return that in the http response when GET UserController@index and the requester is authenticated`() = runBlocking {
     val user = User.mock {
       roles = SizedCollection(Role.mock {
         privileges = SizedCollection(Privilege.mock {
@@ -146,6 +148,8 @@ class AuthControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
     verify(userProvider, times(1)).findAll(page = 0, offset = USER_PAGINATION_OFFSET)
+
+    Unit
   }
 
 }

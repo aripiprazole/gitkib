@@ -46,7 +46,7 @@ class UserController(
    */
   @GetMapping(INDEX_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
-  fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
+  suspend fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
     return userProvider.findAll(page, USER_PAGINATION_OFFSET)
   }
 
@@ -57,7 +57,7 @@ class UserController(
    */
   @GetMapping(SHOW_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
-  fun show(@PathVariable id: Long): User {
+  suspend fun show(@PathVariable id: Long): User {
     return userProvider.findById(id)
   }
 
@@ -67,7 +67,7 @@ class UserController(
    * @return the user created.
    */
   @PostMapping(STORE_ENDPOINT, REGISTER_ENDPOINT)
-  fun store(@Valid @RequestBody body: UserCreateBody): User {
+  suspend fun store(@Valid @RequestBody body: UserCreateBody): User {
     return userProvider.save {
       email = body.email
       username = body.username
@@ -83,7 +83,7 @@ class UserController(
    */
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_USER}')")
-  fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
+  suspend fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
     return userProvider
       .findById(id)
       .update(passwordEncoder, body)
@@ -96,7 +96,7 @@ class UserController(
    */
   @DeleteMapping(DESTROY_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.DELETE_USER}')")
-  fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
+  suspend fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
     userProvider.deleteById(id)
 
     return ResponseEntity

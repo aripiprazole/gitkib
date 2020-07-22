@@ -14,6 +14,7 @@ import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.services.update
 import com.lorenzoog.gitkib.userservice.utils.mock
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -49,7 +50,7 @@ class UserControllerTests {
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should show users paginated when GET UserController@index`() {
+  fun `test should show users paginated when GET UserController@index`() = runBlocking {
     val users = listOf(
       User.mock(),
       User.mock(),
@@ -69,11 +70,13 @@ class UserControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
     verify(userProvider, times(1)).findAll(page = 0, offset = USER_PAGINATION_OFFSET)
+
+    Unit
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should show user that have id 1 when GET UserController@show with id path variable 1`() {
+  fun `test should show user that have id 1 when GET UserController@show with id path variable 1`() = runBlocking {
     val user = User.mock()
     val id = user.id.value
 
@@ -84,11 +87,13 @@ class UserControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
     verify(userProvider, times(1)).findById(id)
+
+    Unit
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should store user in database and return that in the http response when POST UserController@store`() {
+  fun `test should store user in database and return that in the http response when POST UserController@store`() = runBlocking {
     val user = User.mock()
 
     val body = UserCreateBody(
@@ -107,11 +112,13 @@ class UserControllerTests {
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
     verify(userProvider, times(1)).save(any())
+
+    Unit
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should update user in database that have the id 1 and return that in the http response when PUT UserController@update with id path variable 1`() {
+  fun `test should update user in database that have the id 1 and return that in the http response when PUT UserController@update with id path variable 1`() = runBlocking {
     val user = User.mock()
     val id = user.id.value
 
@@ -133,11 +140,13 @@ class UserControllerTests {
 
     verify(userProvider, times(1)).findById(id)
     verify(user, times(1)).update(any(), any())
+
+    Unit
   }
 
   @Test
   @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should delete user that have the id 1 and return no content http response when DELETE UserController@destroy with id path variable 1`() {
+  fun `test should delete user that have the id 1 and return no content http response when DELETE UserController@destroy with id path variable 1`() = runBlocking {
     val user = User.mock()
     val id = user.id.value
 
@@ -149,6 +158,8 @@ class UserControllerTests {
       .andExpect(status().isNoContent)
 
     verify(userProvider, times(1)).deleteById(id)
+
+    Unit
   }
 
 }

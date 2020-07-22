@@ -16,6 +16,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 repositories {
   mavenCentral()
   jcenter()
+  maven("https://dl.bintray.com/konrad-kaminski/maven")
 }
 
 dependencies {
@@ -27,6 +28,10 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+
+  implementation("org.springframework.kotlin:spring-kotlin-coroutine:0.3.7")
+  implementation("org.springframework.kotlin:spring-webmvc-kotlin-coroutine:0.3.7")
+  implementation("org.springframework.kotlin:spring-webflux-kotlin-coroutine:0.3.7")
 
   implementation("org.jetbrains.exposed:exposed-spring-boot-starter:0.26.1")
 

@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.kotlin.coroutine.EnableCoroutine
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableAsync
 @EnableScheduling
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableCoroutine
 class UserServiceApplication {
 
   @Bean("healthChecker")

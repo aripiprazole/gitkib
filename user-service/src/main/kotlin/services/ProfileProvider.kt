@@ -3,6 +3,7 @@ package com.lorenzoog.gitkib.userservice.services
 import com.lorenzoog.gitkib.userservice.bodies.ProfileUpdateBody
 import com.lorenzoog.gitkib.userservice.entities.Profile
 import com.lorenzoog.gitkib.userservice.utils.findAll
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
@@ -31,23 +32,23 @@ class ProfileProvider(private val userProvider: UserProvider) : EntityProvider<P
    * @return user with id [id].
    * @throws ResourceNotFoundException if couldn't find the entity with id [id].
    */
-  fun findByUserId(id: Long) = transaction {
+  suspend fun findByUserId(id: Long) = newSuspendedTransaction {
     userProvider.findById(id).profile!!
   }
 
-  override fun findAll(page: Int, offset: Int) = transaction {
+  override suspend fun findAll(page: Int, offset: Int) = newSuspendedTransaction {
     Profile.findAll(PageRequest.of(page, offset))
   }
 
-  override fun findById(id: Long) = transaction {
+  override suspend fun findById(id: Long) = newSuspendedTransaction {
     Profile.findById(id) ?: throw ResourceNotFoundException()
   }
 
-  override fun save(entityBuilder: Profile.() -> Unit) = transaction {
+  override suspend fun save(entityBuilder: Profile.() -> Unit) = newSuspendedTransaction {
     Profile.new(entityBuilder)
   }
 
-  override fun deleteById(id: Long) = transaction {
+  override suspend fun deleteById(id: Long) = newSuspendedTransaction {
     findById(id).delete()
   }
 }

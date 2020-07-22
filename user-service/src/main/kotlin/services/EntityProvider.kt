@@ -13,7 +13,7 @@ interface EntityProvider<T> {
    *
    * @return the page with the entities found in page [page] with offset [offset].
    */
-  fun findAll(page: Int, offset: Int): Page<T>
+  suspend fun findAll(page: Int, offset: Int): Page<T>
 
   /**
    * Return the entity by its id(and probably cached).
@@ -22,20 +22,20 @@ interface EntityProvider<T> {
    * @throws ResourceNotFoundException if couldn't find the entity with id [id]
    */
   @Throws(ResourceNotFoundException::class)
-  fun findById(id: Long): T
+  suspend fun findById(id: Long): T
 
   /**
    * Persist the entity [entityBuilder] in database(and probably cache then)
    *
    * @return the persisted entity
    */
-  fun save(entityBuilder: T.() -> Unit): T
+  suspend fun save(entityBuilder: T.() -> Unit): T
 
   /**
    * Deletes a persisted entity(and probably from the cache also)
    *
    * @return [Unit]
    */
-  fun deleteById(id: Long)
+  suspend fun deleteById(id: Long)
 
 }
