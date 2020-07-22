@@ -5,6 +5,9 @@ import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.Profile
 import com.lorenzoog.gitkib.userservice.services.ProfileProvider
 import com.lorenzoog.gitkib.userservice.services.update
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus
@@ -20,7 +23,8 @@ const val PROFILE_PAGINATION_OFFSET = 15
 @RestController
 @Suppress("unused")
 class AppProfileController(
-  private val profileProvider: ProfileProvider
+  private val profileProvider: ProfileProvider,
+  private val coroutineScope: CoroutineScope
 ) {
 
   companion object {
@@ -35,9 +39,10 @@ class AppProfileController(
    * @return the page that contains the profiles.
    */
   @GetMapping(INDEX_ENDPOINT)
-  suspend fun index(@RequestParam(defaultValue = "0") page: Int): Page<Profile> {
-    return profileProvider.findAll(page, PROFILE_PAGINATION_OFFSET)
-  }
+  fun indexAsync(@RequestParam(defaultValue = "0") page: Int): Deferred<Page<Profile>> =
+    coroutineScope.async {
+      profileProvider.findAll(page, PROFILE_PAGINATION_OFFSET)
+    }
 
   /**
    * Provides the profile of user with id [id].
@@ -45,9 +50,10 @@ class AppProfileController(
    * @return the profile.
    */
   @GetMapping(SHOW_ENDPOINT)
-  suspend fun show(@PathVariable id: Long): Profile {
-    return profileProvider.findByUserId(id)
-  }
+  fun showAsync(@PathVariable id: Long): Deferred<Profile> =
+    coroutineScope.async {
+      profileProvider.findByUserId(id)
+    }
 
   /**
    * Updates the profile of user with id [id].
@@ -56,11 +62,12 @@ class AppProfileController(
    */
   @PutMapping(UPDATE_ENDPOINT)
   @PreAuthorize("hasAuthority('${Privilege.UPDATE_PROFILE}')")
-  suspend fun update(@PathVariable id: Long, @Valid @RequestBody body: ProfileUpdateBody): Profile {
-    return profileProvider
-      .findByUserId(id)
-      .update(body)
-  }
+  fun updateAsync(@PathVariable id: Long, @Valid @RequestBody body: ProfileUpdateBody): Deferred<Profile> =
+    coroutineScope.async {
+      profileProvider
+        .findByUserId(id)
+        .update(body)
+    }
 
 
   /**
