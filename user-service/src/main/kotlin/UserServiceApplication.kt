@@ -1,5 +1,6 @@
 package com.lorenzoog.gitkib.userservice
 
+import com.lorenzoog.gitkib.userservice.configs.defaultBeans
 import com.lorenzoog.gitkib.userservice.discovery.setupConsulDiscovery
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -28,5 +29,7 @@ class UserServiceApplication {
 fun main(args: Array<String>) {
   setupConsulDiscovery()
 
-  runApplication<UserServiceApplication>(*args)
+  runApplication<UserServiceApplication>(*args) {
+    addInitializers(defaultBeans)
+  }
 }
