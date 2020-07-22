@@ -1,4 +1,4 @@
-package com.lorenzoog.gitkib.userservice.security.auth
+package com.lorenzoog.gitkib.userservice.auth
 
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.services.UserProvider
