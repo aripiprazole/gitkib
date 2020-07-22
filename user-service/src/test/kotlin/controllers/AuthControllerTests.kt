@@ -10,7 +10,7 @@ import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REG
 import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.Role
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.security.auth.AUTHENTICATION_HEADER
+import com.lorenzoog.gitkib.userservice.auth.AUTHENTICATION_HEADER
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.utils.mock
 import kotlinx.coroutines.runBlocking
