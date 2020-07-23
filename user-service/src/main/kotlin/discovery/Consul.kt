@@ -20,7 +20,7 @@ private lateinit var agentClient: AgentClient
 @Suppress("unused")
 class ConsulDiscovery {
   @Async("healthChecker")
-  @Scheduled(fixedRate = SERVICE_CHECK_TTL)
+  @Scheduled(initialDelay = 1000L, fixedRate = SERVICE_CHECK_TTL)
   fun handleHealthCheck() {
     if (!::agentClient.isInitialized) return
 
