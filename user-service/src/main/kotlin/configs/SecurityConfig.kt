@@ -36,7 +36,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
   override fun configure(http: HttpSecurity) {
     http {
       cors { }
-      httpBasic { }
       csrf {
         disable()
       }
