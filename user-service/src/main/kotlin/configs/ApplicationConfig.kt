@@ -15,8 +15,6 @@ private val job = Job()
 private val coroutineScope = CoroutineScope(job + Dispatchers.Default)
 
 val defaultBeans = beans {
-  bean<UserProvider>()
-
   bean<UserDetailsService>("userDetailService") {
     UsernameUserDetailsService(ref())
   }
