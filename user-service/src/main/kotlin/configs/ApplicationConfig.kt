@@ -25,6 +25,3 @@ val defaultBeans = beans {
 
   bean("coroutineScope") { coroutineScope }
 }
-
-@Configuration
-class ApplicationConfig
