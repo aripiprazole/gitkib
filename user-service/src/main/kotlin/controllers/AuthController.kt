@@ -3,9 +3,6 @@ package com.lorenzoog.gitkib.userservice.controllers
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.lorenzoog.gitkib.userservice.bodies.UserAuthenticateBody
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -27,14 +24,13 @@ const val JWT_EXPIRES_AT: Long =
  *
  * @param authenticationManager current authentication manager
  * @param jwtAlgorithm application jwt algorithm
- * @param coroutineScope coroutine scope injected
  */
 @RestController
 @Suppress("unused")
 class AuthController(
   private val authenticationManager: AuthenticationManager,
-  private val jwtAlgorithm: Algorithm,
-  private val coroutineScope: CoroutineScope
+
+  private val jwtAlgorithm: Algorithm
 ) {
 
   companion object {
@@ -51,27 +47,26 @@ class AuthController(
    * @return a response with the token
    */
   @PostMapping(AUTHENTICATE_ENDPOINT)
-  fun authenticateAsync(@Valid @RequestBody body: UserAuthenticateBody): Deferred<ResponseEntity<Map<String, String>>> =
-    coroutineScope.async {
-      val username = body.username
+  suspend fun authenticate(@Valid @RequestBody body: UserAuthenticateBody): ResponseEntity<Map<String, String>> {
+    val username = body.username
 
-      val token = UsernamePasswordAuthenticationToken(username, body.password, emptyList())
+    val token = UsernamePasswordAuthenticationToken(username, body.password, emptyList())
 
-      authenticationManager.authenticate(token) // if couldn't login, will throw an exception that will be handled by [onAuthenticationException]
+    authenticationManager.authenticate(token) // if couldn't login, will throw an exception that will be handled by [onAuthenticationException]
 
-      val now = Instant.now()
+    val now = Instant.now()
 
-      val jwtToken =
-        JWT.create()
-          .withSubject(username)
-          .withIssuedAt(Date.from(now))
-          .withIssuer(jwtIssuer)
-          .withExpiresAt(Date.from(now.plusMillis(JWT_EXPIRES_AT)))
-          .sign(jwtAlgorithm)
+    val jwtToken =
+      JWT.create()
+        .withSubject(username)
+        .withIssuedAt(Date.from(now))
+        .withIssuer(jwtIssuer)
+        .withExpiresAt(Date.from(now.plusMillis(JWT_EXPIRES_AT)))
+        .sign(jwtAlgorithm)
 
-      ResponseEntity.ok(mapOf(
-        "token" to jwtToken
-      ))
-    }
+    return ResponseEntity.ok(mapOf(
+      "token" to jwtToken
+    ))
+  }
 
 }
