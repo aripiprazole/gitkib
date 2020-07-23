@@ -3,10 +3,8 @@ package com.lorenzoog.gitkib.userservice.configs
 import com.auth0.jwt.algorithms.Algorithm
 import com.lorenzoog.gitkib.userservice.controllers.AppProfileController
 import com.lorenzoog.gitkib.userservice.auth.JwtAuthenticationFilter
-import com.lorenzoog.gitkib.userservice.auth.UsernameUserDetailsService
 import com.lorenzoog.gitkib.userservice.controllers.UserController
 import com.lorenzoog.gitkib.userservice.entities.Privilege
-import com.lorenzoog.gitkib.userservice.services.UserProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
