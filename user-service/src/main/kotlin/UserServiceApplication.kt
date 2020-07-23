@@ -1,6 +1,7 @@
 package com.lorenzoog.gitkib.userservice
 
 import com.lorenzoog.gitkib.userservice.auth.UsernameUserDetailsService
+import com.lorenzoog.gitkib.userservice.configs.setupRoutes
 import com.lorenzoog.gitkib.userservice.discovery.setupConsulDiscovery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +43,8 @@ fun main(args: Array<String>) {
       }
 
       bean("coroutineScope") { coroutineScope }
+
+      bean(::setupRoutes)
     })
   }
 }
