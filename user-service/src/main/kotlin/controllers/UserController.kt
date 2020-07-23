@@ -2,20 +2,18 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
-import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REGISTER_ENDPOINT
-import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.services.update
+import com.lorenzoog.gitkib.userservice.utils.await
 import org.jetbrains.exposed.sql.SizedCollection
 import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+import org.springframework.web.reactive.function.server.*
+import java.net.URI
 
 const val USER_PAGINATION_OFFSET = 15
 
@@ -40,68 +38,84 @@ class UserController(
   }
 
   /**
-   * Provides all users that page [page] contains.
+   * Provides all users that page [request] contains.
    *
    * @return the page that contains the users.
    */
-  @GetMapping(INDEX_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
-  suspend fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
-    return userProvider.findAll(page, USER_PAGINATION_OFFSET)
+  suspend fun index(request: ServerRequest): ServerResponse {
+    val page = request.queryParam("page").orElse("0").toInt()
+
+    return ServerResponse
+      .ok()
+      .body<Page<User>>(userProvider.findAll(page, USER_PAGINATION_OFFSET))
+      .await()
   }
 
   /**
-   * Provides the user with id [id].
+   * Provides the user with id in [request].
    *
    * @return the user.
    */
-  @GetMapping(SHOW_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
-  suspend fun show(@PathVariable id: Long): User {
-    return userProvider.findById(id)
+  suspend fun show(request: ServerRequest): ServerResponse {
+    val id = request.pathVariable("id").toLong()
+
+    return ServerResponse
+      .ok()
+      .body<User>(userProvider.findById(id))
+      .await()
   }
 
   /**
-   * Creates a new user with data provided in [body].
+   * Creates a new user with data provided in [request].
    *
    * @return the user created.
    */
-  @PostMapping(STORE_ENDPOINT, REGISTER_ENDPOINT)
-  suspend fun store(@Valid @RequestBody body: UserCreateBody): User {
-    return userProvider.save {
+  suspend fun store(request: ServerRequest): ServerResponse {
+    val body = request.awaitBody<UserCreateBody>()
+    val user = userProvider.save {
       email = body.email
       username = body.username
       password = passwordEncoder.encode(body.password)
       roles = SizedCollection()
     }
+    val createdAt = URI(SHOW_ENDPOINT.replace("{id}", user.id.toString()))
+
+    return ServerResponse
+      .created(createdAt)
+      .body<User>(user)
+      .await()
   }
 
   /**
-   * Updates the user with id [id].
+   * Updates the user with id in [request].
    *
    * @return the user updated.
    */
-  @PutMapping(UPDATE_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.UPDATE_USER}')")
-  suspend fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
-    return userProvider
-      .findById(id)
-      .update(passwordEncoder, body)
+  suspend fun update(request: ServerRequest): ServerResponse {
+    val id = request.pathVariable("id").toLong()
+    val body = request.awaitBody<UserUpdateBody>()
+
+    return ServerResponse
+      .accepted()
+      .body<User>(userProvider
+        .findById(id)
+        .update(passwordEncoder, body))
+      .await()
   }
 
   /**
-   * Deletes from database the user with id [id]
+   * Deletes from database the user with id in [request]
    *
    * @return a no content response.
    */
-  @DeleteMapping(DESTROY_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.DELETE_USER}')")
-  suspend fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
+  suspend fun destroy(request: ServerRequest): ServerResponse {
+    val id = request.pathVariable("id").toLong()
+
     userProvider.deleteById(id)
 
-    return ResponseEntity
+    return ServerResponse
       .noContent()
-      .build<Any>()
+      .buildAndAwait()
   }
 
 

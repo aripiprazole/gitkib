@@ -4,6 +4,8 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.lorenzoog.gitkib.userservice.controllers.AppProfileController
 import com.lorenzoog.gitkib.userservice.auth.JwtAuthenticationFilter
 import com.lorenzoog.gitkib.userservice.auth.UsernameUserDetailsService
+import com.lorenzoog.gitkib.userservice.controllers.UserController
+import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -42,6 +44,15 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
       authorizeRequests {
         authorize(AppProfileController.INDEX_ENDPOINT, permitAll)
         authorize(AppProfileController.SHOW_ENDPOINT, permitAll)
+
+        authorize(AppProfileController.UPDATE_ENDPOINT, hasAuthority(Privilege.UPDATE_PROFILE))
+
+        authorize(UserController.STORE_ENDPOINT, permitAll)
+
+        authorize(UserController.INDEX_ENDPOINT, hasAuthority(Privilege.VIEW_USER))
+        authorize(UserController.SHOW_ENDPOINT, hasAuthority(Privilege.VIEW_USER))
+        authorize(UserController.UPDATE_ENDPOINT, hasAuthority(Privilege.UPDATE_PROFILE))
+        authorize(UserController.DESTROY_ENDPOINT, hasAuthority(Privilege.DELETE_USER))
 
         authorize("**", authenticated)
       }

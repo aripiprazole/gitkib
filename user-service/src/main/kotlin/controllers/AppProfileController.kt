@@ -1,16 +1,15 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.userservice.bodies.ProfileUpdateBody
-import com.lorenzoog.gitkib.userservice.entities.Privilege
 import com.lorenzoog.gitkib.userservice.entities.Profile
 import com.lorenzoog.gitkib.userservice.services.ProfileProvider
 import com.lorenzoog.gitkib.userservice.services.update
+import com.lorenzoog.gitkib.userservice.utils.await
 import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+import org.springframework.web.reactive.function.server.*
 
 const val PROFILE_PAGINATION_OFFSET = 15
 
@@ -30,36 +29,48 @@ class AppProfileController(
   }
 
   /**
-   * Provides all profiles that page [page] contains.
+   * Provides all profiles that page [request] contains.
    *
    * @return the page that contains the profiles.
    */
-  @GetMapping(INDEX_ENDPOINT)
-  suspend fun index(@RequestParam(defaultValue = "0") page: Int): Page<Profile> {
-    return profileProvider.findAll(page, PROFILE_PAGINATION_OFFSET)
+  suspend fun index(request: ServerRequest): ServerResponse {
+    val page = request.queryParam("page").orElse("0").toInt()
+
+    return ServerResponse
+      .ok()
+      .body<Page<Profile>>(profileProvider.findAll(page, PROFILE_PAGINATION_OFFSET))
+      .await()
   }
 
   /**
-   * Provides the profile of user with id [id].
+   * Provides the profile of user with id in [request].
    *
    * @return the profile.
    */
-  @GetMapping(SHOW_ENDPOINT)
-  suspend fun show(@PathVariable id: Long): Profile {
-    return profileProvider.findByUserId(id)
+  suspend fun show(request: ServerRequest): ServerResponse {
+    val id = request.pathVariable("id").toLong()
+
+    return ServerResponse
+      .ok()
+      .body<Profile>(profileProvider.findByUserId(id))
+      .await()
   }
 
   /**
-   * Updates the profile of user with id [id].
+   * Updates the profile of user with id in [request].
    *
    * @return the profile updated.
    */
-  @PutMapping(UPDATE_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.UPDATE_PROFILE}')")
-  suspend fun update(@PathVariable id: Long, @Valid @RequestBody body: ProfileUpdateBody): Profile {
-    return profileProvider
-      .findByUserId(id)
-      .update(body)
+  suspend fun update(request: ServerRequest): ServerResponse {
+    val id = request.pathVariable("id").toLong()
+    val body = request.awaitBody<ProfileUpdateBody>()
+
+    return ServerResponse
+      .ok()
+      .body<Profile>(profileProvider
+        .findByUserId(id)
+        .update(body))
+      .await()
   }
 
 
