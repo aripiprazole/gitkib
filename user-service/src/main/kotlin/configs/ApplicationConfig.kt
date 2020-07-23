@@ -23,7 +23,7 @@ val defaultBeans = beans {
     ThreadPoolTaskScheduler()
   }
 
-  bean { coroutineScope }
+  bean("coroutineScope") { coroutineScope }
 }
 
 @Configuration
