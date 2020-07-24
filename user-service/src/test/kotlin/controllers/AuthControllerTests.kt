@@ -72,7 +72,8 @@ class AuthControllerTests {
 
     mockMvc.perform(post(AUTHENTICATE_ENDPOINT)
       .contentType(APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(body)))
+      .content(objectMapper.writeValueAsString(body))
+      .accept(APPLICATION_JSON))
 
       .andExpect(jsonPath("token", any(String::class.java)))
 
@@ -93,7 +94,8 @@ class AuthControllerTests {
 
     mockMvc.perform(post(REGISTER_ENDPOINT)
       .contentType(APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(body)))
+      .content(objectMapper.writeValueAsString(body))
+      .accept(APPLICATION_JSON))
 
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))

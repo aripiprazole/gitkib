@@ -65,7 +65,7 @@ class UserControllerTests {
 
     every(userProvider.findAll(page = 0, offset = USER_PAGINATION_OFFSET)).thenReturn(page)
 
-    mockMvc.perform(get(INDEX_ENDPOINT).contentType(APPLICATION_JSON))
+    mockMvc.perform(get(INDEX_ENDPOINT).contentType(APPLICATION_JSON).accept(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
@@ -82,7 +82,7 @@ class UserControllerTests {
 
     every(userProvider.findById(id)).thenReturn(user)
 
-    mockMvc.perform(get(SHOW_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON))
+    mockMvc.perform(get(SHOW_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON).accept(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
 
@@ -106,6 +106,7 @@ class UserControllerTests {
 
     mockMvc.perform(post(STORE_ENDPOINT)
       .contentType(APPLICATION_JSON)
+      .accept(APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(body)))
 
       .andExpect(status().isOk)
@@ -133,7 +134,8 @@ class UserControllerTests {
 
     mockMvc.perform(put(UPDATE_ENDPOINT.replace("{id}", id.toString()))
       .contentType(APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(body)))
+      .content(objectMapper.writeValueAsString(body))
+      .accept(APPLICATION_JSON))
 
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(user)))
@@ -154,7 +156,7 @@ class UserControllerTests {
       // do nothing.
     }
 
-    mockMvc.perform(delete(DESTROY_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON))
+    mockMvc.perform(delete(DESTROY_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON).accept(APPLICATION_JSON))
       .andExpect(status().isNoContent)
 
     verify(userProvider, times(1)).deleteById(id)
