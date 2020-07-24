@@ -40,6 +40,7 @@ dependencies {
   implementation("io.projectreactor.netty:reactor-netty:0.9.10.RELEASE")
 
   implementation("org.slf4j:slf4j-api:1.7.30")
+  implementation("ch.qos.logback:logback-classic:1.2.3")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
