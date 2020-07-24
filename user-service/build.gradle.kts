@@ -22,7 +22,7 @@ inline fun exposed(dependency: String, version: String = "0.24.1") = "org.jetbra
 
 dependencyManagement {
   imports {
-    mavenBom("org.springframework.boot:spring-boot-dependencies:2.1.2.RELEASE")
+    mavenBom("org.springframework.boot:spring-boot-dependencies:2.3.1.RELEASE")
   }
 }
 
@@ -33,7 +33,7 @@ dependencies {
   }
 
   // spring
-  arrayOf("webflux", "context").forEach {
+  arrayOf("webflux", "context", "web", "core").forEach {
     implementation("org.springframework:spring-$it")
   }
 
