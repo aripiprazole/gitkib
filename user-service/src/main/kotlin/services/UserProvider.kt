@@ -2,11 +2,11 @@ package com.lorenzoog.gitkib.userservice.services
 
 import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
 import com.lorenzoog.gitkib.userservice.entities.User
+import com.lorenzoog.gitkib.userservice.exceptions.EntityNotFoundException
 import com.lorenzoog.gitkib.userservice.tables.UserTable
 import com.lorenzoog.gitkib.userservice.utils.findAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -27,12 +27,12 @@ class UserProvider : EntityProvider<User> {
    * Return the entity by its username and cached.
    *
    * @return user with username [username].
-   * @throws ResourceNotFoundException if couldn't find the entity with username [username].
+   * @throws EntityNotFoundException if couldn't find the entity with username [username].
    */
   suspend fun findByUsername(username: String) = newSuspendedTransaction {
     User.find { UserTable.username eq username }
       .limit(n = 1)
-      .firstOrNull() ?: throw ResourceNotFoundException()
+      .firstOrNull() ?: throw EntityNotFoundException()
   }
 
   override suspend fun findAll(page: Int, offset: Int) = newSuspendedTransaction {
@@ -40,7 +40,7 @@ class UserProvider : EntityProvider<User> {
   }
 
   override suspend fun findById(id: Long) = newSuspendedTransaction {
-    User.findById(id) ?: throw ResourceNotFoundException()
+    User.findById(id) ?: throw EntityNotFoundException()
   }
 
   override suspend fun save(entityBuilder: User.() -> Unit) = newSuspendedTransaction {

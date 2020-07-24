@@ -2,11 +2,11 @@ package com.lorenzoog.gitkib.userservice.services
 
 import com.lorenzoog.gitkib.userservice.bodies.ProfileUpdateBody
 import com.lorenzoog.gitkib.userservice.entities.Profile
+import com.lorenzoog.gitkib.userservice.exceptions.EntityNotFoundException
 import com.lorenzoog.gitkib.userservice.utils.findAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.stereotype.Service
 
 fun Profile.update(body: ProfileUpdateBody): Profile {
@@ -30,7 +30,7 @@ class ProfileProvider(private val userProvider: UserProvider) : EntityProvider<P
    * Return the entity by its user id and cached.
    *
    * @return user with id [id].
-   * @throws ResourceNotFoundException if couldn't find the entity with id [id].
+   * @throws EntityNotFoundException if couldn't find the entity with id [id].
    */
   suspend fun findByUserId(id: Long) = newSuspendedTransaction {
     userProvider.findById(id).profile!!
@@ -41,7 +41,7 @@ class ProfileProvider(private val userProvider: UserProvider) : EntityProvider<P
   }
 
   override suspend fun findById(id: Long) = newSuspendedTransaction {
-    Profile.findById(id) ?: throw ResourceNotFoundException()
+    Profile.findById(id) ?: throw EntityNotFoundException()
   }
 
   override suspend fun save(entityBuilder: Profile.() -> Unit) = newSuspendedTransaction {

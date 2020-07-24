@@ -2,11 +2,11 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
+import com.lorenzoog.gitkib.userservice.exceptions.EntityNotFoundException
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.services.update
 import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.exposed.sql.SizedCollection
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
@@ -116,12 +116,12 @@ class UserController(
 
 
   /**
-   * Handles the [ResourceNotFoundException], that is thrown when couldn't find user with that id.
+   * Handles the [EntityNotFoundException], that is thrown when couldn't find user with that id.
    *
    * @return [Unit] nothing.
    */
   @ResponseStatus(value = NOT_FOUND, reason = "Could'nt find the user with that id.")
-  @ExceptionHandler(ResourceNotFoundException::class)
+  @ExceptionHandler(EntityNotFoundException::class)
   fun onResourceNotFoundException() {
     // Automatic handling.
   }
