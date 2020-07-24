@@ -32,7 +32,7 @@ dependencies {
 
   // spring
   arrayOf("webflux", "data-jdbc", "security", "data-elasticsearch").forEach {
-    implementation("org.framework:spring-$it")
+    implementation("org.framework.boot:spring-boot-starter-$it")
   }
 
   // spring kotlin coroutines
@@ -53,6 +53,7 @@ dependencies {
   arrayOf("jdbc", "dao", "core").forEach {
     implementation(exposed(it))
   }
+  implementation(exposed("spring-boot-starter", "0.26.1"))
 
   implementation("com.orbitz.consul:consul-client:1.4.0")
 
