@@ -6,9 +6,9 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
 class User(id: EntityID<Long>) : LongEntity(id) {
-  val username by Users.username
-  val email by Users.email
-  val password by Users.password
+  var username by Users.username
+  var email by Users.email
+  var password by Users.password
 
   companion object : LongEntityClass<User>(Users)
 }
