@@ -3,15 +3,11 @@ package com.lorenzoog.gitkib.userservice.controllers
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.lorenzoog.gitkib.userservice.bodies.UserAuthenticateBody
-import com.lorenzoog.gitkib.userservice.utils.await
+import kotlinx.coroutines.flow.flow
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.web.bind.annotation.*
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.awaitBody
-import org.springframework.web.reactive.function.server.body
+import org.springframework.web.reactive.function.server.*
 import java.time.Instant
 import java.util.*
 
@@ -67,10 +63,11 @@ class AuthController(
 
     return ServerResponse
       .ok()
-      .body<Any>(mapOf(
-        "token" to jwtToken
-      ))
-      .await()
+      .bodyAndAwait(flow {
+        mapOf(
+          "token" to jwtToken
+        )
+      })
   }
 
 }

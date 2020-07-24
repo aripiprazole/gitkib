@@ -2,12 +2,10 @@ package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
 import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
-import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserProvider
 import com.lorenzoog.gitkib.userservice.services.update
-import com.lorenzoog.gitkib.userservice.utils.await
+import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.exposed.sql.SizedCollection
-import org.springframework.data.domain.Page
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -45,8 +43,9 @@ class UserController(
 
     return ServerResponse
       .ok()
-      .body<Page<User>>(userProvider.findAll(page, USER_PAGINATION_OFFSET))
-      .await()
+      .bodyAndAwait(flowOf(
+        userProvider.findAll(page, USER_PAGINATION_OFFSET)
+      ))
   }
 
   /**
@@ -59,8 +58,7 @@ class UserController(
 
     return ServerResponse
       .ok()
-      .body<User>(userProvider.findById(id))
-      .await()
+      .bodyAndAwait(flowOf(userProvider.findById(id)))
   }
 
   /**
@@ -80,8 +78,7 @@ class UserController(
 
     return ServerResponse
       .created(createdAt)
-      .body<User>(user)
-      .await()
+      .bodyAndAwait(flowOf(user))
   }
 
   /**
@@ -95,10 +92,11 @@ class UserController(
 
     return ServerResponse
       .accepted()
-      .body<User>(userProvider
-        .findById(id)
-        .update(passwordEncoder, body))
-      .await()
+      .bodyAndAwait(flowOf(
+        userProvider
+          .findById(id)
+          .update(passwordEncoder, body)
+      ))
   }
 
   /**
