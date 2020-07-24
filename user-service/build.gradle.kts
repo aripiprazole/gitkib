@@ -19,51 +19,64 @@ repositories {
   maven("https://dl.bintray.com/konrad-kaminski/maven")
 }
 
+@Suppress("NOTHING_TO_INLINE")
+inline fun exposed(dependency: String, version: String = "0.24.1") = "org.jetbrains.exposed:exposed-$dependency:$version"
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun spring(rest: String) = "org.springframework.$rest"
+
 dependencies {
-  implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
-  implementation("org.springframework.boot:spring-boot-starter-security")
-  implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
-  implementation("org.springframework.boot:spring-boot-starter-webflux")
-  implementation("org.springframework.boot:spring-boot-starter-data-rest")
-  implementation("org.jetbrains.kotlin:kotlin-reflect")
-  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  // kotlin
+  arrayOf("reflect", "stdlib-jdk8").forEach {
+    implementation(kotlin(it))
+  }
+
+  // spring
+  arrayOf("data-rest", "webflux", "data-jdbc", "security", "data-elasticsearch").forEach {
+    implementation(spring("boot:spring-boot-starter-$it"))
+  }
+
+  // spring kotlin coroutines
+  arrayOf("kotlin-coroutine", "webmvc-kotlin-coroutine", "webflux-kotlin-coroutine").forEach {
+    implementation(spring("kotlin:spring-$it:0.3.7"))
+  }
+
+  // kotlin coroutines
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
 
-  implementation("org.springframework.kotlin:spring-kotlin-coroutine:0.3.7")
-  implementation("org.springframework.kotlin:spring-webmvc-kotlin-coroutine:0.3.7")
-  implementation("org.springframework.kotlin:spring-webflux-kotlin-coroutine:0.3.7")
-
-  implementation("org.jetbrains.exposed:exposed-spring-boot-starter:0.26.1")
-
-  implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
-  implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
-  implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
-
-  implementation("com.orbitz.consul:consul-client:1.4.0")
-
-  implementation("org.hibernate:hibernate-validator:6.1.5.Final")
-  implementation("org.hibernate:hibernate-validator-annotation-processor:6.1.5.Final")
-
-  implementation("javax.validation:validation-api:2.0.1.Final")
-
-  implementation("javassist:javassist:3.12.1.GA")
-
-  implementation("com.auth0:java-jwt:3.4.0")
-
+  // hikari
   implementation("com.zaxxer:HikariCP:3.4.5")
 
-  developmentOnly("org.springframework.boot:spring-boot-devtools")
+  // exposed
+  arrayOf("jdbc", "dao", "core").forEach {
+    implementation(exposed(it))
+  }
+  implementation(exposed("spring-boot-starter", "0.26.1"))
 
+  // consul
+  implementation("com.orbitz.consul:consul-client:1.4.0")
+
+  // validator
+  arrayOf("validator", "validator-annotation-processor").forEach {
+    implementation("org.hibernate:hibernate-$it:6.1.5.Final")
+    implementation("org.hibernate:hibernate-$it:6.1.5.Final")
+  }
+  implementation("javax.validation:validation-api:2.0.1.Final")
+  implementation("javassist:javassist:3.12.1.GA")
+
+  // jwt
+  implementation("com.auth0:java-jwt:3.4.0")
+
+  developmentOnly(spring("boot:spring-boot-devtools"))
+
+  // database driver
   runtimeOnly("org.postgresql:postgresql")
-
   testRuntimeOnly("com.h2database:h2")
 
-  testImplementation("org.mockito:mockito-core:2.+")
+  // test
   testImplementation("junit:junit")
-
-  testImplementation("org.springframework.security:spring-security-test")
-
-  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+  testImplementation(spring("security:spring-security-test"))
+  testImplementation(spring("boot:spring-boot-starter-test")) {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }
 }
