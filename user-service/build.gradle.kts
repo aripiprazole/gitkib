@@ -37,7 +37,7 @@ dependencies {
     implementation("org.springframework:spring-$it")
   }
 
-  implementation("io.projectreactor.netty:reactor-netty:1.0.0-M1")
+  implementation("io.projectreactor.netty:reactor-netty:0.9.10.RELEASE")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
