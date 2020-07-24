@@ -15,8 +15,11 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
   mavenCentral()
+  mavenLocal()
   jcenter()
   maven("https://dl.bintray.com/konrad-kaminski/maven")
+  maven("https://repo.spring.io/milestone")
+  maven("https://repo.spring.io/snapshot")
 }
 
 @Suppress("NOTHING_TO_INLINE")
@@ -40,6 +43,8 @@ dependencies {
   arrayOf("kotlin-coroutine", "webmvc-kotlin-coroutine", "webflux-kotlin-coroutine").forEach {
     implementation(spring("kotlin:spring-$it:0.3.7"))
   }
+
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
   // kotlin coroutines
   arrayOf("core", "reactor").forEach {
@@ -71,6 +76,9 @@ dependencies {
   // database driver
   runtimeOnly("org.postgresql:postgresql")
   testRuntimeOnly("com.h2database:h2")
+
+  // validation
+  implementation("am.ik.yavi:yavi:0.4.0")
 
   // test
   testImplementation("junit:junit")
