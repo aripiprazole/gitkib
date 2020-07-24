@@ -54,6 +54,7 @@ dependencies {
   }
   implementation(exposed("spring-boot-starter", "0.26.1"))
 
+  implementation("com.orbitz.consul:consul-client:1.4.0")
 
   // validator
   arrayOf("validator", "validator-annotation-processor").forEach {
