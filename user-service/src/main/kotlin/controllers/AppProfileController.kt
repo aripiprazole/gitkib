@@ -1,10 +1,10 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.userservice.bodies.ProfileUpdateBody
+import com.lorenzoog.gitkib.userservice.exceptions.EntityNotFoundException
 import com.lorenzoog.gitkib.userservice.services.ProfileProvider
 import com.lorenzoog.gitkib.userservice.services.update
 import kotlinx.coroutines.flow.flowOf
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.function.server.*
@@ -72,12 +72,12 @@ class AppProfileController(
 
 
   /**
-   * Handles the [ResourceNotFoundException], that is thrown when couldn't find profile with that id.
+   * Handles the [EntityNotFoundException], that is thrown when couldn't find profile with that id.
    *
    * @return [Unit] nothing.
    */
   @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Could'nt find the profile with that id.")
-  @ExceptionHandler(ResourceNotFoundException::class)
+  @ExceptionHandler(EntityNotFoundException::class)
   fun onResourceNotFoundException() {
     // Automatic handling.
   }

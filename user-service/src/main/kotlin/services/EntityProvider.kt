@@ -1,7 +1,7 @@
 package com.lorenzoog.gitkib.userservice.services
 
+import com.lorenzoog.gitkib.userservice.exceptions.EntityNotFoundException
 import org.springframework.data.domain.Page
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
 
 /**
  * Class that provide an entity [T].
@@ -19,9 +19,9 @@ interface EntityProvider<T> {
    * Return the entity by its id(and probably cached).
    *
    * @return the entity found with id [id]
-   * @throws ResourceNotFoundException if couldn't find the entity with id [id]
+   * @throws EntityNotFoundException if couldn't find the entity with id [id]
    */
-  @Throws(ResourceNotFoundException::class)
+  @Throws(EntityNotFoundException::class)
   suspend fun findById(id: Long): T
 
   /**
