@@ -31,8 +31,8 @@ dependencies {
   }
 
   // spring
-  arrayOf("webflux", "data-jdbc", "security", "data-elasticsearch").forEach {
-    implementation("org.framework.boot:spring-boot-starter-$it")
+  arrayOf("webflux", "context").forEach {
+    implementation("org.framework:spring-$it")
   }
 
   // spring kotlin coroutines
@@ -55,7 +55,6 @@ dependencies {
   arrayOf("jdbc", "dao", "core").forEach {
     implementation(exposed(it))
   }
-  implementation(exposed("spring-boot-starter", "0.26.1"))
 
   implementation("com.orbitz.consul:consul-client:1.4.0")
 
@@ -70,10 +69,6 @@ dependencies {
 
   // test
   testImplementation("junit:junit")
-  testImplementation("org.framework.spring.security:spring-security-test")
-  testImplementation("org.framework.spring.boot:spring-boot-starter-test") {
-    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-  }
 }
 
 tasks.withType<Test> {
