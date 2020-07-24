@@ -46,6 +46,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-$it:1.3.7")
   }
 
+  // spring kotlin coroutines
+  arrayOf("kotlin-coroutine", "webflux-kotlin-coroutine").forEach {
+    implementation("org.springframework.kotlin:spring-$it:0.3.7")
+  }
+
   implementation("com.zaxxer:HikariCP:3.4.5")
 
   // exposed
