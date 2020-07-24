@@ -2,6 +2,9 @@ package com.lorenzoog.gitkib.userservice
 
 import com.lorenzoog.gitkib.userservice.auth.UsernameUserDetailsService
 import com.lorenzoog.gitkib.userservice.configs.setupRoutes
+import com.lorenzoog.gitkib.userservice.controllers.AppProfileController
+import com.lorenzoog.gitkib.userservice.controllers.AuthController
+import com.lorenzoog.gitkib.userservice.controllers.UserController
 import com.lorenzoog.gitkib.userservice.discovery.setupConsulDiscovery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +37,10 @@ fun main(args: Array<String>) {
 
   runApplication<UserServiceApplication>(*args) {
     addInitializers(beans {
+      bean<UserController>()
+      bean<AuthController>()
+      bean<AppProfileController>()
+
       bean<UserDetailsService>("userDetailService") {
         UsernameUserDetailsService(ref())
       }

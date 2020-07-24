@@ -28,8 +28,6 @@ const val JWT_EXPIRES_AT: Long =
  * @param authenticationManager current authentication manager
  * @param jwtAlgorithm application jwt algorithm
  */
-@RestController
-@Suppress("unused")
 class AuthController(
   private val authenticationManager: AuthenticationManager,
 

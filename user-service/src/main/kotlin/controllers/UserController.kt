@@ -22,8 +22,6 @@ const val USER_PAGINATION_OFFSET = 15
  *
  * @param userProvider class that provide the users.
  */
-@RestController
-@Suppress("unused")
 class UserController(
   val userProvider: UserProvider,
   val passwordEncoder: PasswordEncoder
