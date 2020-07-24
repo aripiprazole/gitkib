@@ -40,6 +40,8 @@ dependencies {
     implementation("org.framework.spring.kotlin:spring-$it:0.3.7")
   }
 
+  implementation("io.projectreactor.netty:reactor-netty:1.0.0-M1")
+
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
   // kotlin coroutines
