@@ -5,14 +5,17 @@ import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
 
 interface Service<T> {
 
-  fun findAll(page: Int, size: Int): Page<T>
+  suspend fun findAll(page: Int, size: Int): Page<T>
 
   @Throws(EntityNotFoundException::class)
-  fun findById(id: Long): T
+  suspend fun findById(id: Long): T
 
   @Throws(EntityNotFoundException::class)
-  fun deleteById(id: Long)
+  suspend fun deleteById(id: Long)
 
-  fun save(builder: T.() -> Unit): T
+  suspend fun save(builder: T.() -> Unit): T
+
+  @Throws(EntityNotFoundException::class)
+  suspend fun updateById(id: Long, callback: T.() -> Unit): T
 
 }
