@@ -42,7 +42,9 @@ dependencies {
   }
 
   // kotlin coroutines
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+  arrayOf("core", "reactor").forEach {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-$it:1.3.7")
+  }
 
   implementation("com.zaxxer:HikariCP:3.4.5")
 
@@ -52,7 +54,6 @@ dependencies {
   }
   implementation(exposed("spring-boot-starter", "0.26.1"))
 
-  implementation("com.orbitz.consul:consul-client:1.4.0")
 
   // validator
   arrayOf("validator", "validator-annotation-processor").forEach {
