@@ -19,7 +19,7 @@ class Application(
   private val beanDefinitions: BeanDefinitionDsl
 ) {
 
-  private val context = GenericApplicationContext {
+  private val context = GenericApplicationContext().apply {
     beanDefinitions.initialize(this)
 
     refresh()
