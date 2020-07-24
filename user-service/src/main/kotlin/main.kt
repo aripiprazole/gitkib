@@ -1,5 +1,6 @@
 package com.lorenzoog.gitkib.userservice
 
+import io.netty.handler.ssl.SslContextBuilder
 import kotlinx.coroutines.flow.flowOf
 import org.springframework.context.support.BeanDefinitionDsl
 import org.springframework.context.support.GenericApplicationContext
@@ -31,6 +32,8 @@ class Application(
 
   private val httpServer = HttpServer
     .create()
+//    TODO: add ssl
+//    .secure { it.sslContext(SslContextBuilder.forServer()) }
     .host(host)
     .port(port)
 
