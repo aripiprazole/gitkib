@@ -32,7 +32,7 @@ dependencies {
   }
 
   // spring
-  arrayOf("data-rest", "webflux", "data-jdbc", "security", "data-elasticsearch").forEach {
+  arrayOf("webflux", "data-jdbc", "security", "data-elasticsearch").forEach {
     implementation(spring("boot:spring-boot-starter-$it"))
   }
 
