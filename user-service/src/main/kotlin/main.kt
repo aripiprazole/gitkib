@@ -1,12 +1,8 @@
 package com.lorenzoog.gitkib.userservice
 
-import io.netty.handler.ssl.SslContextBuilder
-import kotlinx.coroutines.flow.flowOf
 import org.springframework.context.support.BeanDefinitionDsl
 import org.springframework.context.support.GenericApplicationContext
-import org.springframework.context.support.beans
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter
-import org.springframework.web.reactive.function.server.*
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder
 import reactor.netty.DisposableServer
 import reactor.netty.http.server.HttpServer
@@ -57,19 +53,6 @@ class Application(
     disposableReference.get().dispose()
   }
 
-}
-
-private val defaultBeans = beans {
-  bean("webHandler") {
-    RouterFunctions.toWebHandler(
-      coRouter {
-        GET("/") {
-          ServerResponse.ok()
-            .bodyAndAwait(flowOf("Hello, world"))
-        }
-      }
-    )
-  }
 }
 
 fun main() {
