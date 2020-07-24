@@ -4,7 +4,6 @@ plugins {
   id("io.spring.dependency-management") version "1.0.9.RELEASE"
   kotlin("jvm") version "1.3.72"
   kotlin("plugin.spring") version "1.3.72"
-  kotlin("plugin.jpa") version "1.3.72"
 }
 
 group = "com.lorenzoog.gitkib"
@@ -14,15 +13,18 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
   mavenCentral()
-  mavenLocal()
   jcenter()
   maven("https://dl.bintray.com/konrad-kaminski/maven")
-  maven("https://repo.spring.io/milestone")
-  maven("https://repo.spring.io/snapshot")
 }
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun exposed(dependency: String, version: String = "0.24.1") = "org.jetbrains.exposed:exposed-$dependency:$version"
+
+dependencyManagement {
+  imports {
+    mavenBom("org.springframework.boot:spring-boot-dependencies:2.1.2.RELEASE")
+  }
+}
 
 dependencies {
   // kotlin
@@ -32,12 +34,7 @@ dependencies {
 
   // spring
   arrayOf("webflux", "context").forEach {
-    implementation("org.framework:spring-$it")
-  }
-
-  // spring kotlin coroutines
-  arrayOf("kotlin-coroutine", "webmvc-kotlin-coroutine", "webflux-kotlin-coroutine").forEach {
-    implementation("org.framework.spring.kotlin:spring-$it:0.3.7")
+    implementation("org.springframework:spring-$it")
   }
 
   implementation("io.projectreactor.netty:reactor-netty:1.0.0-M1")
