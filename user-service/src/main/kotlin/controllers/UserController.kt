@@ -23,8 +23,8 @@ const val USER_PAGINATION_OFFSET = 15
  * @param userProvider class that provide the users.
  */
 class UserController(
-  val userProvider: UserProvider,
-  val passwordEncoder: PasswordEncoder
+  private val userProvider: UserProvider,
+  private val passwordEncoder: PasswordEncoder
 ) {
 
   companion object {
