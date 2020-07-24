@@ -1,11 +1,9 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
 import com.lorenzoog.gitkib.userservice.bodies.ProfileUpdateBody
-import com.lorenzoog.gitkib.userservice.entities.Profile
 import com.lorenzoog.gitkib.userservice.services.ProfileProvider
 import com.lorenzoog.gitkib.userservice.services.update
-import com.lorenzoog.gitkib.userservice.utils.await
-import org.springframework.data.domain.Page
+import kotlinx.coroutines.flow.flowOf
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -36,8 +34,9 @@ class AppProfileController(
 
     return ServerResponse
       .ok()
-      .body<Page<Profile>>(profileProvider.findAll(page, PROFILE_PAGINATION_OFFSET))
-      .await()
+      .bodyAndAwait(flowOf(
+        profileProvider.findAll(page, PROFILE_PAGINATION_OFFSET)
+      ))
   }
 
   /**
@@ -50,8 +49,7 @@ class AppProfileController(
 
     return ServerResponse
       .ok()
-      .body<Profile>(profileProvider.findByUserId(id))
-      .await()
+      .bodyAndAwait(flowOf(profileProvider.findByUserId(id)))
   }
 
   /**
@@ -65,10 +63,11 @@ class AppProfileController(
 
     return ServerResponse
       .ok()
-      .body<Profile>(profileProvider
-        .findByUserId(id)
-        .update(body))
-      .await()
+      .bodyAndAwait(flowOf(
+        profileProvider
+          .findByUserId(id)
+          .update(body)
+      ))
   }
 
 
