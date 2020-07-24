@@ -61,7 +61,7 @@ class AppProfileControllerTests {
 
     every(profileProvider.findAll(page = 0, offset = PROFILE_PAGINATION_OFFSET)).thenReturn(page)
 
-    mockMvc.perform(get(INDEX_ENDPOINT).contentType(APPLICATION_JSON))
+    mockMvc.perform(get(INDEX_ENDPOINT).contentType(APPLICATION_JSON).accept(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(page)))
 
@@ -77,7 +77,7 @@ class AppProfileControllerTests {
 
     every(profileProvider.findByUserId(id)).thenReturn(profile)
 
-    mockMvc.perform(get(SHOW_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON))
+    mockMvc.perform(get(SHOW_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON).accept(APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(objectMapper.writeValueAsString(profile)))
 
@@ -107,6 +107,7 @@ class AppProfileControllerTests {
 
     mockMvc.perform(put(UPDATE_ENDPOINT.replace("{id}", id.toString()))
       .contentType(APPLICATION_JSON)
+      .accept(APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(body)))
 
       .andExpect(status().isOk)
