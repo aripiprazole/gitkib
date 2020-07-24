@@ -16,8 +16,6 @@ const val PROFILE_PAGINATION_OFFSET = 15
 /**
  * Class that provides the rest api routes.
  */
-@RestController
-@Suppress("unused")
 class AppProfileController(
   private val profileProvider: ProfileProvider
 ) {
