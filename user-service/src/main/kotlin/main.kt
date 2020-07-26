@@ -40,7 +40,7 @@ class Application(
 
   private val disposableReference = AtomicReference<DisposableServer>()
 
-  fun bootstrapServices() {
+  private fun bootstrapServices() {
     context.getBean<DatabaseService>().apply {
       connect()
       createSchemas()
