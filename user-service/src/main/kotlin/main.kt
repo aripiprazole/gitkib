@@ -1,5 +1,7 @@
 package com.lorenzoog.gitkib.userservice
 
+import com.lorenzoog.gitkib.userservice.services.DatabaseService
+import org.springframework.beans.factory.getBean
 import org.springframework.context.support.BeanDefinitionDsl
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.context.support.beans
@@ -38,7 +40,16 @@ class Application(
 
   private val disposableReference = AtomicReference<DisposableServer>()
 
+  fun bootstrapServices() {
+    context.getBean<DatabaseService>().apply {
+      connect()
+      createSchemas()
+    }
+  }
+
   fun start() {
+    bootstrapServices()
+
     disposableReference.set(
       httpServer.handle(ReactorHttpHandlerAdapter(httpHandler))
         .bindNow()
@@ -46,6 +57,8 @@ class Application(
   }
 
   fun startAndAwait() {
+    bootstrapServices()
+
     httpServer.handle(ReactorHttpHandlerAdapter(httpHandler))
       .bindUntilJavaShutdown(Duration.ofSeconds(45)) {
         println("Web server started! Accepting requests on https://$host:$port.")
