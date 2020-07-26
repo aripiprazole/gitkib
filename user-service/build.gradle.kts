@@ -75,10 +75,8 @@ dependencies {
   // test
   testImplementation("junit:junit")
   testImplementation("io.projectreactor:reactor-test")
-  testImplementation("io.mockk:mockk:1.10.0")
-  testImplementation("org.springframework.boot:spring-boot-starter-test") {
-    exclude(group = "org.mockito")
-  }
+  testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<Test> {
