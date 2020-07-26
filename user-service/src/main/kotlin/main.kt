@@ -2,6 +2,7 @@ package com.lorenzoog.gitkib.userservice
 
 import org.springframework.context.support.BeanDefinitionDsl
 import org.springframework.context.support.GenericApplicationContext
+import org.springframework.context.support.beans
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder
 import reactor.netty.DisposableServer
@@ -13,13 +14,13 @@ class Application(
   private val host: String = "127.0.0.1",
   private val port: Int = 8080,
 
-  private val beanDefinitions: BeanDefinitionDsl
+  private val beanDefinitions: BeanDefinitionDsl.() -> Unit
 ) {
 
   val url = "$host:$port"
 
   private val context = GenericApplicationContext().apply {
-    beanDefinitions.initialize(this)
+    beans(beanDefinitions).initialize(this)
 
     refresh()
   }
@@ -58,5 +59,7 @@ class Application(
 }
 
 fun main() {
-  Application(beanDefinitions = defaultBeans).startAndAwait()
+  Application {
+    setupDefaultBeans()
+  }.startAndAwait()
 }
