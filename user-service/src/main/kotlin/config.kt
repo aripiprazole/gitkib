@@ -4,7 +4,7 @@ import com.lorenzoog.gitkib.userservice.services.UserService
 import org.springframework.context.support.beans
 import org.springframework.web.reactive.function.server.RouterFunctions
 
-val defaultBeans = beans {
+fun setupDefaultBeans() = beans {
   bean<UserService>()
 
   bean("webHandler") {
