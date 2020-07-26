@@ -74,6 +74,8 @@ dependencies {
 
   // test
   testImplementation("junit:junit")
+  testImplementation("io.projectreactor:reactor-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<Test> {
