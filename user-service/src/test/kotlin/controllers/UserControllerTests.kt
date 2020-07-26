@@ -4,11 +4,12 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lorenzoog.gitkib.userservice.controllers.USER_CONTROLLER_PAGE_SIZE
 import com.lorenzoog.gitkib.userservice.dtos.Page
 import com.lorenzoog.gitkib.userservice.entities.User
+import com.lorenzoog.gitkib.userservice.services.DatabaseService
 import com.lorenzoog.gitkib.userservice.services.UserService
-import com.lorenzoog.gitkib.userservice.tests.connectToDatabase
 import com.lorenzoog.gitkib.userservice.tests.createApplication
 import com.lorenzoog.gitkib.userservice.tests.factories.Factory
 import com.lorenzoog.gitkib.userservice.tests.factories.UserFactory
+import com.lorenzoog.gitkib.userservice.tests.services.H2DatabaseService
 import com.nhaarman.mockitokotlin2.*
 import junit.framework.TestCase
 import kotlinx.coroutines.flow.flowOf
@@ -27,9 +28,7 @@ class UserControllerTests : TestCase() {
       userService
     }
 
-    bean {
-      connectToDatabase()
-    }
+    bean<DatabaseService> { H2DatabaseService() }
   }
   private val client = WebTestClient
     .bindToServer()
