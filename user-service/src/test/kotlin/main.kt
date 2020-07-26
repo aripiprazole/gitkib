@@ -1,11 +1,9 @@
 package com.lorenzoog.gitkib.userservice.tests
 
 import com.lorenzoog.gitkib.userservice.Application
-import com.lorenzoog.gitkib.userservice.routes
-import com.lorenzoog.gitkib.userservice.services.UserService
+import com.lorenzoog.gitkib.userservice.defaultBeans
 import org.jetbrains.exposed.sql.Database
-import org.springframework.context.support.beans
-import org.springframework.web.reactive.function.server.RouterFunctions
+import org.springframework.context.support.BeanDefinitionDsl
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun connectToDatabase() = Database.connect(
@@ -14,10 +12,5 @@ inline fun connectToDatabase() = Database.connect(
 )
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun createApplication() = Application(beanDefinitions = beans {
-  bean<UserService>()
-
-  bean("webHandler") {
-    RouterFunctions.toWebHandler(routes(ref()))
-  }
-})
+inline fun createApplication(noinline beans: BeanDefinitionDsl.() -> Unit = {}) =
+  Application(beanDefinitions = defaultBeans.apply(beans))
