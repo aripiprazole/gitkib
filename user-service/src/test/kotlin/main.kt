@@ -1,7 +1,7 @@
 package com.lorenzoog.gitkib.userservice.tests
 
 import com.lorenzoog.gitkib.userservice.Application
-import com.lorenzoog.gitkib.userservice.defaultBeans
+import com.lorenzoog.gitkib.userservice.setupDefaultBeans
 import org.jetbrains.exposed.sql.Database
 import org.springframework.context.support.BeanDefinitionDsl
 
@@ -12,5 +12,8 @@ inline fun connectToDatabase() = Database.connect(
 )
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun createApplication(noinline beans: BeanDefinitionDsl.() -> Unit = {}) =
-  Application(beanDefinitions = defaultBeans.apply(beans))
+inline fun createApplication(crossinline setupBeans: BeanDefinitionDsl.() -> Unit = {}) =
+  Application {
+    setupDefaultBeans()
+    setupBeans()
+  }
