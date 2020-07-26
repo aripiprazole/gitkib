@@ -1,10 +1,10 @@
 package com.lorenzoog.gitkib.userservice
 
 import com.lorenzoog.gitkib.userservice.services.UserService
-import org.springframework.context.support.beans
+import org.springframework.context.support.BeanDefinitionDsl
 import org.springframework.web.reactive.function.server.RouterFunctions
 
-fun setupDefaultBeans() = beans {
+fun BeanDefinitionDsl.setupDefaultBeans() {
   bean<UserService>()
 
   bean("webHandler") {
