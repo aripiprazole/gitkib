@@ -9,8 +9,7 @@ import com.lorenzoog.gitkib.userservice.tests.connectToDatabase
 import com.lorenzoog.gitkib.userservice.tests.createApplication
 import com.lorenzoog.gitkib.userservice.tests.factories.Factory
 import com.lorenzoog.gitkib.userservice.tests.factories.UserFactory
-import io.mockk.coEvery
-import io.mockk.mockk
+import com.nhaarman.mockitokotlin2.*
 import junit.framework.TestCase
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -22,7 +21,7 @@ import org.springframework.test.web.reactive.server.body
 
 class UserControllerTests : TestCase() {
 
-  private val userService = mockk<UserService>()
+  private val userService = mock<UserService>()
   private val application = createApplication {
     bean(isPrimary = true) {
       userService
@@ -45,11 +44,11 @@ class UserControllerTests : TestCase() {
   fun `test should get paginated users when request users`() = runBlocking<Unit> {
     val users = factory.createMany(USER_CONTROLLER_PAGE_SIZE)
 
-    coEvery { userService.findAll(1, USER_CONTROLLER_PAGE_SIZE) } returns Page(
+    given(userService.findAll(1, USER_CONTROLLER_PAGE_SIZE)).willReturn(Page(
       content = users.toList(),
       total = USER_CONTROLLER_PAGE_SIZE,
       currentPage = 1
-    )
+    ))
 
     client.get()
       .uri("/")
@@ -69,7 +68,7 @@ class UserControllerTests : TestCase() {
   fun `test should get one user when request users 1`() = runBlocking<Unit> {
     val user = factory.createOne()
 
-    coEvery { userService.findById(user.id.value) } returns user
+    given(userService.findById(user.id.value)).willReturn(user)
 
     client.get()
       .uri("/${user.id}")
@@ -97,7 +96,7 @@ class UserControllerTests : TestCase() {
       this.password = password
     }
 
-    coEvery { userService.save(any()) } returns user
+    given(userService.save(any())).willReturn(user)
 
     client.post()
       .uri("/")
@@ -127,13 +126,13 @@ class UserControllerTests : TestCase() {
     val email = "fake email"
     val password = "fake password"
 
-    coEvery { userService.updateById(user.id.value, any()) } returns transaction {
+    given(userService.updateById(user.id.value, any())).willReturn(transaction {
       user.apply {
         this.username = username
         this.email = email
         this.password = password
       }
-    }
+    })
 
     client.put()
       .uri("/${user.id}")
@@ -159,7 +158,7 @@ class UserControllerTests : TestCase() {
   fun `test should delete user in the database when request users 1`() = runBlocking<Unit> {
     val user = factory.createOne()
 
-    coEvery { userService.deleteById(user.id.value) } returns Unit
+    given(userService.deleteById(user.id.value)).willReturn(Unit)
 
     client.delete()
       .uri("/${user.id}")
