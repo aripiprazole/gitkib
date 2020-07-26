@@ -26,6 +26,10 @@ class UserControllerTests : TestCase() {
     bean(isPrimary = true) {
       userService
     }
+
+    bean {
+      connectToDatabase()
+    }
   }
   private val client = WebTestClient
     .bindToServer()
@@ -35,8 +39,6 @@ class UserControllerTests : TestCase() {
   private val json = jacksonObjectMapper()
 
   override fun setUp() {
-    connectToDatabase()
-
     application.start()
   }
 
