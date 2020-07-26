@@ -16,6 +16,8 @@ class Application(
   private val beanDefinitions: BeanDefinitionDsl
 ) {
 
+  val url = "$host:$port"
+
   private val context = GenericApplicationContext().apply {
     beanDefinitions.initialize(this)
 
