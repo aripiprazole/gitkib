@@ -15,6 +15,7 @@ import junit.framework.TestCase
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.body
@@ -40,6 +41,7 @@ class UserControllerTests : TestCase() {
     application.start()
   }
 
+  @Test
   fun `test should get paginated users when request users`() = runBlocking<Unit> {
     val users = factory.createMany(USER_CONTROLLER_PAGE_SIZE)
 
@@ -63,6 +65,7 @@ class UserControllerTests : TestCase() {
       )))
   }
 
+  @Test
   fun `test should get one user when request users 1`() = runBlocking<Unit> {
     val user = factory.createOne()
 
@@ -82,6 +85,7 @@ class UserControllerTests : TestCase() {
       )))
   }
 
+  @Test
   fun `test should store one user in the database when request users`() = runBlocking<Unit> {
     val username = "fake username"
     val email = "fake email"
@@ -115,6 +119,7 @@ class UserControllerTests : TestCase() {
       )))
   }
 
+  @Test
   fun `test should update one user in the database when request users 1`() = runBlocking<Unit> {
     val user = factory.createOne()
 
@@ -150,6 +155,7 @@ class UserControllerTests : TestCase() {
       )))
   }
 
+  @Test
   fun `test should delete user in the database when request users 1`() = runBlocking<Unit> {
     val user = factory.createOne()
 
