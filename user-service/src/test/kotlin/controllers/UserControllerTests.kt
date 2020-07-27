@@ -27,8 +27,6 @@ class UserControllerTests : TestCase() {
     bean(isPrimary = true) {
       userService
     }
-
-    bean<DatabaseService> { H2DatabaseService() }
   }
   private val client = WebTestClient
     .bindToServer()
