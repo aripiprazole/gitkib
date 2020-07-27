@@ -4,23 +4,22 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lorenzoog.gitkib.userservice.controllers.USER_CONTROLLER_PAGE_SIZE
 import com.lorenzoog.gitkib.userservice.dtos.Page
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.services.DatabaseService
 import com.lorenzoog.gitkib.userservice.services.UserService
 import com.lorenzoog.gitkib.userservice.tests.createApplication
 import com.lorenzoog.gitkib.userservice.tests.factories.Factory
 import com.lorenzoog.gitkib.userservice.tests.factories.UserFactory
-import com.lorenzoog.gitkib.userservice.tests.services.H2DatabaseService
 import com.nhaarman.mockitokotlin2.*
-import junit.framework.TestCase
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.body
 
-class UserControllerTests : TestCase() {
+class UserControllerTests {
 
   private val userService = mock<UserService>()
   private val application = createApplication {
@@ -35,7 +34,8 @@ class UserControllerTests : TestCase() {
   private val factory: Factory<User> = UserFactory()
   private val json = jacksonObjectMapper()
 
-  override fun setUp() {
+  @BeforeEach
+  fun beforeEach() {
     application.start()
   }
 
@@ -167,7 +167,8 @@ class UserControllerTests : TestCase() {
       .isNoContent
   }
 
-  override fun tearDown() {
+  @AfterEach
+  fun afterEach() {
     application.stop()
   }
 
