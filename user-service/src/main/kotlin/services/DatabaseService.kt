@@ -6,6 +6,6 @@ interface DatabaseService {
 
   fun connect(): Database
 
-  fun createSchemas()
+  fun createSchemas(database: Database)
 
 }

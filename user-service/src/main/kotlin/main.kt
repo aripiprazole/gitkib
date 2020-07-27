@@ -42,8 +42,7 @@ class Application(
 
   private fun bootstrapServices() {
     context.getBean<DatabaseService>().apply {
-      connect()
-      createSchemas()
+      connect().also(this::createSchemas)
     }
   }
 
