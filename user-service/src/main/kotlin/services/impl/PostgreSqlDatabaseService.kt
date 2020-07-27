@@ -16,13 +16,10 @@ class PostgreSqlDatabaseService(private val tables: Array<Table>) : DatabaseServ
   private val hikariDataSource: DataSource by lazy {
     HikariDataSource(hikariConfig)
   }
-  private val database: Database by lazy {
-    Database.connect(hikariDataSource)
-  }
 
-  override fun connect() = database
+  override fun connect() = Database.connect(hikariDataSource)
 
-  override fun createSchemas() = transaction {
+  override fun createSchemas(database: Database) = transaction(database) {
     SchemaUtils.create(*tables)
   }
 }
