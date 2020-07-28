@@ -30,6 +30,8 @@ dependencies {
   implementation("io.arrow-kt:arrow-core:0.10.4")
   implementation("io.arrow-kt:arrow-syntax:0.10.4")
 
+  implementation("io.netty:netty-transport-native-epoll:4.1.16.Final")
+
   // kotlin
   arrayOf("reflect", "stdlib-jdk8").forEach {
     implementation(kotlin(it))
