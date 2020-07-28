@@ -27,6 +27,9 @@ dependencyManagement {
 }
 
 dependencies {
+  implementation("io.arrow-kt:arrow-core:0.10.4")
+  implementation("io.arrow-kt:arrow-syntax:0.10.4")
+
   // kotlin
   arrayOf("reflect", "stdlib-jdk8").forEach {
     implementation(kotlin(it))
