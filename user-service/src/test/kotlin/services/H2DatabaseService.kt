@@ -9,7 +9,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class H2DatabaseService : DatabaseService {
   override fun connect() = Database.connect(
     url = "jdbc:h2:mem:local;MODE=POSTGRESQL;DATABASE_TO_UPPER=FALSE",
-    driver = "org.h2.Driver"
+    driver = "org.h2.Driver",
+    user = "root",
+    password = "root"
   )
 
   override fun createSchemas(database: Database) = transaction(database) {
