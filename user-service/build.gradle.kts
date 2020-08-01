@@ -60,8 +60,8 @@ dependencies {
   implementation("com.auth0:java-jwt:3.4.0")
 
   // database driver
-  runtimeOnly("org.postgresql:postgresql")
-  testRuntimeOnly("com.h2database:h2")
+  runtimeOnly("org.postgresql:postgresql:42.2.14")
+  testRuntimeOnly("com.h2database:h2:1.4.200")
 
   // validation
   implementation("am.ik.yavi:yavi:0.4.0")
