@@ -1,124 +1,72 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
-import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
-import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
-import com.lorenzoog.gitkib.userservice.controllers.AuthController.Companion.REGISTER_ENDPOINT
-import com.lorenzoog.gitkib.userservice.entities.Privilege
+import com.lorenzoog.gitkib.userservice.dtos.Page
+import com.lorenzoog.gitkib.userservice.dtos.UserCreateDto
+import com.lorenzoog.gitkib.userservice.dtos.UserUpdateDto
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.services.EntityProvider
-import com.lorenzoog.gitkib.userservice.services.update
-import org.springframework.data.domain.Page
-import org.springframework.data.rest.webmvc.ResourceNotFoundException
-import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.bind.annotation.*
-import javax.persistence.EntityNotFoundException
-import javax.validation.Valid
+import com.lorenzoog.gitkib.userservice.services.UserService
+import com.lorenzoog.gitkib.userservice.utils.validateAndThrow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.reactive.awaitSingle
+import org.springframework.web.reactive.function.server.*
+import java.net.URI
 
-const val USER_PAGINATION_OFFSET = 15
+const val USER_CONTROLLER_PAGE_SIZE = 15
 
-/**
- * Class that provides the rest api routes.
- *
- * @param userProvider class that provide the users.
- */
-@RestController
-@Suppress("unused")
-class UserController(
-  val userProvider: EntityProvider<User>,
-  val passwordEncoder: PasswordEncoder
-) {
+fun CoRouterFunctionDsl.userController(userService: UserService) {
+  "users".nest {
+    GET("/") { request ->
+      val page = request.queryParam("page").orElse("0").toInt()
 
-  companion object {
-    const val INDEX_ENDPOINT = "/users"
-    const val STORE_ENDPOINT = "/users"
-    const val SHOW_ENDPOINT = "/users/{id}"
-    const val UPDATE_ENDPOINT = "/users/{id}"
-    const val DESTROY_ENDPOINT = "/users/{id}"
+      ok()
+        .body<Page<User>>(
+          userService.findAll(page, USER_CONTROLLER_PAGE_SIZE)
+        )
+        .awaitSingle()
+    }
+
+    GET("/{id}") { request ->
+      val id = request.pathVariable("id").toLong()
+
+      ok()
+        .body<User>(userService.findById(id))
+        .awaitSingle()
+    }
+
+    POST("/") { request ->
+      val body = request.awaitBody<UserCreateDto>()
+        .apply { validator.validateAndThrow(this) }
+
+      val user = userService.save {
+        username = body.username!!
+        email = body.email!!
+        password = body.password!!
+      }
+
+      created(URI("/users/${user.id}"))
+        .bodyAndAwait(flowOf(user))
+    }
+
+    PUT("/{id}") { request ->
+      val id = request.pathVariable("id").toLong()
+      val body = request.awaitBody<UserUpdateDto>()
+        .apply { validator.validateAndThrow(this) }
+
+      ok()
+        .body<User>(userService.updateById(id) {
+          body.username?.let { username = it }
+          body.email?.let { email = it }
+          body.password?.let { password = it }
+        })
+        .awaitSingle()
+    }
+
+    DELETE("/{id}") { request ->
+      val id = request.pathVariable("id").toLong()
+
+      userService.deleteById(id)
+
+      noContent().buildAndAwait()
+    }
   }
-
-  /**
-   * Provides all users that page [page] contains.
-   *
-   * @return the page that contains the users.
-   */
-  @GetMapping(INDEX_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
-  fun index(@RequestParam(defaultValue = "0") page: Int): Page<User> {
-    return userProvider.findAll(page, USER_PAGINATION_OFFSET)
-  }
-
-  /**
-   * Provides the user with id [id].
-   *
-   * @return the user.
-   */
-  @GetMapping(SHOW_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.VIEW_USER}')")
-  fun show(@PathVariable id: Long): User {
-    return userProvider.findById(id)
-  }
-
-  /**
-   * Creates a new user with data provided in [body].
-   *
-   * @return the user created.
-   */
-  @PostMapping(STORE_ENDPOINT, REGISTER_ENDPOINT)
-  fun store(@Valid @RequestBody body: UserCreateBody): User {
-    return userProvider.save(User(
-      id = 0L,
-      email = body.email,
-      username = body.username,
-      password = passwordEncoder.encode(body.password),
-      roles = mutableSetOf()
-    ))
-  }
-
-  /**
-   * Updates the user with id [id].
-   *
-   * @return the user updated.
-   */
-  @PutMapping(UPDATE_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.UPDATE_USER}')")
-  fun update(@PathVariable id: Long, @Valid @RequestBody body: UserUpdateBody): User {
-    val user = userProvider
-      .findById(id)
-      .update(passwordEncoder, body)
-
-    userProvider.save(user)
-
-    return user
-  }
-
-  /**
-   * Deletes from database the user with id [id]
-   *
-   * @return a no content response.
-   */
-  @DeleteMapping(DESTROY_ENDPOINT)
-  @PreAuthorize("hasAuthority('${Privilege.DELETE_USER}')")
-  fun destroy(@PathVariable id: Long): ResponseEntity<Any> {
-    userProvider.deleteById(id)
-
-    return ResponseEntity
-      .noContent()
-      .build<Any>()
-  }
-
-
-  /**
-   * Handles the [ResourceNotFoundException], that is thrown when couldn't find user with that id.
-   *
-   * @return [Unit] nothing.
-   */
-  @ResponseStatus(value = NOT_FOUND, reason = "Could'nt find the user with that id.")
-  @ExceptionHandler(EntityNotFoundException::class)
-  fun onResourceNotFoundException() {
-    // Automatic handling.
-  }
-
 }
