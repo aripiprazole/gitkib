@@ -67,6 +67,9 @@ dependencies {
   implementation("am.ik.yavi:yavi:0.4.0")
 
   // test
+  testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.9")
+  testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:2.0.9")
+
   testImplementation("junit:junit")
   testImplementation("org.koin:koin-test:3.0.0-alpha-2")
   testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
@@ -74,7 +77,9 @@ dependencies {
 }
 
 tasks.withType<Test> {
-  useJUnitPlatform()
+  useJUnitPlatform {
+    includeEngines("spek2")
+  }
 }
 
 tasks.withType<KotlinCompile> {
