@@ -2,6 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   kotlin("jvm") version "1.3.72"
+
+  application
+}
+
+application {
+  mainClass.set("io.ktor.server.netty.DevelopmentEngine")
 }
 
 group = "com.lorenzoog.gitkib"
@@ -17,6 +23,10 @@ repositories {
 dependencies {
   implementation("io.arrow-kt:arrow-core:0.10.4")
   implementation("io.arrow-kt:arrow-syntax:0.10.4")
+
+  arrayOf("server-netty", "auth", "locations").forEach {
+    implementation("io.ktor:ktor-$it:1.3.2")
+  }
 
   // kotlin
   arrayOf("reflect", "stdlib-jdk8").forEach {
@@ -61,6 +71,7 @@ dependencies {
   testImplementation("org.koin:koin-test:3.0.0-alpha-2")
   testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
   testImplementation("org.mockito:mockito-all:1.10.19")
+  testImplementation("io.ktor:ktor-server-host:1.3.2")
 }
 
 tasks.withType<Test> {
@@ -69,7 +80,7 @@ tasks.withType<Test> {
 
 tasks.withType<KotlinCompile> {
   kotlinOptions {
-    freeCompilerArgs = listOf("-Xjsr305=strict")
+    freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
     jvmTarget = "1.8"
   }
 }
