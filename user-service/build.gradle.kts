@@ -18,6 +18,8 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 repositories {
   mavenCentral()
   jcenter()
+
+  maven("https://dl.bintray.com/ekito/koin")
 }
 
 dependencies {
