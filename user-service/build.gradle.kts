@@ -23,6 +23,11 @@ dependencies {
     implementation(kotlin(it))
   }
 
+  //koin
+  arrayOf("core", "ktor").forEach {
+    implementation("org.koin:koin-$it:3.0.0-alpha-2")
+  }
+
   implementation("org.slf4j:slf4j-api:1.7.30")
   implementation("ch.qos.logback:logback-classic:1.2.3")
 
@@ -53,6 +58,7 @@ dependencies {
 
   // test
   testImplementation("junit:junit")
+  testImplementation("org.koin:koin-test:3.0.0-alpha-2")
   testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
   testImplementation("org.mockito:mockito-all:1.10.19")
 }
