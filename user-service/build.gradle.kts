@@ -69,7 +69,7 @@ dependencies {
   testImplementation("org.koin:koin-test:3.0.0-alpha-2")
   testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
   testImplementation("org.mockito:mockito-all:1.10.19")
-  testImplementation("io.ktor:ktor-server-host:1.3.2")
+  testImplementation("io.ktor:ktor-server-test-host:1.3.2")
 }
 
 tasks.withType<Test> {
