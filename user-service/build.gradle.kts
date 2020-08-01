@@ -26,7 +26,7 @@ dependencies {
   implementation("io.arrow-kt:arrow-core:0.10.4")
   implementation("io.arrow-kt:arrow-syntax:0.10.4")
 
-  arrayOf("server-netty", "auth", "locations").forEach {
+  arrayOf("server-netty", "auth", "locations", "client-cio").forEach {
     implementation("io.ktor:ktor-$it:1.3.2")
   }
 
