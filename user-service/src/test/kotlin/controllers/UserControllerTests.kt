@@ -1,167 +1,175 @@
-package com.lorenzoog.gitkib.userservice.controllers
+package com.lorenzoog.gitkib.userservice.tests.controllers
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
-import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
-import com.lorenzoog.gitkib.userservice.config.DefaultUsers
-import com.lorenzoog.gitkib.userservice.config.SecurityTestConfig
-import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.DESTROY_ENDPOINT
-import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.INDEX_ENDPOINT
-import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.SHOW_ENDPOINT
-import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.STORE_ENDPOINT
-import com.lorenzoog.gitkib.userservice.controllers.UserController.Companion.UPDATE_ENDPOINT
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.lorenzoog.gitkib.userservice.controllers.USER_CONTROLLER_PAGE_SIZE
+import com.lorenzoog.gitkib.userservice.dtos.Page
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.services.UserProvider
-import com.lorenzoog.gitkib.userservice.services.update
-import com.lorenzoog.gitkib.userservice.utils.mock
+import com.lorenzoog.gitkib.userservice.services.UserService
+import com.lorenzoog.gitkib.userservice.tests.createApplication
+import com.lorenzoog.gitkib.userservice.tests.factories.Factory
+import com.lorenzoog.gitkib.userservice.tests.factories.UserFactory
+import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.Pageable
-import org.springframework.http.MediaType.APPLICATION_JSON
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.http.MediaType
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.body
 
-import org.mockito.Mockito.*
-import org.springframework.security.test.context.support.WithUserDetails
-
-import org.mockito.Mockito.`when` as every
-
-private val objectMapper = ObjectMapper()
-
-@SpringBootTest(
-  classes = [SecurityTestConfig::class]
-)
-@AutoConfigureMockMvc
-// TODO: use a faker library
 class UserControllerTests {
 
-  @MockBean
-  private lateinit var userProvider: UserProvider
+  private val userService = mock<UserService>()
+  private val application = createApplication {
+    bean(isPrimary = true) {
+      userService
+    }
+  }
+  private val client = WebTestClient
+    .bindToServer()
+    .baseUrl(application.url)
+    .build()
+  private val factory: Factory<User> = UserFactory()
+  private val json = jacksonObjectMapper()
 
-  @Autowired
-  private lateinit var mockMvc: MockMvc
-
-  @Test
-  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should show users paginated when GET UserController@index`() = runBlocking {
-    val users = listOf(
-      User.mock(),
-      User.mock(),
-      User.mock()
-    )
-
-    val page: Page<User> = PageImpl(
-      users,
-      Pageable.unpaged(),
-      users.size.toLong()
-    )
-
-    every(userProvider.findAll(page = 0, offset = USER_PAGINATION_OFFSET)).thenReturn(page)
-
-    mockMvc.perform(get(INDEX_ENDPOINT).contentType(APPLICATION_JSON).accept(APPLICATION_JSON))
-      .andExpect(status().isOk)
-      .andExpect(content().json(objectMapper.writeValueAsString(page)))
-
-    verify(userProvider, times(1)).findAll(page = 0, offset = USER_PAGINATION_OFFSET)
-
-    Unit
+  @BeforeEach
+  fun beforeEach() {
+    application.start()
   }
 
   @Test
-  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should show user that have id 1 when GET UserController@show with id path variable 1`() = runBlocking {
-    val user = User.mock()
-    val id = user.id.value
+  fun `test should get paginated users when request users`() = runBlocking<Unit> {
+    val users = factory.createMany(USER_CONTROLLER_PAGE_SIZE)
 
-    every(userProvider.findById(id)).thenReturn(user)
+    given(userService.findAll(1, USER_CONTROLLER_PAGE_SIZE)).willReturn(Page(
+      content = users.toList(),
+      total = USER_CONTROLLER_PAGE_SIZE,
+      currentPage = 1
+    ))
 
-    mockMvc.perform(get(SHOW_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON).accept(APPLICATION_JSON))
-      .andExpect(status().isOk)
-      .andExpect(content().json(objectMapper.writeValueAsString(user)))
-
-    verify(userProvider, times(1)).findById(id)
-
-    Unit
+    client.get()
+      .uri("/")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus()
+      .isOk
+      .expectBody()
+      .json(json.writeValueAsString(mapOf(
+        "content" to users,
+        "total" to USER_CONTROLLER_PAGE_SIZE,
+        "currentPage" to 1
+      )))
   }
 
   @Test
-  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should store user in database and return that in the http response when POST UserController@store`() = runBlocking {
-    val user = User.mock()
+  fun `test should get one user when request users 1`() = runBlocking<Unit> {
+    val user = factory.createOne()
 
-    val body = UserCreateBody(
-      username = user.username,
-      email = user.email,
-      password = user.password
-    )
+    given(userService.findById(user.id.value)).willReturn(user)
 
-    every(userProvider.save(any())).thenReturn(user)
-
-    mockMvc.perform(post(STORE_ENDPOINT)
-      .contentType(APPLICATION_JSON)
-      .accept(APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(body)))
-
-      .andExpect(status().isOk)
-      .andExpect(content().json(objectMapper.writeValueAsString(user)))
-
-    verify(userProvider, times(1)).save(any())
-
-    Unit
+    client.get()
+      .uri("/${user.id}")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus()
+      .isOk
+      .expectBody()
+      .json(json.writeValueAsString(mapOf(
+        "id" to user.id.value,
+        "username" to user.username,
+        "email" to user.email
+      )))
   }
 
   @Test
-  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should update user in database that have the id 1 and return that in the http response when PUT UserController@update with id path variable 1`() = runBlocking {
-    val user = User.mock()
-    val id = user.id.value
+  fun `test should store one user in the database when request users`() = runBlocking<Unit> {
+    val username = "fake username"
+    val email = "fake email"
+    val password = "fake password"
 
-    val body = UserUpdateBody(
-      username = user.username,
-      email = user.email,
-      password = user.password
-    )
-
-    every(userProvider.findById(id)).thenReturn(user)
-    every(user.update(any(), any())).thenReturn(user)
-
-    mockMvc.perform(put(UPDATE_ENDPOINT.replace("{id}", id.toString()))
-      .contentType(APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(body))
-      .accept(APPLICATION_JSON))
-
-      .andExpect(status().isOk)
-      .andExpect(content().json(objectMapper.writeValueAsString(user)))
-
-    verify(userProvider, times(1)).findById(id)
-    verify(user, times(1)).update(any(), any())
-
-    Unit
-  }
-
-  @Test
-  @WithUserDetails(DefaultUsers.ALL_PERMISSIONS)
-  fun `test should delete user that have the id 1 and return no content http response when DELETE UserController@destroy with id path variable 1`() = runBlocking {
-    val user = User.mock()
-    val id = user.id.value
-
-    every(userProvider.deleteById(id)).then {
-      // do nothing.
+    val user = factory.createOne {
+      this.username = username
+      this.email = email
+      this.password = password
     }
 
-    mockMvc.perform(delete(DESTROY_ENDPOINT.replace("{id}", id.toString())).contentType(APPLICATION_JSON).accept(APPLICATION_JSON))
-      .andExpect(status().isNoContent)
+    given(userService.save(any())).willReturn(user)
 
-    verify(userProvider, times(1)).deleteById(id)
+    client.post()
+      .uri("/")
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON)
+      .body(flowOf(json.writeValueAsString(mapOf(
+        "username" to username,
+        "email" to email,
+        "password" to password
+      ))))
+      .exchange()
+      .expectStatus()
+      .isCreated
+      .expectBody()
+      .json(json.writeValueAsString(mapOf(
+        "id" to user.id.value,
+        "username" to username,
+        "email" to email
+      )))
+  }
 
-    Unit
+  @Test
+  fun `test should update one user in the database when request users 1`() = runBlocking<Unit> {
+    val user = factory.createOne()
+
+    val username = "fake username"
+    val email = "fake email"
+    val password = "fake password"
+
+    given(userService.updateById(user.id.value, any())).willReturn(transaction {
+      user.apply {
+        this.username = username
+        this.email = email
+        this.password = password
+      }
+    })
+
+    client.put()
+      .uri("/${user.id}")
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON)
+      .body(flowOf(json.writeValueAsString(mapOf(
+        "username" to username,
+        "email" to email,
+        "password" to password
+      ))))
+      .exchange()
+      .expectStatus()
+      .isOk
+      .expectBody()
+      .json(json.writeValueAsString(mapOf(
+        "id" to user.id.value,
+        "username" to username,
+        "email" to email
+      )))
+  }
+
+  @Test
+  fun `test should delete user in the database when request users 1`() = runBlocking<Unit> {
+    val user = factory.createOne()
+
+    given(userService.deleteById(user.id.value)).willReturn(Unit)
+
+    client.delete()
+      .uri("/${user.id}")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus()
+      .isNoContent
+  }
+
+  @AfterEach
+  fun afterEach() {
+    application.stop()
   }
 
 }

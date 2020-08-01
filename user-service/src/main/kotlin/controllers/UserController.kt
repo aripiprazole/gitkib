@@ -1,129 +1,72 @@
 package com.lorenzoog.gitkib.userservice.controllers
 
-import com.lorenzoog.gitkib.userservice.bodies.UserCreateBody
-import com.lorenzoog.gitkib.userservice.bodies.UserUpdateBody
-import com.lorenzoog.gitkib.userservice.exceptions.EntityNotFoundException
-import com.lorenzoog.gitkib.userservice.services.UserProvider
-import com.lorenzoog.gitkib.userservice.services.update
+import com.lorenzoog.gitkib.userservice.dtos.Page
+import com.lorenzoog.gitkib.userservice.dtos.UserCreateDto
+import com.lorenzoog.gitkib.userservice.dtos.UserUpdateDto
+import com.lorenzoog.gitkib.userservice.entities.User
+import com.lorenzoog.gitkib.userservice.services.UserService
+import com.lorenzoog.gitkib.userservice.utils.validateAndThrow
 import kotlinx.coroutines.flow.flowOf
-import org.jetbrains.exposed.sql.SizedCollection
-import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.bind.annotation.*
+import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.web.reactive.function.server.*
 import java.net.URI
 
-const val USER_PAGINATION_OFFSET = 15
+const val USER_CONTROLLER_PAGE_SIZE = 15
 
-/**
- * Class that provides the rest api routes.
- *
- * @param userProvider class that provide the users.
- */
-class UserController(
-  private val userProvider: UserProvider,
-  private val passwordEncoder: PasswordEncoder
-) {
+fun CoRouterFunctionDsl.userController(userService: UserService) {
+  "users".nest {
+    GET("/") { request ->
+      val page = request.queryParam("page").orElse("0").toInt()
 
-  companion object {
-    const val INDEX_ENDPOINT = "/users"
-    const val STORE_ENDPOINT = "/users"
-    const val SHOW_ENDPOINT = "/users/{id}"
-    const val UPDATE_ENDPOINT = "/users/{id}"
-    const val DESTROY_ENDPOINT = "/users/{id}"
-  }
-
-  /**
-   * Provides all users that page [request] contains.
-   *
-   * @return the page that contains the users.
-   */
-  suspend fun index(request: ServerRequest): ServerResponse {
-    val page = request.queryParam("page").orElse("0").toInt()
-
-    return ServerResponse
-      .ok()
-      .bodyAndAwait(flowOf(
-        userProvider.findAll(page, USER_PAGINATION_OFFSET)
-      ))
-  }
-
-  /**
-   * Provides the user with id in [request].
-   *
-   * @return the user.
-   */
-  suspend fun show(request: ServerRequest): ServerResponse {
-    val id = request.pathVariable("id").toLong()
-
-    return ServerResponse
-      .ok()
-      .bodyAndAwait(flowOf(userProvider.findById(id)))
-  }
-
-  /**
-   * Creates a new user with data provided in [request].
-   *
-   * @return the user created.
-   */
-  suspend fun store(request: ServerRequest): ServerResponse {
-    val body = request.awaitBody<UserCreateBody>()
-    val user = userProvider.save {
-      email = body.email
-      username = body.username
-      password = passwordEncoder.encode(body.password)
-      roles = SizedCollection()
+      ok()
+        .body<Page<User>>(
+          userService.findAll(page, USER_CONTROLLER_PAGE_SIZE)
+        )
+        .awaitSingle()
     }
-    val createdAt = URI(SHOW_ENDPOINT.replace("{id}", user.id.toString()))
 
-    return ServerResponse
-      .created(createdAt)
-      .bodyAndAwait(flowOf(user))
+    GET("/{id}") { request ->
+      val id = request.pathVariable("id").toLong()
+
+      ok()
+        .body<User>(userService.findById(id))
+        .awaitSingle()
+    }
+
+    POST("/") { request ->
+      val body = request.awaitBody<UserCreateDto>()
+        .apply { validator.validateAndThrow(this) }
+
+      val user = userService.save {
+        username = body.username!!
+        email = body.email!!
+        password = body.password!!
+      }
+
+      created(URI("/users/${user.id}"))
+        .bodyAndAwait(flowOf(user))
+    }
+
+    PUT("/{id}") { request ->
+      val id = request.pathVariable("id").toLong()
+      val body = request.awaitBody<UserUpdateDto>()
+        .apply { validator.validateAndThrow(this) }
+
+      ok()
+        .body<User>(userService.updateById(id) {
+          body.username?.let { username = it }
+          body.email?.let { email = it }
+          body.password?.let { password = it }
+        })
+        .awaitSingle()
+    }
+
+    DELETE("/{id}") { request ->
+      val id = request.pathVariable("id").toLong()
+
+      userService.deleteById(id)
+
+      noContent().buildAndAwait()
+    }
   }
-
-  /**
-   * Updates the user with id in [request].
-   *
-   * @return the user updated.
-   */
-  suspend fun update(request: ServerRequest): ServerResponse {
-    val id = request.pathVariable("id").toLong()
-    val body = request.awaitBody<UserUpdateBody>()
-
-    return ServerResponse
-      .accepted()
-      .bodyAndAwait(flowOf(
-        userProvider
-          .findById(id)
-          .update(passwordEncoder, body)
-      ))
-  }
-
-  /**
-   * Deletes from database the user with id in [request]
-   *
-   * @return a no content response.
-   */
-  suspend fun destroy(request: ServerRequest): ServerResponse {
-    val id = request.pathVariable("id").toLong()
-
-    userProvider.deleteById(id)
-
-    return ServerResponse
-      .noContent()
-      .buildAndAwait()
-  }
-
-
-  /**
-   * Handles the [EntityNotFoundException], that is thrown when couldn't find user with that id.
-   *
-   * @return [Unit] nothing.
-   */
-  @ResponseStatus(value = NOT_FOUND, reason = "Could'nt find the user with that id.")
-  @ExceptionHandler(EntityNotFoundException::class)
-  fun onResourceNotFoundException() {
-    // Automatic handling.
-  }
-
 }

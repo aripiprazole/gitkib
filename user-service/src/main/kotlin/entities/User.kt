@@ -1,31 +1,14 @@
 package com.lorenzoog.gitkib.userservice.entities
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.lorenzoog.gitkib.userservice.serializers.UserSerializer
-import com.lorenzoog.gitkib.userservice.tables.ProfileTable
-import com.lorenzoog.gitkib.userservice.tables.UserTable
-import com.lorenzoog.gitkib.userservice.tables.UserRoleTable
+import com.lorenzoog.gitkib.userservice.tables.Users
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.SizedIterable
 
-@JsonSerialize(using = UserSerializer::class)
 class User(id: EntityID<Long>) : LongEntity(id) {
-  var username: String by UserTable.username
+  var username by Users.username
+  var email by Users.email
+  var password by Users.password
 
-  var email: String by UserTable.email
-
-  @get:JsonProperty(access = READ_ONLY)
-  @get:JsonIgnore
-  var password: String by UserTable.password
-
-  var roles: SizedIterable<Role> by Role via UserRoleTable
-
-  var profile: Profile? by Profile optionalReferencedOn ProfileTable.userId
-
-  companion object : LongEntityClass<User>(UserTable)
+  companion object : LongEntityClass<User>(Users)
 }
