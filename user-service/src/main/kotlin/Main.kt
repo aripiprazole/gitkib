@@ -10,12 +10,7 @@ import io.ktor.features.DefaultHeaders
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.routing.Routing
-import org.koin.dsl.module
 import org.koin.ktor.ext.Koin
-
-fun Application.appModule() = module {
-
-}
 
 fun Application.module() {
   install(DefaultHeaders)
