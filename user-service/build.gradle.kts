@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   kotlin("jvm") version "1.3.72"
+  kotlin("plugin.serialization") version "1.3.72"
 
   application
 }
@@ -25,6 +26,8 @@ repositories {
 dependencies {
   implementation("io.arrow-kt:arrow-core:0.10.4")
   implementation("io.arrow-kt:arrow-syntax:0.10.4")
+
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
 
   arrayOf("server-netty", "auth", "locations", "client-cio").forEach {
     implementation("io.ktor:ktor-$it:1.3.2")
