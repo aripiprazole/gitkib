@@ -18,7 +18,7 @@ fun Application.module() {
   install(ConditionalHeaders)
 
   install(DIFeature) {
-    import(appModule())
+    import(kodeinModule(this@module))
   }
 
   install(Routing) {
