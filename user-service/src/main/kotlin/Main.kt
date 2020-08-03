@@ -3,6 +3,7 @@
 
 package com.lorenzoog.gitkib.userservice
 
+import com.lorenzoog.gitkib.userservice.services.DatabaseService
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.features.ConditionalHeaders
@@ -10,7 +11,10 @@ import io.ktor.features.DefaultHeaders
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.routing.Routing
+import kotlinx.coroutines.runBlocking
+import org.kodein.di.instance
 import org.kodein.di.ktor.DIFeature
+import org.kodein.di.ktor.di
 
 fun Application.module() {
   install(DefaultHeaders)
@@ -19,6 +23,12 @@ fun Application.module() {
 
   install(DIFeature) {
     import(kodeinModule(this@module))
+  }
+
+  val databaseService by di().instance<DatabaseService>()
+  with(databaseService) {
+    connect()
+    runBlocking { createSchemas() }
   }
 
   install(Routing) {
