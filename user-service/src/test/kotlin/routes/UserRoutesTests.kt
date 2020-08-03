@@ -1,7 +1,5 @@
 package com.lorenzoog.gitkib.userservice.tests.routes
 
-import arrow.core.const
-import arrow.core.extensions.const.traverse.map
 import com.lorenzoog.gitkib.userservice.dto.Page
 import com.lorenzoog.gitkib.userservice.dto.UserResponseDto
 import com.lorenzoog.gitkib.userservice.entities.User
@@ -9,24 +7,21 @@ import com.lorenzoog.gitkib.userservice.services.UserService
 import com.lorenzoog.gitkib.userservice.tests.createApplication
 import com.lorenzoog.gitkib.userservice.tests.factories.UserFactory
 import com.lorenzoog.gitkib.userservice.tests.utils.requestAs
+import io.ktor.application.Application
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.request.accept
-import io.ktor.client.request.header
-import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.HttpStatement
-import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert.assertThat
-import org.koin.experimental.property.inject
+import org.hamcrest.MatcherAssert.assertThat
+import org.kodein.di.instance
+import org.kodein.di.ktor.di
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import kotlin.properties.Delegates.notNull
@@ -40,11 +35,13 @@ class UserRoutesTests : Spek({
     put("database.password", "")
   }
 
+  fun application(): () -> Application = { application.application }
+
   beforeEachTest { application.start(true) }
   afterEachTest { application.stop(1000, 1000) }
 
   Feature("user-rest-api") {
-    val userService: UserService by notNull()
+    val userService by di(application()).instance<UserService>()
     val userFactory = UserFactory()
 
     val client = HttpClient(CIO)

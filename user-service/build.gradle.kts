@@ -19,8 +19,6 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 repositories {
   mavenCentral()
   jcenter()
-
-  maven("https://dl.bintray.com/ekito/koin")
 }
 
 dependencies {
@@ -38,11 +36,11 @@ dependencies {
     implementation(kotlin(it))
   }
 
-  //koin
-  arrayOf("core", "ktor").forEach {
-    implementation("org.koin:koin-$it:3.0.0-alpha-2")
-  }
+  // kodein
+  implementation("org.kodein.di:kodein-di-jvm:7.0.0")
+  implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:7.0.0")
 
+  // logging
   implementation("org.slf4j:slf4j-api:1.7.30")
   implementation("ch.qos.logback:logback-classic:1.2.3")
 
@@ -73,8 +71,9 @@ dependencies {
   testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.9")
   testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:2.0.9")
 
-  testImplementation("junit:junit")
-  testImplementation("org.koin:koin-test:3.0.0-alpha-2")
+  testImplementation(platform("org.junit:junit-bom:5.6.2"))
+  testImplementation("org.junit.jupiter:junit-jupiter")
+  testImplementation("org.hamcrest:hamcrest-library:2.1")
   testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
   testImplementation("org.mockito:mockito-all:1.10.19")
 }
