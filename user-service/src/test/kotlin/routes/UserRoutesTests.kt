@@ -8,6 +8,7 @@ import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserService
 import com.lorenzoog.gitkib.userservice.tests.createApplication
 import com.lorenzoog.gitkib.userservice.tests.factories.UserFactory
+import com.lorenzoog.gitkib.userservice.tests.utils.requestAs
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.accept
@@ -16,6 +17,7 @@ import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.HttpStatement
 import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.util.KtorExperimentalAPI
@@ -48,7 +50,6 @@ class UserRoutesTests : Spek({
     val client = HttpClient(CIO)
     val json = Json(JsonConfiguration.Stable)
 
-    var authorizationHeader: String by notNull()
     var user: User by notNull()
     var response: HttpResponse by notNull()
 
@@ -59,10 +60,8 @@ class UserRoutesTests : Spek({
 
       When("request with GET to endpoint /users") {
         response = runBlocking {
-          client.request<HttpStatement>("/users") {
-            header("Authorization", authorizationHeader)
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
+          client.requestAs<HttpStatement>(user, "/users") {
+            method = HttpMethod.Get
           }.execute()
         }
       }
@@ -86,6 +85,11 @@ class UserRoutesTests : Spek({
           }
         }
       }
+    }
+
+    Scenario("show one user") {
+
+
     }
   }
 })
