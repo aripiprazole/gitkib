@@ -73,13 +73,15 @@ class UserRoutesTests : Spek({
 
       And("the content should be: a page with the users") {
         runBlocking {
+          val expected = userService.findPaginated(0).map(User::toDto)
+
           response.content.read {
             assertThat(
               json.parse(
                 Page.serializer(UserResponseDto.serializer()),
                 Charsets.UTF_8.decode(it).toString()
               ),
-              equalTo(userService.findPaginated(0).map(User::toDto))
+              equalTo(expected)
             )
           }
         }
