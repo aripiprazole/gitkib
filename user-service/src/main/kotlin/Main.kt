@@ -10,17 +10,15 @@ import io.ktor.features.DefaultHeaders
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.routing.Routing
-import org.koin.ktor.ext.Koin
+import org.kodein.di.ktor.DIFeature
 
 fun Application.module() {
   install(DefaultHeaders)
   install(Locations)
   install(ConditionalHeaders)
 
-  install(Koin) {
-    printLogger()
-
-    modules(appModule())
+  install(DIFeature) {
+    import(appModule())
   }
 
   install(Routing) {
