@@ -4,6 +4,7 @@
 package com.lorenzoog.gitkib.userservice
 
 import com.lorenzoog.gitkib.userservice.services.DatabaseService
+import com.lorenzoog.gitkib.userservice.utils.value
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.features.ConditionalHeaders
@@ -25,8 +26,7 @@ fun Application.module() {
     import(kodeinModule(this@module))
   }
 
-  val databaseService by di().instance<DatabaseService>()
-  with(databaseService) {
+  with(di().value<DatabaseService>()) {
     connect()
     runBlocking { createSchemas() }
   }
