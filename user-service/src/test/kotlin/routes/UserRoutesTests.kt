@@ -35,13 +35,13 @@ class UserRoutesTests : Spek({
     put("database.password", "")
   }
 
-  fun application(): () -> Application = { application.application }
+  val di = di { application.application }
 
   beforeEachTest { application.start(true) }
   afterEachTest { application.stop(1000, 1000) }
 
   Feature("user-rest-api") {
-    val userService by di(application()).instance<UserService>()
+    val userService by di.instance<UserService>()
     val userFactory = UserFactory()
 
     val client = HttpClient(CIO)
