@@ -31,10 +31,12 @@ import kotlin.properties.Delegates.notNull
 @KtorExperimentalAPI
 class UserRoutesTests : Spek({
   val application = createApplication {
-    put("database.url", "jdbc:h2:mem:local;MODE=POSTGRESQL;DATABASE_TO_UPPER=FALSE")
-    put("database.driver", "org.h2.Driver")
-    put("database.user", "root")
-    put("database.password", "")
+    config {
+      put("database.url", "jdbc:h2:mem:local;MODE=POSTGRESQL;DATABASE_TO_UPPER=FALSE")
+      put("database.driver", "org.h2.Driver")
+      put("database.user", "root")
+      put("database.password", "")
+    }
   }
 
   val di = di { application.application }
