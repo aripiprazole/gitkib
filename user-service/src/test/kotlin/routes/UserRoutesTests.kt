@@ -3,6 +3,7 @@ package com.lorenzoog.gitkib.userservice.tests.routes
 import com.lorenzoog.gitkib.userservice.dto.Page
 import com.lorenzoog.gitkib.userservice.dto.UserCreateDto
 import com.lorenzoog.gitkib.userservice.dto.UserResponseDto
+import com.lorenzoog.gitkib.userservice.dto.UserUpdateDto
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserService
 import com.lorenzoog.gitkib.userservice.tests.createApplication
@@ -157,6 +158,53 @@ class UserRoutesTests : Spek({
             val expected = runBlocking { userService.findById(userResponse.id) }
 
             assertThat(userResponse, equalTo(expected.toDto()))
+          }
+        }
+      }
+    }
+
+    Scenario("update a user") {
+      var user: User by notNull()
+      var response: HttpResponse by notNull()
+
+      val newUsername = "new username"
+      val newEmail = "new email"
+      val newPassword = "new password"
+
+      Given("user with permission: users.update") {
+        user = userFactory.createWithPermissions(listOf("users.update"))
+      }
+
+      When("request with PUT and the update content body to endpoint: /users/${user.id}") {
+        response = runBlocking {
+          client
+            .request<HttpStatement>(HttpMethod.Put, "/users/${user.id}") {
+              body = json.toJson(UserUpdateDto.serializer(), UserUpdateDto(
+                username = newUsername,
+                email = newEmail,
+                password = newPassword
+              ))
+            }
+            .execute()
+        }
+      }
+
+      Then("it should show a response with status: 200") {
+        assertThat(response.status, equalTo(HttpStatusCode.OK))
+      }
+
+      And("the content should be: the updated user with user response dto serializer") {
+        runBlocking {
+          response.content.read {
+            val userResponse = json.parse(
+              UserResponseDto.serializer(),
+              Charsets.UTF_8.decode(it).toString()
+            )
+            assertThat(user.username, equalTo(newUsername))
+            assertThat(user.email, equalTo(newEmail))
+            // TODO: check if the user.password matches with newPassword
+
+            assertThat(userResponse, equalTo(user.toDto()))
           }
         }
       }
