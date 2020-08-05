@@ -17,6 +17,8 @@ suspend inline fun <reified T> HttpClient.json(urlString: String, block: HttpReq
   request<T>(urlString) {
     contentType(ContentType.Application.Json)
     accept(ContentType.Application.Json)
+
+    block()
   }
 
 class ActingAs(
