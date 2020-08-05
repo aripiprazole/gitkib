@@ -10,11 +10,11 @@ class ExposedUserService : UserService{
     TODO("Not yet implemented")
   }
 
-  override suspend fun findById(id: Int): User {
+  override suspend fun findById(id: Long): User {
     TODO("Not yet implemented")
   }
 
-  override suspend fun updateById(id: Int, updateDto: UserUpdateDto): User {
+  override suspend fun updateById(id: Long, updateDto: UserUpdateDto): User {
     TODO("Not yet implemented")
   }
 
@@ -22,7 +22,7 @@ class ExposedUserService : UserService{
     TODO("Not yet implemented")
   }
 
-  override suspend fun deleteById(id: Int) {
+  override suspend fun deleteById(id: Long) {
     TODO("Not yet implemented")
   }
 
