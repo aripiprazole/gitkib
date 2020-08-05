@@ -21,6 +21,26 @@ suspend inline fun <reified T> HttpClient.json(urlString: String, block: HttpReq
     block()
   }
 
+suspend inline fun <reified T> HttpClient.json(
+  method: HttpMethod,
+  urlString: String,
+  builder: HttpRequestBuilder.() -> Unit = {}
+) = json<T>(urlString) {
+  this.method = method
+
+  builder()
+}
+
+suspend inline fun <reified T> HttpClient.request(
+  method: HttpMethod,
+  urlString: String,
+  builder: HttpRequestBuilder.() -> Unit = {}
+) = request<T>(urlString) {
+  this.method = method
+
+  builder()
+}
+
 class ActingAs(
   val httpClient: HttpClient,
   val user: User,
