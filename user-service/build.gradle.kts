@@ -28,6 +28,8 @@ dependencies {
 
   kapt("io.arrow-kt:arrow-meta:0.10.4")
 
+  implementation("org.redisson:redisson:3.13.3")
+
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
 
   arrayOf("server-netty", "auth", "locations", "client-cio").forEach {
