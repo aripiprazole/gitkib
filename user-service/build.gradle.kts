@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.kapt3.base.Kapt
 
 plugins {
   kotlin("jvm") version "1.3.72"
@@ -24,6 +25,8 @@ repositories {
 dependencies {
   implementation("io.arrow-kt:arrow-core:0.10.4")
   implementation("io.arrow-kt:arrow-syntax:0.10.4")
+
+  Kapt.kapt("io.arrow-kt:arrow-meta:0.10.4")
 
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
 
