@@ -178,6 +178,7 @@ class UserRoutesTests : Spek({
       When("request with PUT and the update content body to endpoint: /users/${user.id}") {
         response = runBlocking {
           client
+            .actingAs(user, di)
             .request<HttpStatement>(HttpMethod.Put, "/users/${user.id}") {
               body = json.toJson(UserUpdateDto.serializer(), UserUpdateDto(
                 username = newUsername,
