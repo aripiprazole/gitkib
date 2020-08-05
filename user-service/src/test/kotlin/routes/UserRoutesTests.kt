@@ -1,12 +1,14 @@
 package com.lorenzoog.gitkib.userservice.tests.routes
 
 import com.lorenzoog.gitkib.userservice.dto.Page
+import com.lorenzoog.gitkib.userservice.dto.UserCreateDto
 import com.lorenzoog.gitkib.userservice.dto.UserResponseDto
 import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserService
 import com.lorenzoog.gitkib.userservice.tests.createApplication
 import com.lorenzoog.gitkib.userservice.tests.factories.UserFactory
 import com.lorenzoog.gitkib.userservice.tests.utils.actingAs
+import com.lorenzoog.gitkib.userservice.tests.utils.request
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.statement.HttpResponse
@@ -115,6 +117,46 @@ class UserRoutesTests : Spek({
               ),
               equalTo(expected.toDto())
             )
+          }
+        }
+      }
+    }
+
+    Scenario("create a new user") {
+      var response: HttpResponse by notNull()
+
+      Given("a unauthenticated or authenticated requester") {
+        // nothing to do
+      }
+
+      When("request with POST to endpoint: /users") {
+        response = runBlocking {
+          client
+            .request<HttpStatement>(HttpMethod.Post, "/users") {
+              body = json.toJson(UserCreateDto.serializer(), UserCreateDto(
+                username = "some username",
+                email = "some email",
+                password = "some password"
+              ))
+            }
+            .execute()
+        }
+      }
+
+      Then("it should show a response with status: 201") {
+        assertThat(response.status, equalTo(HttpStatusCode.Created))
+      }
+
+      And("the content should be: the created user with user response dto serializer") {
+        runBlocking {
+          response.content.read {
+            val userResponse = json.parse(
+              UserResponseDto.serializer(),
+              Charsets.UTF_8.decode(it).toString()
+            )
+            val expected = runBlocking { userService.findById(userResponse.id) }
+
+            assertThat(userResponse, equalTo(expected.toDto()))
           }
         }
       }
