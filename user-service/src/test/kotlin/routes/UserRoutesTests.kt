@@ -46,10 +46,10 @@ class UserRoutesTests : Spek({
     val client = HttpClient(CIO)
     val json = Json(JsonConfiguration.Stable)
 
-    var user: User by notNull()
-    var response: HttpResponse by notNull()
-
     Scenario("list all users") {
+      var user: User by notNull()
+      var response: HttpResponse by notNull()
+
       Given("user with permission: users.view") {
         user = userFactory.createWithPermissions(listOf("users.view"))
       }
@@ -84,8 +84,40 @@ class UserRoutesTests : Spek({
     }
 
     Scenario("show one user") {
+      var user: User by notNull()
+      var response: HttpResponse by notNull()
 
+      Given("user with permission: users.view") {
+        user = userFactory.createWithPermissions(listOf("users.view"))
+      }
 
+      When("request with GET to endpoint: /users/${user.id.value}") {
+        response = runBlocking {
+          client.actingAs(user, di)
+            .request<HttpStatement>(HttpMethod.Get, "/users/${user.id}")
+            .execute()
+        }
+      }
+
+      Then("it should show a response with status: 200") {
+        assertThat(response.status, equalTo(HttpStatusCode.OK))
+      }
+
+      And("the content should be: the user with user response dto serializer") {
+        runBlocking {
+          val expected = userService.findById(user.id.value)
+
+          response.content.read {
+            assertThat(
+              json.parse(
+                UserResponseDto.serializer(),
+                Charsets.UTF_8.decode(it).toString()
+              ),
+              equalTo(expected.toDto())
+            )
+          }
+        }
+      }
     }
   }
 })
