@@ -210,5 +210,26 @@ class UserRoutesTests : Spek({
         }
       }
     }
+
+    Scenario("delete a user") {
+      var user: User by notNull()
+      var response: HttpResponse by notNull()
+
+      Given("user with permission: users.delete") {
+        user = userFactory.createWithPermissions(listOf("users.delete"))
+      }
+
+      When("request with DELETE to endpoint: /users/${user.id.value}") {
+        response = runBlocking {
+          client.actingAs(user, di)
+            .request<HttpStatement>(HttpMethod.Delete, "/users/${user.id}")
+            .execute()
+        }
+      }
+
+      Then("it should show a response with status: 204") {
+        assertThat(response.status, equalTo(HttpStatusCode.NoContent))
+      }
+    }
   }
 })
