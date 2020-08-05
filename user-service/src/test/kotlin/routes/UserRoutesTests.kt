@@ -6,8 +6,7 @@ import com.lorenzoog.gitkib.userservice.entities.User
 import com.lorenzoog.gitkib.userservice.services.UserService
 import com.lorenzoog.gitkib.userservice.tests.createApplication
 import com.lorenzoog.gitkib.userservice.tests.factories.UserFactory
-import com.lorenzoog.gitkib.userservice.tests.utils.requestAs
-import io.ktor.application.Application
+import com.lorenzoog.gitkib.userservice.tests.utils.actingAs
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.statement.HttpResponse
@@ -57,9 +56,9 @@ class UserRoutesTests : Spek({
 
       When("request with GET to endpoint /users") {
         response = runBlocking {
-          client.requestAs<HttpStatement>(user, "/users") {
-            method = HttpMethod.Get
-          }.execute()
+          client.actingAs(user, di)
+            .request<HttpStatement>(HttpMethod.Get, "/users")
+            .execute()
         }
       }
 

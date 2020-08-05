@@ -7,8 +7,11 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
-import kotlin.properties.Delegates
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.LazyDI
 
 suspend inline fun <reified T> HttpClient.json(urlString: String, block: HttpRequestBuilder.() -> Unit = {}) =
   request<T>(urlString) {
@@ -16,12 +19,26 @@ suspend inline fun <reified T> HttpClient.json(urlString: String, block: HttpReq
     accept(ContentType.Application.Json)
   }
 
-suspend inline fun <reified T> HttpClient.requestAs(user: User, urlString: String, block: HttpRequestBuilder.() -> Unit = {}): T {
-  val authorizationHeader: String by Delegates.notNull()
+class ActingAs(
+  val httpClient: HttpClient,
+  val user: User,
 
-  return json(urlString) {
+  override val di: DI
+) : DIAware {
+  val authorizationHeader: String
+    get() = TODO()
+
+  suspend inline fun <reified T> request(
+    method: HttpMethod,
+    urlString: String,
+    block: HttpRequestBuilder.() -> Unit = {}
+  ) = httpClient.json<T>(urlString) {
     header("Authorization", authorizationHeader)
+
+    this.method = method
 
     block()
   }
 }
+
+fun HttpClient.actingAs(user: User, lazyDI: LazyDI) = ActingAs(this, user, lazyDI)
