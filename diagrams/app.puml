@@ -1,0 +1,62 @@
+@startuml Gitkib
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+
+LAYOUT_LEFT_RIGHT
+
+Person(client, "Simple costumer")
+Person(adm_client, "Administrator")
+
+System_Boundary(c1, "Gitkib web application") {
+    Container(request_balancer, "Nginx request balancer", "Will handle the requests")
+    
+    Container(web_app, "Web application", "Next.js", "App frontend application, will send the data from the server")
+
+    Container(spa_app, "SPA Application", "React.js, TypeScript", "App frontend SPA, will be delivered to final user in the navigator")
+}
+
+System_Boundary(user_service, "User service application") {
+    ContainerDb(user_service_db, "Relation database", "PostgreSQL 8", "Will persist user, roles and profile data")
+    Container(user_service_cache, "User service cache", "Redis", "Will cache temporary data for the application, when app restarts, will clear")
+    Container(user_service_app, "User micro-service", "Kotlin, JVM 8, Spring Boot, Exposed, Coroutines", "Will provide a rest api that show and store user, profile and role data")
+}
+
+System_Boundary(repo_service, "Repositories service application") {
+    ContainerDb(repo_service_db, "Relation database", "PostgreSQL 8", "Will persist the repositories' owners")
+    Container(repo_service_app, "Repo micro-service", "Kotlin, JVM 8, Spring Boot, Exposed, Coroutines", "Will provide the repositories for the frontend")
+}
+
+System_Ext(s3, "Amazon S3", "File storage")
+System_Ext(ses, "Amazon SES", "Email handler, will send emails for the application")
+System_Ext(consul, "Hashicorp consul", "Will show the services and their info")
+System_Ext(grafana, "Grafana", "Will show the services and their metrics, memory use, cpu profiling, etc")
+
+Rel(user_service_app, grafana, "Provides the metrics for grafana panel", "Prometheus")
+Rel(user_service_app, consul, "Provides the service information to consul", "HTTPS TTL")
+
+Rel(repo_service_app, grafana, "Provides the metrics for grafana panel", "Prometheus")
+Rel(repo_service_app, consul, "Provides the service information to consul", "HTTPS TTL")
+
+Rel(client, request_balancer, "Uses", "HTTPS")
+Rel(adm_client, grafana, "Uses", "HTTPS")
+Rel(adm_client, consul, "Uses", "HTTPS")
+Rel(adm_client, request_balancer, "Uses", "HTTPS")
+
+Rel(request_balancer, web_app, "Renders the static pages")
+
+Rel(web_app, spa_app, "Provides the static pages")
+
+Rel(web_app, user_service_app, "Gets user information from", "HTTPS")
+Rel(spa_app, user_service_app, "Gets user information from", "HTTPS")
+
+Rel(web_app, repo_service_app, "Gets repos information from", "HTTPS")
+Rel(spa_app, repo_service_app, "Gets repos information from", "HTTPS")
+
+Rel(user_service_app, ses, "When register an user, then will send a confirmation email")
+Rel(user_service_app, s3, "Will store users' profile avatars")
+
+Rel(repo_service_app, s3, "Will store the repositories")
+
+Rel(user_service_app, user_service_db, "Gets user storage data and if hasn't in the cache, then will cache for 1 hour", "JDBC")
+Rel(user_service_app, user_service_cache, "Gets user from the cache if is in the cache, if isn't, then will get from database and cache for 1 hour", "Jedis")
+@enduml

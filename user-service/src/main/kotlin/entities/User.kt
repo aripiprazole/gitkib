@@ -1,22 +1,23 @@
 package com.lorenzoog.gitkib.userservice.entities
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY
-import javax.persistence.*
+import com.lorenzoog.gitkib.userservice.dto.UserResponseDto
+import com.lorenzoog.gitkib.userservice.tables.Users
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
 
-@Entity
-data class User(
-  @Id
-  @GeneratedValue(strategy = GenerationType.TABLE)
-  val id: Long,
+class User(id: EntityID<Long>) : LongEntity(id) {
 
-  @Column(length = 32, unique = true)
-  var username: String,
+  var username by Users.username
+  var email by Users.email
+  var password by Users.password
 
-  @Column(length = 32, unique = true)
-  var email: String,
+  fun toDto() = UserResponseDto(
+    id = id.value,
+    username = username,
+    email = email
+  )
 
-  @Column(length = 20)
-  @JsonProperty(access = READ_ONLY)
-  var password: String
-)
+  companion object : LongEntityClass<User>(Users)
+
+}
