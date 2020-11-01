@@ -1,19 +1,27 @@
 package com.lorenzoog.gitkib.userservice.tests.factories
 
 import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.tables.Users
-import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.transactions.transaction
 
-class UserFactory : Factory<User> {
-  override fun createMany(amount: Int) =
-    (1..amount)
-      .map { createOne() }
-      .toSet()
-
-  override fun createOne(builder: User.() -> Unit) =
-    User(EntityID(0L, Users)).apply {
-      username = "fake username"
-      email = "fake email"
-      password = "fake password"
+/**
+ * TODO: add faker library
+ */
+class UserFactory : IFactory<User> {
+  override fun createOne(builder: User.() -> Unit) = transaction {
+    User.new {
+      username = "Fake username"
+      email = "Fake email"
+      password = "Fake password"
     }.apply(builder)
+  }
+
+  override fun createMany(amount: Int, builder: User.() -> Unit) =
+    (1..amount)
+      .map { createOne(builder) }
+
+  fun createWithPermissions(permissions: List<String>, builder: User.() -> Unit = {}) =
+      createOne(builder).also {
+        TODO("Not yet implemented the permission system!")
+      }
+
 }

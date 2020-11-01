@@ -1,11 +1,11 @@
 package com.lorenzoog.gitkib.userservice.services
 
-import org.jetbrains.exposed.sql.Database
+import io.ktor.application.Application
 
 interface DatabaseService {
 
-  fun connect(): Database
+  fun Application.connect()
 
-  fun createSchemas(database: Database)
+  suspend fun createSchemas()
 
 }
