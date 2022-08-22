@@ -1,4 +1,4 @@
-package com.lorenzoog.gitkib.userservice.services
+package me.devgabi.gitkib.userservice.services
 
 import io.ktor.application.Application
 

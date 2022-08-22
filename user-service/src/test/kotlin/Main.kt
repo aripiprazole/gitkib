@@ -1,6 +1,6 @@
-package com.lorenzoog.gitkib.userservice.tests
+package me.devgabi.gitkib.userservice.tests
 
-import com.lorenzoog.gitkib.userservice.module
+import me.devgabi.gitkib.userservice.module
 import io.ktor.application.Application
 import io.ktor.config.MapApplicationConfig
 import io.ktor.server.engine.*

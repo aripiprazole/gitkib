@@ -1,9 +1,9 @@
-package com.lorenzoog.gitkib.userservice.services.impl
+package me.devgabi.gitkib.userservice.services.impl
 
-import com.lorenzoog.gitkib.userservice.dto.Page
-import com.lorenzoog.gitkib.userservice.dto.UserUpdateDto
-import com.lorenzoog.gitkib.userservice.entities.User
-import com.lorenzoog.gitkib.userservice.services.UserService
+import me.devgabi.gitkib.userservice.dto.Page
+import me.devgabi.gitkib.userservice.dto.UserUpdateDto
+import me.devgabi.gitkib.userservice.entities.User
+import me.devgabi.gitkib.userservice.services.UserService
 
 class ExposedUserService : UserService{
   override suspend fun findPaginated(page: Int, size: Int): Page<User> {

@@ -1,9 +1,9 @@
-package com.lorenzoog.gitkib.userservice
+package me.devgabi.gitkib.userservice
 
-import com.lorenzoog.gitkib.userservice.services.DatabaseService
-import com.lorenzoog.gitkib.userservice.services.UserService
-import com.lorenzoog.gitkib.userservice.services.impl.ExposedDatabaseService
-import com.lorenzoog.gitkib.userservice.services.impl.ExposedUserService
+import me.devgabi.gitkib.userservice.services.DatabaseService
+import me.devgabi.gitkib.userservice.services.UserService
+import me.devgabi.gitkib.userservice.services.impl.ExposedDatabaseService
+import me.devgabi.gitkib.userservice.services.impl.ExposedUserService
 import io.ktor.application.Application
 import org.kodein.di.DI
 import org.kodein.di.bind

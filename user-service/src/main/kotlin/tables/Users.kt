@@ -1,4 +1,4 @@
-package com.lorenzoog.gitkib.userservice.tables
+package me.devgabi.gitkib.userservice.tables
 
 import org.jetbrains.exposed.dao.id.LongIdTable
 

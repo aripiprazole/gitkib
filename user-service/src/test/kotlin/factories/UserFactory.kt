@@ -1,6 +1,6 @@
-package com.lorenzoog.gitkib.userservice.tests.factories
+package me.devgabi.gitkib.userservice.tests.factories
 
-import com.lorenzoog.gitkib.userservice.entities.User
+import me.devgabi.gitkib.userservice.entities.User
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**

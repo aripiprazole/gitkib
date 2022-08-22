@@ -1,4 +1,4 @@
-package com.lorenzoog.gitkib.userservice.utils
+package me.devgabi.gitkib.userservice.utils
 
 import org.kodein.di.LazyDI
 import org.kodein.di.instance

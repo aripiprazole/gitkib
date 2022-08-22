@@ -1,4 +1,4 @@
-package com.lorenzoog.gitkib.userservice.dto
+package me.devgabi.gitkib.userservice.dto
 
 import kotlinx.serialization.Serializable
 

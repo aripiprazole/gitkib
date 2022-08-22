@@ -1,8 +1,8 @@
-package com.lorenzoog.gitkib.userservice.services
+package me.devgabi.gitkib.userservice.services
 
-import com.lorenzoog.gitkib.userservice.dto.Page
-import com.lorenzoog.gitkib.userservice.dto.UserUpdateDto
-import com.lorenzoog.gitkib.userservice.entities.User
+import me.devgabi.gitkib.userservice.dto.Page
+import me.devgabi.gitkib.userservice.dto.UserUpdateDto
+import me.devgabi.gitkib.userservice.entities.User
 
 interface UserService {
   suspend fun findPaginated(page: Int, size: Int = 15): Page<User>

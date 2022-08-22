@@ -1,6 +1,6 @@
-package com.lorenzoog.gitkib.userservice.services.impl
+package me.devgabi.gitkib.userservice.services.impl
 
-import com.lorenzoog.gitkib.userservice.services.DatabaseService
+import me.devgabi.gitkib.userservice.services.DatabaseService
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.Application

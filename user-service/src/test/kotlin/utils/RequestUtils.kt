@@ -1,6 +1,6 @@
-package com.lorenzoog.gitkib.userservice.tests.utils
+package me.devgabi.gitkib.userservice.tests.utils
 
-import com.lorenzoog.gitkib.userservice.entities.User
+import me.devgabi.gitkib.userservice.entities.User
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.accept

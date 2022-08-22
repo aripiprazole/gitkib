@@ -1,7 +1,7 @@
-package com.lorenzoog.gitkib.userservice.entities
+package me.devgabi.gitkib.userservice.entities
 
-import com.lorenzoog.gitkib.userservice.dto.UserResponseDto
-import com.lorenzoog.gitkib.userservice.tables.Users
+import me.devgabi.gitkib.userservice.dto.UserResponseDto
+import me.devgabi.gitkib.userservice.tables.Users
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

@@ -12,7 +12,7 @@ application {
   mainClass.set("io.ktor.server.netty.EngineMain")
 }
 
-group = "com.lorenzoog.gitkib"
+group = "me.devgabi.gitkib"
 version = "0.0.1-SNAPSHOT"
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8

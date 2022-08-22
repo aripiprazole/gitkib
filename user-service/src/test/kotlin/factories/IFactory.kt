@@ -1,4 +1,4 @@
-package com.lorenzoog.gitkib.userservice.tests.factories
+package me.devgabi.gitkib.userservice.tests.factories
 
 import org.jetbrains.exposed.dao.LongEntity
 
